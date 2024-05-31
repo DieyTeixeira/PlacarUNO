@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="VerdeUno">#FF7CB839</color>
+    <color name="AzulUno">#FF006AAA</color>
+    <color name="VermelhoUno">#FFDA3E27</color>
+    <color name="AmareloUno">#FFFED32E</color>
+    <color name="Cinza">#FFD4D4D4</color>
+    <color name="CinzaEscuro">#FF767474</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

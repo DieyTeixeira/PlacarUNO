@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "589580299267",
+    "project_id": "placar-uno",
+    "storage_bucket": "placar-uno.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589580299267:android:89786364776b96bd3bb236",
+        "android_client_info": {
+          "package_name": "br.com.dieyteixeira.placaruno"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRy-v581bs6Kf2OzIBokQJFyDvsNIp3vY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
