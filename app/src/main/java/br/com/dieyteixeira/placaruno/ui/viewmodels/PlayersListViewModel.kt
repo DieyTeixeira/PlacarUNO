@@ -3,6 +3,7 @@ package br.com.dieyteixeira.placaruno.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.dieyteixeira.placaruno.authentication.FirebaseAuthRepository
+import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.repositories.PlayersRepository
 import br.com.dieyteixeira.placaruno.repositories.toPlayer
 import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
@@ -22,5 +23,11 @@ class PlayersListViewModel(
             .combine(repository.players) { uiState, players ->
                 uiState.copy(players = players.map { it.toPlayer() })
             }
+
+    fun deletePlayer(player: Player) {
+        viewModelScope.launch {
+            repository.deleteP(player)
+        }
+    }
 
 }

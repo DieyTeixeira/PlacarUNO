@@ -112,15 +112,7 @@ fun PlayersEditScreen(
                     ) // Posição 3 botão
                 },
                 null, // Posição 4 sem botão
-                if (deleteEnabled) {
-                    ButtonInfo(
-                        icon = painterResource(id = R.drawable.ic_delete_br),
-                        description = "Delete",
-                        onClick = onDeleteClick
-                    ) // Posição 1 botão
-                } else {
-                    null // Posição 1 sem botão
-                },
+                null, // Posição 5 sem botão
             ),
             backgroundColor = Color.Gray.copy(alpha = 0.3f)
         )

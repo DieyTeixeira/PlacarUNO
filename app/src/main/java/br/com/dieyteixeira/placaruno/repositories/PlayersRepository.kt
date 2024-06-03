@@ -22,6 +22,10 @@ class PlayersRepository(
         )
     }
 
+    suspend fun deleteP(player: Player) = withContext(IO) {
+        dao.delete(player.toPlayerEntity())
+    }
+
     fun findById(id: String) = dao.findById(id)
 
 }

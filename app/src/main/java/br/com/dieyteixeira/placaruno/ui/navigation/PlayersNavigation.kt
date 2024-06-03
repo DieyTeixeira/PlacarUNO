@@ -23,6 +23,7 @@ fun NavGraphBuilder.playersScreen(
         val uiState by viewModel.uiState
             .collectAsState(PlayersListUiState())
         PlayersListScreen(
+            viewModel = viewModel,
             uiState = uiState,
             onNewPlayerClick = onNavigateToNewPlayerForm,
             onPlayerClick = onNavigateToEditPlayerForm,

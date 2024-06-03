@@ -1,11 +1,14 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
+import android.view.GestureDetector
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,10 +17,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +54,7 @@ import br.com.dieyteixeira.placaruno.ui.compscreens.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.compscreens.Header
 import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
+import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
 
 /***** FUNÇÃO PRINCIPAL *****/
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -51,12 +65,18 @@ fun PlayersListScreen(
     onNewPlayerClick: () -> Unit = {},
     onPlayerClick: (Player) -> Unit = {},
     onBackClick: () -> Unit = {},
+    viewModel: PlayersListViewModel
 ) {
+
+    var lastClickedPlayerIndex by remember { mutableStateOf(-1) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var playerToDelete by remember { mutableStateOf<Player?>(null) }
 
     Column (
         Modifier
             .background(color = Color(0xFF000000))
             .fillMaxSize()
+            .clickable { lastClickedPlayerIndex = -1 }
     ){
 
         /***** CABEÇALHO *****/
@@ -86,16 +106,18 @@ fun PlayersListScreen(
         /***** CORPO DA ESTRUTURA *****/
         Box(modifier) {
             LazyColumn(Modifier.fillMaxSize()) {
-                items(uiState.players) { player ->
-                    var showDescription by remember {
-                        mutableStateOf(false)
-                    }
+                itemsIndexed(uiState.players) { index, player ->
+                    val showActions = index == lastClickedPlayerIndex
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .combinedClickable(
                                 onClick = {
-                                    showDescription = !showDescription
+                                    if (lastClickedPlayerIndex == index) {
+                                        lastClickedPlayerIndex = -1
+                                    } else {
+                                        lastClickedPlayerIndex = index
+                                    }
                                 },
                                 onLongClick = {
                                     onPlayerClick(player)
@@ -113,23 +135,88 @@ fun PlayersListScreen(
                                         color = Color(0xFF393F42),
                                         shape = RoundedCornerShape(10.dp)
                                     )
-                                    .padding(horizontal = 15.dp, vertical = 8.dp)
+                                    .padding(horizontal = 15.dp)
                             ) {
-                                Text(
-                                    text = player.title,
-                                    style = TextStyle.Default.copy(
-                                        fontSize = 22.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.White
-                                    ),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1,
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = player.title,
+                                        style = TextStyle.Default.copy(
+                                            fontSize = 22.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.White
+                                        ),
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(vertical = 14.dp)
+                                    )
+                                    if (showActions) {
+                                        IconButton(onClick = { onPlayerClick(player) }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "Edit",
+                                                tint = Color.White
+                                            )
+                                        }
+                                        IconButton(onClick = {
+                                            playerToDelete = player
+                                            showDeleteConfirmation = true
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                tint = Color.White
+                                            )
+                                        }
+//                                        IconButton(onClick = { viewModel.deletePlayer(player) }) {
+//                                            Icon(
+//                                                imageVector = Icons.Default.Delete,
+//                                                contentDescription = "Delete",
+//                                                tint = Color.White
+//                                            )
+//                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    if (showDeleteConfirmation) {
+        Box(
+            Modifier
+                .background(Color.Gray.copy(alpha = 0.8f))
+                .fillMaxSize()
+        ) {
+            AlertDialog(
+                onDismissRequest = { showDeleteConfirmation = false },
+                title = { Text(text = "Confirmação de Exclusão", color = Color.White) },
+                text = { Text("Tem certeza que deseja excluir este jogador?", color = Color.White) },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.deletePlayer(playerToDelete!!)
+                            showDeleteConfirmation = false
+                        }
+                    ) {
+                        Text("Sim")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = { showDeleteConfirmation = false }
+                    ) {
+                        Text("Não")
+                    }
+                },
+                containerColor = Color.DarkGray,
+//                contentColor = Color.White
+            )
         }
     }
 
@@ -139,14 +226,17 @@ fun PlayersListScreen(
 }
 
 /***** VISUALIZAÇÃO JOGADORES *****/
-@Preview(showBackground = true)
-@Composable
-fun PlayersListScreenPreview() {
-    PlacarUNOTheme {
-        PlayersListScreen(
-            uiState = PlayersListUiState(
-                players = generateRandomPlayers(5)
-            )
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PlayersListScreenPreview() {
+//    PlacarUNOTheme {
+//        PlayersListScreen(
+//            uiState = PlayersListUiState(
+//                players = generateRandomPlayers(5)
+//            ),
+//            onNewPlayerClick = {},
+//            onPlayerClick = {},
+//            onBackClick = {},
+//        )
+//    }
+//}

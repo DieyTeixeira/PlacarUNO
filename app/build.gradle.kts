@@ -54,6 +54,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.animation:animation:1.3.1")
+    implementation("androidx.compose.animation:animation-core:1.3.1")
     implementation("com.google.firebase:firebase-auth")
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-analytics")
