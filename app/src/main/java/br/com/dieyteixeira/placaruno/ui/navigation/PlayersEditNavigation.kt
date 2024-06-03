@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.ui.screens.PlayersEditScreen
-import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayerFormViewModel
+import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersEditViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -25,7 +25,7 @@ fun NavGraphBuilder.playerFormScreen(
             nullable = true
         }
         val scope = rememberCoroutineScope()
-        val viewModel = koinViewModel<PlayerFormViewModel>(
+        val viewModel = koinViewModel<PlayersEditViewModel>(
             parameters = { parametersOf(playerId) })
         val uiState by viewModel.uiState.collectAsState()
         PlayersEditScreen(
@@ -36,21 +36,15 @@ fun NavGraphBuilder.playerFormScreen(
                     onPopBackStack()
                 }
             },
-            onDeleteClick = {
-                scope.launch {
-                    viewModel.delete()
-                    onPopBackStack()
-                }
-            },
             onBackClick = onPopBackStack
         )
     }
 }
 
-fun NavHostController.navigateToNewPlayerForm() {
+fun NavHostController.navigateToNewPlayerEdit() {
     navigate(playerFormRoute)
 }
 
-fun NavHostController.navigateToEditPlayerForm(player: Player) {
+fun NavHostController.navigateToEditPlayerEdit(player: Player) {
     navigate("$playerFormRoute?$playerIdArgument=${player.id}")
 }

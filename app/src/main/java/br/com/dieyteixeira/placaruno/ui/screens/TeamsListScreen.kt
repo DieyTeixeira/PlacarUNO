@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -40,35 +39,35 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
-import br.com.dieyteixeira.placaruno.models.Player
+import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.ui.compscreens.Baseboard
 import br.com.dieyteixeira.placaruno.ui.compscreens.ButtonInfo
 import br.com.dieyteixeira.placaruno.ui.compscreens.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.compscreens.Header
-import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
-import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
+import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
+import br.com.dieyteixeira.placaruno.ui.viewmodels.TeamsListViewModel
 
 /***** FUNÇÃO PRINCIPAL *****/
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PlayersListScreen(
-    uiState: PlayersListUiState,
+fun TeamsListScreen(
+    uiState: TeamsListUiState,
     modifier: Modifier = Modifier,
-    onNewPlayerClick: () -> Unit = {},
-    onPlayerClick: (Player) -> Unit = {},
+    onNewTeamClick: () -> Unit = {},
+    onTeamClick: (Team) -> Unit = {},
     onBackClick: () -> Unit = {},
-    viewModel: PlayersListViewModel
+    viewModel: TeamsListViewModel
 ) {
 
-    var lastClickedPlayerIndex by remember { mutableStateOf(-1) }
+    var lastClickedTeamIndex by remember { mutableStateOf(-1) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
-    var playerToDelete by remember { mutableStateOf<Player?>(null) }
+    var teamToDelete by remember { mutableStateOf<Team?>(null) }
 
     Column (
         Modifier
             .background(color = Color(0xFF000000))
             .fillMaxSize()
-            .clickable { lastClickedPlayerIndex = -1 }
+            .clickable { lastClickedTeamIndex = -1 }
     ){
 
         /***** CABEÇALHO *****/
@@ -86,7 +85,7 @@ fun PlayersListScreen(
                 ButtonInfo(
                     icon = painterResource(id = R.drawable.ic_add_br),
                     description = "Add",
-                    onClick = onNewPlayerClick
+                    onClick = onNewTeamClick
                 ), // Posição 3 botão
                 null, // Posição 4 sem botão
                 null, // Posição 5 sem botão
@@ -98,21 +97,21 @@ fun PlayersListScreen(
         /***** CORPO DA ESTRUTURA *****/
         Box(modifier) {
             LazyColumn(Modifier.fillMaxSize()) {
-                itemsIndexed(uiState.players) { index, player ->
-                    val showActions = index == lastClickedPlayerIndex
+                itemsIndexed(uiState.teams) { index, team ->
+                    val showActions = index == lastClickedTeamIndex
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .combinedClickable(
                                 onClick = {
-                                    if (lastClickedPlayerIndex == index) {
-                                        lastClickedPlayerIndex = -1
+                                    if (lastClickedTeamIndex == index) {
+                                        lastClickedTeamIndex = -1
                                     } else {
-                                        lastClickedPlayerIndex = index
+                                        lastClickedTeamIndex = index
                                     }
                                 },
                                 onLongClick = {
-                                    onPlayerClick(player)
+                                    onTeamClick(team)
                                 }
                             )
                     ) {
@@ -133,7 +132,7 @@ fun PlayersListScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = player.title,
+                                        text = team.titleT,
                                         style = TextStyle.Default.copy(
                                             fontSize = 22.sp,
                                             fontWeight = FontWeight.Bold,
@@ -145,7 +144,7 @@ fun PlayersListScreen(
                                             .padding(vertical = 14.dp)
                                     )
                                     if (showActions) {
-                                        IconButton(onClick = { onPlayerClick(player) }) {
+                                        IconButton(onClick = { onTeamClick(team) }) {
                                             Icon(
                                                 imageVector = Icons.Default.Edit,
                                                 contentDescription = "Edit",
@@ -153,7 +152,7 @@ fun PlayersListScreen(
                                             )
                                         }
                                         IconButton(onClick = {
-                                            playerToDelete = player
+                                            teamToDelete = team
                                             showDeleteConfirmation = true
                                         }) {
                                             Icon(
@@ -181,11 +180,11 @@ fun PlayersListScreen(
             AlertDialog(
                 onDismissRequest = { showDeleteConfirmation = false },
                 title = { Text(text = "Confirmação de Exclusão", color = Color.White) },
-                text = { Text("Tem certeza que deseja excluir este jogador?", color = Color.White) },
+                text = { Text("Tem certeza que deseja excluir esta equipe?", color = Color.White) },
                 confirmButton = {
                     Button(
                         onClick = {
-                            viewModel.deletePlayer(playerToDelete!!)
+                            viewModel.deleteTeam(teamToDelete!!)
                             showDeleteConfirmation = false
                         }
                     ) {

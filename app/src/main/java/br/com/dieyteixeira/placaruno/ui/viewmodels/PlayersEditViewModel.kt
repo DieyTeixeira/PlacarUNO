@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class PlayerFormViewModel(
+class PlayersEditViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: PlayersRepository
 ) : ViewModel() {

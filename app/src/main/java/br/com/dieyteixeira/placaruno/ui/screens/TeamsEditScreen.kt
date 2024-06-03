@@ -55,6 +55,7 @@ import br.com.dieyteixeira.placaruno.ui.compscreens.ButtonInfo
 import br.com.dieyteixeira.placaruno.ui.compscreens.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.compscreens.Header
 import br.com.dieyteixeira.placaruno.ui.states.PlayersEditUiState
+import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
@@ -63,10 +64,10 @@ import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 
 /***** FUNÇÃO PRINCIPAL *****/
 @Composable
-fun PlayersEditScreen(
-    uiState: PlayersEditUiState,
+fun TeamsEditScreen(
+    uiState: TeamsEditUiState,
     modifier: Modifier = Modifier,
-    onSaveClick: () -> Unit,
+    onSaveTeamClick: () -> Unit,
     onBackClick: () -> Unit = {},
 ) {
 
@@ -105,7 +106,7 @@ fun PlayersEditScreen(
                         description = "Save",
                         onClick = {
                             focusManager.clearFocus()
-                            onSaveClick()
+                            onSaveTeamClick()
                         }
                     ) // Posição 3 botão
                 },
@@ -154,13 +155,13 @@ fun PlayersEditScreen(
 /***** VISUALIZAÇÃO ADICIONAR *****/
 @Preview(showBackground = true)
 @Composable
-fun PlayersEditScreenPreview() {
+fun TeamsEditScreenPreview() {
     PlacarUNOTheme {
-        PlayersEditScreen(
-            uiState = PlayersEditUiState(
+        TeamsEditScreen(
+            uiState = TeamsEditUiState(
                 topAppBarTitle = "ADICIONAR JOGADOR"
             ),
-            onSaveClick = {}
+            onSaveTeamClick = {}
         )
     }
 }
@@ -168,14 +169,14 @@ fun PlayersEditScreenPreview() {
 /***** VISUALIZAÇÃO EDITAR *****/
 @Preview(showBackground = true)
 @Composable
-fun PlayersEditScreenWithEditModePreview() {
+fun TeamsEditScreenWithEditModePreview() {
     PlacarUNOTheme {
-        PlayersEditScreen(
-            uiState = PlayersEditUiState(
+        TeamsEditScreen(
+            uiState = TeamsEditUiState(
                 topAppBarTitle = "EDITAR",
                 isDeleteEnabled = true
             ),
-            onSaveClick = {}
+            onSaveTeamClick = {}
         )
     }
 }
