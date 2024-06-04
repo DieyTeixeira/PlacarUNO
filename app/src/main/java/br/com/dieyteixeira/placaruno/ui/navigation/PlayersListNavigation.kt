@@ -13,9 +13,9 @@ import org.koin.androidx.compose.koinViewModel
 
 const val playersRoute = "players"
 
-fun NavGraphBuilder.playersScreen(
-    onNavigateToNewPlayerForm: () -> Unit,
-    onNavigateToEditPlayerForm: (Player) -> Unit,
+fun NavGraphBuilder.playersListScreen(
+    onNavigateToNewPlayerEdit: () -> Unit,
+    onNavigateToEditPlayerEdit: (Player) -> Unit,
     onPopBackStack: () -> Unit,
 ) {
     composable(playersRoute) {
@@ -25,8 +25,8 @@ fun NavGraphBuilder.playersScreen(
         PlayersListScreen(
             viewModel = viewModel,
             uiState = uiState,
-            onNewPlayerClick = onNavigateToNewPlayerForm,
-            onPlayerClick = onNavigateToEditPlayerForm,
+            onNewPlayerClick = onNavigateToNewPlayerEdit,
+            onPlayerClick = onNavigateToEditPlayerEdit,
             onBackClick = onPopBackStack
         )
     }

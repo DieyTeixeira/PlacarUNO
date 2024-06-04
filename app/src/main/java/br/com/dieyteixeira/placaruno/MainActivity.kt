@@ -3,23 +3,20 @@ package br.com.dieyteixeira.placaruno
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import br.com.dieyteixeira.placaruno.ui.navigation.authGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.homeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToAuthGraph
-import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditPlayerForm
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditPlayerEdit
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditTeamEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToHomeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewGame
-import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewPlayerForm
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewPlayerEdit
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewTeamEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToPlayers
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToScoreboard
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToSignIn
@@ -63,14 +60,20 @@ class MainActivity : ComponentActivity() { // teste
                         }
                     )
                     homeGraph(
-                        onNavigateToNewPlayerForm = {
-                            navController.navigateToNewPlayerForm()
+                        onNavigateToNewPlayerEdit = {
+                            navController.navigateToNewPlayerEdit()
                         },
-                        onNavigateToEditPlayerForm = { player ->
-                            navController.navigateToEditPlayerForm(player)
+                        onNavigateToEditPlayerEdit = { player ->
+                            navController.navigateToEditPlayerEdit(player)
                         },
                         onNavigateToPlayers = {
                             navController.navigateToPlayers()
+                        },
+                        onNavigateToNewTeamEdit = {
+                            navController.navigateToNewTeamEdit()
+                        },
+                        onNavigateToEditTeamEdit = { team ->
+                            navController.navigateToEditTeamEdit(team)
                         },
                         onNavigateToTeams = {
                             navController.navigateToTeams()
@@ -82,7 +85,7 @@ class MainActivity : ComponentActivity() { // teste
                             navController.navigateToScoreboard()
                         },
                         onPopBackStack =  {
-                        navController.popBackStack()
+                            navController.popBackStack()
                         }
                     )
                 }

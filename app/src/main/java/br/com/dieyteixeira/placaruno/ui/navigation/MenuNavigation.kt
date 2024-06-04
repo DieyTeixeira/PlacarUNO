@@ -39,10 +39,6 @@ fun NavGraphBuilder.menuScreen(
     }
 }
 
-fun NavHostController.navigateToTeams() {
-    navigate(menuRoute)
-}
-
 fun NavHostController.navigateToNewGame() {
     navigate(menuRoute)
 }

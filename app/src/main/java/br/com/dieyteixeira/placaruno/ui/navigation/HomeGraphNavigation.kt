@@ -5,34 +5,48 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.navigation
 import br.com.dieyteixeira.placaruno.models.Player
+import br.com.dieyteixeira.placaruno.models.Team
 
 const val homeGraphRoute = "homeGraph"
 
 fun NavGraphBuilder.homeGraph(
-    onNavigateToNewPlayerForm: () -> Unit,
-    onNavigateToEditPlayerForm: (Player) -> Unit,
+
     onNavigateToPlayers: () -> Unit,
+    onNavigateToNewPlayerEdit: () -> Unit,
+    onNavigateToEditPlayerEdit: (Player) -> Unit,
+
     onNavigateToTeams: () -> Unit,
+    onNavigateToNewTeamEdit: () -> Unit,
+    onNavigateToEditTeamEdit: (Team) -> Unit,
+
     onNavigateToNewGame: () -> Unit,
+
     onNavigateToScoreboard: () -> Unit,
+
     onPopBackStack: () -> Unit,
 ) {
     navigation(
         startDestination = menuRoute,
         route = homeGraphRoute
     ) {
-        playersScreen(
-            onNavigateToNewPlayerForm = onNavigateToNewPlayerForm,
-            onNavigateToEditPlayerForm = onNavigateToEditPlayerForm,
-            onPopBackStack = onPopBackStack
-        )
         menuScreen(
             onNavigateToPlayers = onNavigateToPlayers,
             onNavigateToTeams = onNavigateToTeams,
             onNavigateToNewGame = onNavigateToNewGame,
             onNavigateToScoreboard = onNavigateToScoreboard,
         )
-        playerFormScreen(onPopBackStack = onPopBackStack)
+        playersListScreen(
+            onNavigateToNewPlayerEdit = onNavigateToNewPlayerEdit,
+            onNavigateToEditPlayerEdit = onNavigateToEditPlayerEdit,
+            onPopBackStack = onPopBackStack
+        )
+        playerEditScreen(onPopBackStack = onPopBackStack)
+        teamsListScreen(
+            onNavigateToNewTeamEdit = onNavigateToNewTeamEdit,
+            onNavigateToEditTeamEdit = onNavigateToEditTeamEdit,
+            onPopBackStack = onPopBackStack
+        )
+        teamEditScreen(onPopBackStack = onPopBackStack)
     }
 }
 
