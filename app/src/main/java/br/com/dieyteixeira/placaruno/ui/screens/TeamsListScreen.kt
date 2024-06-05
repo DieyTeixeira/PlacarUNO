@@ -71,7 +71,7 @@ fun TeamsListScreen(
     ){
 
         /***** CABEÇALHO *****/
-        Header(titleHeader = "JOGADORES")
+        Header(titleHeader = "EQUIPES")
 
         /***** BOTÕES *****/
         GenericButtonBar(

@@ -21,8 +21,7 @@ import androidx.compose.ui.unit.sp
 // Definição de componente - ** CABEÇALHO **
 @Composable
 fun Header(
-    titleHeader: String,
-    modifier: Modifier = Modifier
+    titleHeader: String
 ) {
     Column (
         horizontalAlignment = Alignment.CenterHorizontally
