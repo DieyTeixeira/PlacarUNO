@@ -1,0 +1,34 @@
+{
+  "ConstraintSets": {
+    "start": {
+      "button1": {
+        "width": "spread",
+        "height": 60,
+        "top": ["parent", "top", 16],
+        "start": ["parent", "start", 16],
+        "end": ["button2", "start", 16]
+      },
+      "button2": {
+        "width": "spread",
+        "height": 60,
+        "top": ["parent", "top", 16],
+        "start": ["button1", "end", 16],
+        "end": ["button3", "start", 16]
+      },
+      "button3": {
+        "width": "spread",
+        "height": 60,
+        "top": ["parent", "top", 16],
+        "start": ["button2", "end", 16],
+        "end": ["button4", "start", 16]
+      },
+      "button4": {
+        "width": "spread",
+        "height": 60,
+        "top": ["parent", "top", 16],
+        "start": ["button3", "end", 16],
+        "end": ["parent", "end", 16]
+      }
+    }
+  }
+}

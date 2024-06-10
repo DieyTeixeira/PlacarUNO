@@ -1,6 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -78,13 +79,13 @@ fun PlayersListScreen(
         GenericButtonBar(
             buttons = listOf(
                 ButtonInfo(
-                    icon = painterResource(id = R.drawable.ic_back_br),
+                    icon = painterResource(id = R.drawable.ic_double_arrow_left),
                     description = "Back",
                     onClick = onBackClick
                 ),  // Posição 1 botão
                 null, // Posição 2 sem botão
                 ButtonInfo(
-                    icon = painterResource(id = R.drawable.ic_add_br),
+                    icon = painterResource(id = R.drawable.ic_add),
                     description = "Add",
                     onClick = onNewPlayerClick
                 ), // Posição 3 botão

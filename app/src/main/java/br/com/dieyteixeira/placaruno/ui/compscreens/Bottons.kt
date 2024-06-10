@@ -114,13 +114,13 @@ fun PreviewGenericButtonBar() {
             null, // Posição 1 sem botão
             null, // Posição 2 sem botão
             ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_add_br),
+                icon = painterResource(id = R.drawable.ic_add),
                 description = "Add",
                 onClick = { println("Add clicked") }
             ), // Posição 3 botão Add
             null, // Posição 4 sem botão
             ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_back_br),
+                icon = painterResource(id = R.drawable.ic_double_arrow_left),
                 description = "Back",
                 onClick = { println("Back clicked") }
             )  // Posição 5 botão DoubleArrow
@@ -135,27 +135,27 @@ fun PreviewGenericButtonBarAllButtons() {
     GenericButtonBar(
         buttons = listOf(
             ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_add_br),
+                icon = painterResource(id = R.drawable.ic_add),
                 description = "Add",
                 onClick = { println("Add clicked") }
             ),
             ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_add_br),
+                icon = painterResource(id = R.drawable.ic_add),
                 description = "Check",
                 onClick = { println("Check clicked") }
             ),
             ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_close_br),
+                icon = painterResource(id = R.drawable.ic_out),
                 description = "Close",
                 onClick = { println("Close clicked") }
             ),
             ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_back_br),
+                icon = painterResource(id = R.drawable.ic_double_arrow_left),
                 description = "Back",
                 onClick = { println("Back clicked") }
             ),
             ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_delete_br),
+                icon = painterResource(id = R.drawable.ic_delete),
                 description = "Delete",
                 onClick = { println("Delete clicked") }
             )

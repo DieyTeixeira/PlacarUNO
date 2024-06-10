@@ -72,7 +72,7 @@ fun TeamsEditScreen(
         GenericButtonBar(
             buttons = listOf(
                 ButtonInfo(
-                    icon = painterResource(id = R.drawable.ic_back_br),
+                    icon = painterResource(id = R.drawable.ic_double_arrow_left),
                     description = "Back",
                     onClick = onBackClick
                 ),  // Posição 1 botão
@@ -81,7 +81,7 @@ fun TeamsEditScreen(
                     null // Posição 3 sem botão
                 } else {
                     ButtonInfo(
-                        icon = painterResource(id = R.drawable.ic_save_br),
+                        icon = painterResource(id = R.drawable.ic_save),
                         description = "Save",
                         onClick = {
                             focusManager.clearFocus()

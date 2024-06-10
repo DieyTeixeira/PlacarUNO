@@ -42,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
@@ -61,6 +62,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.constraintlayout.compose)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.koin.androidx.compose)
@@ -81,4 +83,21 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    // Dependências do Compose
+    implementation("androidx.compose.ui:ui:1.2.0")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha12")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
+    implementation("androidx.activity:activity-compose:1.3.1")
+
+    // Dependência para o MotionLayout
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0")
+
+    // Dependências do Material Components
+    implementation("com.google.android.material:material:1.6.0")
+
+    // Outras dependências do projeto
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("com.google.android.material:material:1.5.0")
 }

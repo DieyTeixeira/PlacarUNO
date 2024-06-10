@@ -77,13 +77,13 @@ fun TeamsListScreen(
         GenericButtonBar(
             buttons = listOf(
                 ButtonInfo(
-                    icon = painterResource(id = R.drawable.ic_back_br),
+                    icon = painterResource(id = R.drawable.ic_double_arrow_left),
                     description = "Back",
                     onClick = onBackClick
                 ),  // Posição 1 botão
                 null, // Posição 2 sem botão
                 ButtonInfo(
-                    icon = painterResource(id = R.drawable.ic_add_br),
+                    icon = painterResource(id = R.drawable.ic_add),
                     description = "Add",
                     onClick = onNewTeamClick
                 ), // Posição 3 botão

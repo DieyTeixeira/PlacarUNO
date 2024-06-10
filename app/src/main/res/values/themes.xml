@@ -2,4 +2,13 @@
 <resources>
 
     <style name="Theme.PlacarUNO" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.PlacarUNO.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.PlacarUNO.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.PlacarUNO.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
