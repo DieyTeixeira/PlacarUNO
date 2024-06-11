@@ -2,6 +2,14 @@ package br.com.dieyteixeira.placaruno.ui.compscreens
 
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +31,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,7 +67,9 @@ fun GenericButtonBar(
                         GenericButton(
                             icon = buttonInfo.icon,
                             description = buttonInfo.description,
-                            onClick = buttonInfo.onClick
+                            onClick = buttonInfo.onClick,
+                            debounce = buttonInfo.debounce,
+                            rotate = buttonInfo.rotate
                         )
                     } else {
                         Spacer(modifier = Modifier.size(40.dp)) // Espaçamento onde não há botão
@@ -71,7 +83,9 @@ fun GenericButtonBar(
 data class ButtonInfo(
     val icon: Painter,
     val description: String,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
+    val debounce: Boolean = true,
+    val rotate: Boolean = false
 )
 
 @Composable
@@ -79,12 +93,18 @@ fun GenericButton(
     icon: Painter,
     description: String,
     onClick: () -> Unit,
+    debounce: Boolean = true,
+    rotate: Boolean = false,
     enabled: Boolean = true,
     size: Int = 40,
     backgroundColor: Color = Color.Gray.copy(alpha = 0f),
     iconTint: Color = Color.LightGray
 ) {
     var isEnabled by remember { mutableStateOf(enabled) }
+    val rotation by animateFloatAsState(
+        targetValue = if (rotate) 45f else 0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+    )
     Image(
         painter = icon,
         contentDescription = description,
@@ -93,14 +113,19 @@ fun GenericButton(
             .background(backgroundColor, CircleShape)
             .clip(CircleShape)
             .clickable {
-                if (isEnabled) {
-                    isEnabled = false
+                if (!debounce || isEnabled) {
+                    if (debounce) {
+                        isEnabled = false
+                    }
                     onClick()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        isEnabled = true
-                    }, 2000)
+                    if (debounce) {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            isEnabled = true
+                        }, 1500)
+                    }
                 }
             }
+            .rotate(rotation)
             .padding(8.dp),
         colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(iconTint)
     )

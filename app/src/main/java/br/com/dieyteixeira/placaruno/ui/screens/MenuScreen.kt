@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -96,15 +97,18 @@ fun MenuScreen(
             buttons = listOf(
 
                 ButtonInfo(
-                    icon = if (layoutMode) painterResource(id = R.drawable.ic_xis) else painterResource(id = R.drawable.ic_add),
+//                    icon = if (layoutMode) painterResource(id = R.drawable.ic_add) else painterResource(id = R.drawable.ic_xis),
+                    icon = painterResource(id = R.drawable.ic_add),
                     description = "Mudar Layout",
-                    onClick = { layoutMode = !layoutMode }
+                    onClick = { layoutMode = !layoutMode },
+                    debounce = false,
+                    rotate = layoutMode
                 ), // Posição 1 botão X
 
                 if (layoutMode == true) {
                     ButtonInfo(
                         icon = painterResource(id = R.drawable.ic_layout_column),
-                        description = "Mudar Layout",
+                        description = "Mudar Layout para Coluna",
                         onClick = { buttonLayout = ButtonLayout.COLUMN }
                     )
                 } else {
@@ -114,7 +118,7 @@ fun MenuScreen(
                 if (layoutMode == true) {
                     ButtonInfo(
                         icon = painterResource(id = R.drawable.ic_layout_row),
-                        description = "Mudar Layout",
+                        description = "Mudar Layout para Linha",
                         onClick = { buttonLayout = ButtonLayout.ROW }
                     )
                 } else {
@@ -124,7 +128,7 @@ fun MenuScreen(
                 if (layoutMode == true) {
                     ButtonInfo(
                         icon = painterResource(id = R.drawable.ic_layout_2x2),
-                        description = "Mudar Layout",
+                        description = "Mudar Layout para 2x2",
                         onClick = { buttonLayout = ButtonLayout.GRID_2x2 }
                     )
                 } else {
@@ -190,10 +194,10 @@ fun MenuScreen(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(15.dp)
                     ) {
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick, height = 250.dp, verticalText = true) }
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick, height = 200.dp, verticalText = true) }
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick, height = 200.dp, verticalText = true) }
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick, height = 200.dp, verticalText = true) }
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick, height = 180.dp, showText = false) }
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick, height = 180.dp, showText = false) }
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick, height = 180.dp, showText = false) }
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick, height = 180.dp, showText = false) }
                     }
                 ButtonLayout.GRID_2x2 ->
                     Column(
@@ -230,7 +234,7 @@ fun ColorButton(
     onClick: () -> Unit,
     showText: Boolean = true,
     height: Dp = 110.dp,
-    verticalText: Boolean = false
+    verticalText: Boolean = false,
 ) {
     Box(
         modifier = Modifier
@@ -246,36 +250,42 @@ fun ColorButton(
                 )
             )
             .clickable(onClick = onClick),
-        contentAlignment = if (verticalText) Alignment.TopStart else Alignment.Center
+        contentAlignment = if (showText) Alignment.Center else Alignment.TopCenter
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                imageVector = when (text) {
-                    "JOGADOR" -> Icons.Filled.Person
-                    "EQUIPE" -> Icons.Filled.Groups
-                    "NOVO JOGO" -> Icons.Filled.LibraryAdd
-                    "PLACAR" -> Icons.Filled.Scoreboard
-                    else -> Icons.Filled.Cancel
+                painter = when (text) {
+                    "JOGADOR" -> painterResource(R.drawable.ic_g_player)
+                    "EQUIPE" -> painterResource(R.drawable.ic_g_team)
+                    "NOVO JOGO" -> painterResource(R.drawable.ic_g_new_game)
+                    "PLACAR" -> painterResource(R.drawable.ic_g_score)
+                    else -> painterResource(R.drawable.ic_xis)
                 },
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier
-                    .size(60.dp)
-                    .padding(5.dp)
+                modifier = if (showText) {
+                    Modifier
+                        .size(60.dp)
+                        .padding(top = 5.dp)
+                } else {
+                    Modifier
+                        .size(80.dp)
+                        .padding(top = 30.dp)
+                }
             )
             if (showText) {
                 Text(
                     text = text,
                     color = Color.White,
-                    fontSize = 25.sp,
+                    fontSize = if (verticalText) 10.sp else 25.sp,
                     modifier = if (verticalText) {
                         Modifier
                             .rotate(90f)
-                            .padding(5.dp)
+                            .padding(bottom = 5.dp)
                     } else {
-                        Modifier
+                        Modifier.padding(top = 5.dp)
                     }
                 )
             }
