@@ -14,8 +14,8 @@ android {
         applicationId = "br.com.dieyteixeira.placaruno"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -109,5 +109,17 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.0.0")
     implementation("androidx.compose.ui:ui:1.0.0")
     implementation("androidx.compose.ui:ui-tooling:1.0.0")
+
+    // Dependência para link de gif
+    implementation("io.coil-kt:coil-compose:2.1.0")
+
+    // Dependência para video
+    implementation("com.google.android.exoplayer:exoplayer:2.17.1")
+    implementation("com.google.android.exoplayer:exoplayer-core:2.17.1")
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.17.1")
+    implementation("com.google.android.exoplayer:exoplayer-hls:2.17.1")
+    implementation("com.google.android.exoplayer:exoplayer-dash:2.17.1")
+    implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:2.17.1")
+    implementation("com.google.android.exoplayer:extension-mediasession:2.17.1")
 
 }
