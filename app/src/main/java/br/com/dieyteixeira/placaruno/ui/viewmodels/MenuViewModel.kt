@@ -1,5 +1,6 @@
 package br.com.dieyteixeira.placaruno.ui.viewmodels
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import br.com.dieyteixeira.placaruno.authentication.FirebaseAuthRepository
 import br.com.dieyteixeira.placaruno.ui.states.MenuUiState
@@ -12,7 +13,6 @@ class MenuViewModel(
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MenuUiState> =
         MutableStateFlow(MenuUiState())
-
 
     val uiState
         get() = _uiState

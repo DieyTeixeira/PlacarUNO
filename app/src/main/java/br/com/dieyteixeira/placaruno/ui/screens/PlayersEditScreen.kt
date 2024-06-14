@@ -24,10 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
-import br.com.dieyteixeira.placaruno.ui.compscreens.Baseboard
-import br.com.dieyteixeira.placaruno.ui.compscreens.ButtonInfo
-import br.com.dieyteixeira.placaruno.ui.compscreens.GenericButtonBar
-import br.com.dieyteixeira.placaruno.ui.compscreens.Header
+import br.com.dieyteixeira.placaruno.ui.components.Baseboard
+import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
+import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
+import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.PlayersEditUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 

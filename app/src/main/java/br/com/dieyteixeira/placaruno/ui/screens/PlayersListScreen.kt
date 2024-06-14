@@ -1,7 +1,6 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -42,10 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.models.Player
-import br.com.dieyteixeira.placaruno.ui.compscreens.Baseboard
-import br.com.dieyteixeira.placaruno.ui.compscreens.ButtonInfo
-import br.com.dieyteixeira.placaruno.ui.compscreens.GenericButtonBar
-import br.com.dieyteixeira.placaruno.ui.compscreens.Header
+import br.com.dieyteixeira.placaruno.ui.components.Baseboard
+import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
+import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
+import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
 

@@ -1,21 +1,12 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
-import android.os.Handler
-import android.os.Looper
-import androidx.collection.emptyLongSet
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -29,15 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
-import br.com.dieyteixeira.placaruno.ui.compscreens.Baseboard
-import br.com.dieyteixeira.placaruno.ui.compscreens.ButtonInfo
-import br.com.dieyteixeira.placaruno.ui.compscreens.GenericButtonBar
-import br.com.dieyteixeira.placaruno.ui.compscreens.Header
+import br.com.dieyteixeira.placaruno.ui.components.Baseboard
+import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
+import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
+import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 

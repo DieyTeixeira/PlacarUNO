@@ -1,4 +1,4 @@
-package br.com.dieyteixeira.placaruno.ui.compscreens
+package br.com.dieyteixeira.placaruno.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image

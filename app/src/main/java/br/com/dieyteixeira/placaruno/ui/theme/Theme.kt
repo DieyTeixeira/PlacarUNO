@@ -23,7 +23,15 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = AmareloUno,
     tertiary = Color.White,
     background = Color.Black,
-    onBackground = Color.White
+    onBackground = Color.White,
+
+    surface = Color.White,
+    onTertiary = Color.White,
+    onSurface = Color.White,
+
+    // Adicione estas linhas para definir as cores do FAB
+    primaryContainer = Color.LightGray, // Cor do FAB
+    onPrimaryContainer = Color.DarkGray // Cor do ícone dentro do FAB
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -39,6 +47,10 @@ private val LightColorScheme = lightColorScheme(
     surface = Color.White,
     onTertiary = Color.White,
     onSurface = Color.White,
+
+    // Adicione estas linhas para definir as cores do FAB
+    primaryContainer = Color.LightGray, // Cor do FAB
+    onPrimaryContainer = Color.DarkGray // Cor do ícone dentro do FAB
 )
 
 @Composable

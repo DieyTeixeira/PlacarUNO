@@ -1,10 +1,9 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
-import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,17 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.LibraryAdd
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Scoreboard
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,11 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -49,12 +40,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.rotationMatrix
 import br.com.dieyteixeira.placaruno.R
-import br.com.dieyteixeira.placaruno.ui.compscreens.Baseboard
-import br.com.dieyteixeira.placaruno.ui.compscreens.ButtonInfo
-import br.com.dieyteixeira.placaruno.ui.compscreens.GenericButtonBar
-import br.com.dieyteixeira.placaruno.ui.compscreens.Header
+import br.com.dieyteixeira.placaruno.ui.components.Baseboard
+import br.com.dieyteixeira.placaruno.ui.components.FabWithSubButtons
+import br.com.dieyteixeira.placaruno.ui.components.Header
+import br.com.dieyteixeira.placaruno.ui.components.PreferenceManager
 import br.com.dieyteixeira.placaruno.ui.states.MenuUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
@@ -73,6 +63,7 @@ enum class ButtonLayout {
 fun MenuScreen(
     uiState: MenuUiState,
     modifier: Modifier = Modifier,
+    backgroundColor: Color = Color.Gray.copy(alpha = 0.3f),
     onPlayersClick: () -> Unit,
     onTeamsClick: () -> Unit,
     onNewGameClick: () -> Unit,
@@ -80,8 +71,11 @@ fun MenuScreen(
     onExitToAppClick: () -> Unit
 ) {
 
-    var layoutMode by remember { mutableStateOf(false) }
-    var buttonLayout by remember { mutableStateOf(ButtonLayout.COLUMN) }
+//    var layoutMode by remember { mutableStateOf(false) }
+//    var buttonLayout by remember { mutableStateOf(ButtonLayout.COLUMN) }
+
+    val context = LocalContext.current
+    var buttonLayout by remember { mutableStateOf(PreferenceManager.getSavedLayout(context)) }
 
     Column(
         modifier
@@ -92,58 +86,49 @@ fun MenuScreen(
         /***** CABEÇALHO *****/
         Header(titleHeader = "PLACAR UNO")
 
-        /***** BOTÕES *****/
-        GenericButtonBar(
-            buttons = listOf(
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(55.dp)
+                    .background(color = backgroundColor)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                ButtonInfo(
-//                    icon = if (layoutMode) painterResource(id = R.drawable.ic_add) else painterResource(id = R.drawable.ic_xis),
-                    icon = painterResource(id = R.drawable.ic_add),
-                    description = "Mudar Layout",
-                    onClick = { layoutMode = !layoutMode },
-                    debounce = false,
-                    rotate = layoutMode
-                ), // Posição 1 botão X
-
-                if (layoutMode == true) {
-                    ButtonInfo(
-                        icon = painterResource(id = R.drawable.ic_layout_column),
-                        description = "Mudar Layout para Coluna",
-                        onClick = { buttonLayout = ButtonLayout.COLUMN }
+                    FabWithSubButtons(
+                        onSubButton1Click = {
+                            buttonLayout = ButtonLayout.COLUMN
+                            PreferenceManager.saveLayout(context, ButtonLayout.COLUMN)
+                        },
+                        onSubButton2Click = {
+                            buttonLayout = ButtonLayout.ROW
+                            PreferenceManager.saveLayout(context, ButtonLayout.ROW)
+                        },
+                        onSubButton3Click = {
+                            buttonLayout = ButtonLayout.GRID_2x2
+                            PreferenceManager.saveLayout(context, ButtonLayout.GRID_2x2)
+                        }
                     )
-                } else {
-                    null
-                }, // Posição 2 sem botão
 
-                if (layoutMode == true) {
-                    ButtonInfo(
-                        icon = painterResource(id = R.drawable.ic_layout_row),
-                        description = "Mudar Layout para Linha",
-                        onClick = { buttonLayout = ButtonLayout.ROW }
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_out),
+                        contentDescription = "Sair",
+                        modifier = Modifier
+                            .size(34.dp)
+                            .clickable { onExitToAppClick() }
+                            .padding(end = 8.dp)
                     )
-                } else {
-                    null
-                }, // Posição 3 sem botão
+                }
+            }
+        }
 
-                if (layoutMode == true) {
-                    ButtonInfo(
-                        icon = painterResource(id = R.drawable.ic_layout_2x2),
-                        description = "Mudar Layout para 2x2",
-                        onClick = { buttonLayout = ButtonLayout.GRID_2x2 }
-                    )
-                } else {
-                    null
-                }, // Posição 4 sem botão
-
-                ButtonInfo(
-                    icon = painterResource(id = R.drawable.ic_out),
-                    description = "Sair",
-                    onClick = onExitToAppClick
-                )  // Posição 5 botão Sair
-
-            ),
-            backgroundColor = Color.Gray.copy(alpha = 0.3f)
-        )
         Spacer(modifier = Modifier.height(10.dp))
 
         Row {
@@ -152,6 +137,7 @@ fun MenuScreen(
                 style = TextStyle(
                     color = Color.LightGray,
                     fontStyle = FontStyle.Italic,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 ),
                 modifier = Modifier.padding(horizontal = 15.dp)
@@ -163,7 +149,6 @@ fun MenuScreen(
                 style = TextStyle(
                     color = Color.LightGray,
                     fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 ),
                 modifier = Modifier.padding(horizontal = 15.dp)
@@ -180,41 +165,45 @@ fun MenuScreen(
                 .verticalScroll(rememberScrollState())
                 .animateContentSize(),
         ) {
-            when (buttonLayout) {
-                ButtonLayout.COLUMN ->
-                    Column(
+//            when (buttonLayout) {
+//                ButtonLayout.COLUMN ->
+            AnimatedVisibility(visible = buttonLayout == ButtonLayout.COLUMN, enter = fadeIn()) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick)
+                    ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick)
+                    ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick)
+                    ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick)
+                }
+            }
+//                ButtonLayout.ROW ->
+            AnimatedVisibility(visible = buttonLayout == ButtonLayout.ROW, enter = fadeIn()) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    Box(modifier = Modifier.weight(1f)) { ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick, height = 180.dp, showText = false) }
+                    Box(modifier = Modifier.weight(1f)) { ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick, height = 180.dp, showText = false) }
+                    Box(modifier = Modifier.weight(1f)) { ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick, height = 180.dp, showText = false) }
+                    Box(modifier = Modifier.weight(1f)) { ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick, height = 180.dp, showText = false) }
+                }
+            }
+//                ButtonLayout.GRID_2x2 ->
+            AnimatedVisibility(visible = buttonLayout == ButtonLayout.GRID_2x2, enter = fadeIn()) {
+                Column(
                         verticalArrangement = Arrangement.spacedBy(15.dp)
-                    ) {
-                        ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick)
-                        ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick)
-                        ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick)
-                        ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick)
+                ) {
+                    Row {
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick, height = 150.dp) }
+                        Spacer(modifier = Modifier.width(15.dp))
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick, height = 150.dp) }
                     }
-                ButtonLayout.ROW ->
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(15.dp)
-                    ) {
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick, height = 180.dp, showText = false) }
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick, height = 180.dp, showText = false) }
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick, height = 180.dp, showText = false) }
-                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick, height = 180.dp, showText = false) }
+                    Row {
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick, height = 150.dp) }
+                        Spacer(modifier = Modifier.width(15.dp))
+                        Box(modifier = Modifier.weight(1f)) { ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick, height = 150.dp) }
                     }
-                ButtonLayout.GRID_2x2 ->
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(15.dp)
-                    ) {
-                        Row {
-                            Box(modifier = Modifier.weight(1f)) { ColorButton(color = VerdeUno, text = "JOGADOR", onClick = onPlayersClick, height = 150.dp) }
-                            Spacer(modifier = Modifier.width(15.dp))
-                            Box(modifier = Modifier.weight(1f)) { ColorButton(color = AzulUno, text = "EQUIPE", onClick = onTeamsClick, height = 150.dp) }
-                        }
-                        Row {
-                            Box(modifier = Modifier.weight(1f)) { ColorButton(color = VermelhoUno, text = "NOVO JOGO", onClick = onNewGameClick, height = 150.dp) }
-                            Spacer(modifier = Modifier.width(15.dp))
-                            Box(modifier = Modifier.weight(1f)) { ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick, height = 150.dp) }
-                        }
-                    }
-
+                }
             }
         }
 
@@ -236,6 +225,7 @@ fun ColorButton(
     height: Dp = 110.dp,
     verticalText: Boolean = false,
 ) {
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
