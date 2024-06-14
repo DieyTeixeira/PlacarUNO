@@ -45,7 +45,7 @@ fun SplashScreen() {
         AmareloUno
     )
     var colorIndex by remember { mutableStateOf(0) }
-    var loadingMessage by remember { mutableStateOf("Verificando versão do app") }
+    var loadingMessage by remember { mutableStateOf("Autenticando o usuário") }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -56,7 +56,7 @@ fun SplashScreen() {
 
     LaunchedEffect(Unit) {
         delay(2000) // Simula a verificação da versão do app
-        loadingMessage = "Autenticando o usuário"
+        loadingMessage = "Verificando versão do app"
         delay(2000) // Simula a autenticação do usuário
         loadingMessage = "Carregamento completo"
         delay(1000) // Aguarda um pouco antes de mudar de tela

@@ -184,7 +184,7 @@ fun UpdateScreen() {
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            
+
             // vídeo mp4
             AndroidView(
                 factory = { ctx ->
