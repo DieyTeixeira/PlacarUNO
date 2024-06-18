@@ -1,5 +1,6 @@
 package br.com.dieyteixeira.placaruno
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,8 +9,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.content.FileProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import br.com.dieyteixeira.placaruno.authentication.currentVersionCode
 import br.com.dieyteixeira.placaruno.ui.navigation.authGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.homeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToAuthGraph
@@ -33,13 +36,14 @@ import br.com.dieyteixeira.placaruno.ui.viewmodels.AppState
 import br.com.dieyteixeira.placaruno.ui.viewmodels.AppViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import firebase.com.protolitewrapper.BuildConfig
 import org.koin.androidx.compose.koinViewModel
+import java.io.File
 
 @RequiresApi(Build.VERSION_CODES.P)
-class MainActivity : ComponentActivity() { // teste
+class MainActivity : ComponentActivity() {
 
     private val db = Firebase.firestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -113,14 +117,13 @@ class MainActivity : ComponentActivity() { // teste
     }
 
     private fun checkForUpdate(onComplete: (Boolean) -> Unit) {
-        val currentVersion = BuildConfig.VERSION_CODE
 
         db.collection("appConfig").document("version")
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     val latestVersion = document.getLong("latestVersion")
-                    if (latestVersion != null && latestVersion > currentVersion) {
+                    if (latestVersion != null && latestVersion > currentVersionCode) {
                         onComplete(false) // Atualização necessária
                     } else {
                         onComplete(true) // Não necessita atualização

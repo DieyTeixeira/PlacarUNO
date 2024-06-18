@@ -1,15 +1,10 @@
 package br.com.dieyteixeira.placaruno.ui.navigation
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,14 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -44,17 +38,23 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import br.com.dieyteixeira.placaruno.InstallUpdateApk
 import br.com.dieyteixeira.placaruno.R
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import firebase.com.protolitewrapper.BuildConfig
+import br.com.dieyteixeira.placaruno.authentication.currentVersionName
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 const val updateScreenRoute = "updatescreen"
 
-@RequiresApi(Build.VERSION_CODES.P)
 fun NavGraphBuilder.updateScreen() {
     composable(updateScreenRoute) {
         UpdateScreen()
@@ -68,8 +68,31 @@ fun UpdateScreen() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
+//    var showSnackbar by remember { mutableStateOf(false) }
+//    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
     BackHandler {
         (context as? android.app.Activity)?.finish()
+    }
+
+    val player = remember { SimpleExoPlayer.Builder(context).build() }
+    val loopVideoUri = "android.resource://${context.packageName}/${R.raw.gif_dog}"
+    val shortVideo1Uri = "android.resource://${context.packageName}/${R.raw.gif_dog_1}"
+    val shortVideo2Uri = "android.resource://${context.packageName}/${R.raw.gif_dog_2}"
+    val shortVideo3Uri = "android.resource://${context.packageName}/${R.raw.gif_dog_3}"
+
+    fun setupPlayer(uri: String) {
+        player.apply {
+            setMediaItem(MediaItem.fromUri(uri))
+            prepare()
+            playWhenReady = true
+            repeatMode = Player.REPEAT_MODE_ONE
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        setupPlayer(loopVideoUri)
     }
 
     Box(
@@ -121,7 +144,7 @@ fun UpdateScreen() {
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = formatVersionNumber(BuildConfig.VERSION_NAME),
+                text = currentVersionName,
                 style = TextStyle.Default.copy(
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
@@ -156,8 +179,45 @@ fun UpdateScreen() {
                         shape = RoundedCornerShape(20.dp)
                     )
                     .clickable(onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.teste.com.br"))
-                        context.startActivity(intent)
+
+                        coroutineScope.launch {
+                            delay(1000) // Atraso de 1 segundo
+
+                            player.clearMediaItems()
+
+                            val concatenatedSource = ConcatenatingMediaSource().apply {
+                                addMediaSource(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(context, "exoplayer"))
+                                    .createMediaSource(MediaItem.fromUri(shortVideo1Uri)))
+                                addMediaSource(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(context, "exoplayer"))
+                                    .createMediaSource(MediaItem.fromUri(shortVideo2Uri)))
+                                addMediaSource(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(context, "exoplayer"))
+                                    .createMediaSource(MediaItem.fromUri(shortVideo3Uri)))
+                                addMediaSource(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(context, "exoplayer"))
+                                    .createMediaSource(MediaItem.fromUri(loopVideoUri)))
+                            }
+
+                            player.repeatMode = Player.REPEAT_MODE_OFF
+                            player.setMediaSource(concatenatedSource)
+                            player.prepare()
+                            player.playWhenReady = true
+                            player.addListener(object : Player.Listener {
+                                override fun onMediaItemTransition(
+                                    mediaItem: MediaItem?,
+                                    reason: Int
+                                ) {
+                                    if (mediaItem?.localConfiguration?.uri.toString() == loopVideoUri) {
+                                        player.repeatMode = Player.REPEAT_MODE_ONE
+                                    } else {
+                                        player.repeatMode = Player.REPEAT_MODE_OFF
+                                    }
+                                }
+                            })
+
+                            InstallUpdateApk.downloadAndInstallApk(
+                                context,
+                                "https://dl.dropboxusercontent.com/scl/fi/vxx84sxyzd6ivbry31zqm/Placar-UNO.apk?rlkey=sin2s0ty73988iq5yt5215g39"
+                            )
+                        }
                     }),
                 contentAlignment = Alignment.Center
             ) {
@@ -189,15 +249,6 @@ fun UpdateScreen() {
             AndroidView(
                 factory = { ctx ->
                     PlayerView(ctx).apply {
-                        val player = SimpleExoPlayer.Builder(ctx).build()
-                        player.setMediaItem(
-                            com.google.android.exoplayer2.MediaItem.fromUri(
-                                "android.resource://${ctx.packageName}/${R.raw.gif_dog}"
-                            )
-                        )
-                        player.prepare()
-                        player.playWhenReady = true
-                        player.repeatMode = Player.REPEAT_MODE_ONE
                         this.player = player
                         this.useController = false
 
@@ -212,7 +263,7 @@ fun UpdateScreen() {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(250.dp)
                     .background(Color.White)
             )
         }
@@ -221,16 +272,4 @@ fun UpdateScreen() {
 
 fun NavHostController.navigateToUpdateScreen() {
     navigate(updateScreenRoute)
-}
-
-private fun formatVersionNumber(versionNumber: String?): String {
-    if (versionNumber.isNullOrBlank()) return "0.0.0"
-
-    val parts = versionNumber.split(".").toMutableList()
-
-    while (parts.size < 3) {
-        parts.add("0")
-    }
-
-    return "${parts[0]}.${parts[1]}.${parts[2]}"
 }

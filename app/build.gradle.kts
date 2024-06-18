@@ -14,8 +14,8 @@ android {
         applicationId = "br.com.dieyteixeira.placaruno"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 1
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -90,6 +90,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
 
     // Dependências do Compose
+    implementation(libs.androidx.material)
     implementation("androidx.compose.ui:ui:1.2.0")
     implementation("androidx.compose.material3:material3:1.0.0-alpha12")
     implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
