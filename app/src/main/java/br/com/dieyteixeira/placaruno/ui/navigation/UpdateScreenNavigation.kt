@@ -45,7 +45,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import br.com.dieyteixeira.placaruno.authentication.currentVersionName
+import br.com.dieyteixeira.placaruno.firebase.currentVersionName
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -67,9 +67,6 @@ private val db = Firebase.firestore
 fun UpdateScreen() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-
-//    var showSnackbar by remember { mutableStateOf(false) }
-//    val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
     BackHandler {

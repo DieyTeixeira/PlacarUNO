@@ -34,16 +34,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
-import br.com.dieyteixeira.placaruno.authentication.currentVersionCode
-import br.com.dieyteixeira.placaruno.authentication.currentVersionName
+import br.com.dieyteixeira.placaruno.firebase.currentVersionName
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.states.SignInUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme

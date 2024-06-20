@@ -1,4 +1,4 @@
-package br.com.dieyteixeira.placaruno.authentication
+package br.com.dieyteixeira.placaruno.firebase
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

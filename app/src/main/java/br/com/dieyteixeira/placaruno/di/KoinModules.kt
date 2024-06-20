@@ -1,7 +1,7 @@
 package br.com.dieyteixeira.placaruno.di
 
 import androidx.room.Room
-import br.com.dieyteixeira.placaruno.authentication.FirebaseAuthRepository
+import br.com.dieyteixeira.placaruno.firebase.FirebaseAuthRepository
 import br.com.dieyteixeira.placaruno.database.PlacarUNODatabase
 import br.com.dieyteixeira.placaruno.repositories.PlayersRepository
 import br.com.dieyteixeira.placaruno.repositories.TeamsRepository

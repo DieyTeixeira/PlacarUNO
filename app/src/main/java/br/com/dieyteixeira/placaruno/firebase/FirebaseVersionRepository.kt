@@ -1,4 +1,4 @@
-package br.com.dieyteixeira.placaruno.authentication
+package br.com.dieyteixeira.placaruno.firebase
 
 /*
 versionCode = 2

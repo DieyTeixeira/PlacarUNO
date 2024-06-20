@@ -1,7 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import br.com.dieyteixeira.placaruno.authentication.FirebaseAuthRepository
+import br.com.dieyteixeira.placaruno.firebase.FirebaseAuthRepository
 import br.com.dieyteixeira.placaruno.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine

@@ -2,9 +2,8 @@ package br.com.dieyteixeira.placaruno.ui.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import br.com.dieyteixeira.placaruno.authentication.FirebaseAuthRepository
+import br.com.dieyteixeira.placaruno.firebase.FirebaseAuthRepository
 import br.com.dieyteixeira.placaruno.ui.states.MenuUiState
-import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 

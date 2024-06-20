@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.core.content.FileProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import br.com.dieyteixeira.placaruno.authentication.currentVersionCode
+import br.com.dieyteixeira.placaruno.firebase.currentVersionCode
 import br.com.dieyteixeira.placaruno.ui.navigation.authGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.homeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToAuthGraph

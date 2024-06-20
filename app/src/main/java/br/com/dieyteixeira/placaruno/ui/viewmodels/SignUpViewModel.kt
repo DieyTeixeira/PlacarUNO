@@ -2,8 +2,7 @@ package br.com.dieyteixeira.placaruno.ui.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import br.com.dieyteixeira.placaruno.authentication.FirebaseAuthRepository
+import br.com.dieyteixeira.placaruno.firebase.FirebaseAuthRepository
 import br.com.dieyteixeira.placaruno.ui.states.SignUpUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
