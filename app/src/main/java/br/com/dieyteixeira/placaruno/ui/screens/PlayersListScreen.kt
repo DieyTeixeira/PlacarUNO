@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,7 @@ import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
+import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
 
 /***** FUNÇÃO PRINCIPAL *****/
@@ -60,6 +62,10 @@ fun PlayersListScreen(
     viewModel: PlayersListViewModel
 ) {
 
+    LaunchedEffect(Unit) {
+        viewModel.loadPlayers()
+    }
+
     var lastClickedPlayerIndex by remember { mutableStateOf(-1) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     var playerToDelete by remember { mutableStateOf<Player?>(null) }
@@ -72,7 +78,11 @@ fun PlayersListScreen(
     ){
 
         /***** CABEÇALHO *****/
-        Header(titleHeader = "JOGADORES")
+        Header(
+            titleHeader = "JOGADORES",
+            backgroundColor = VerdeUno,
+            icon = painterResource(id = R.drawable.ic_g_player)
+        )
 
         /***** BOTÕES *****/
         GenericButtonBar(
@@ -117,25 +127,25 @@ fun PlayersListScreen(
                             )
                     ) {
                         Column(
-                            Modifier.padding(10.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            Modifier.padding(5.dp),
+                            verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(
                                         color = Color(0xFF393F42),
-                                        shape = RoundedCornerShape(10.dp)
+                                        shape = RoundedCornerShape(15.dp)
                                     )
-                                    .padding(horizontal = 15.dp)
+                                    .padding(horizontal = 25.dp)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = player.title,
+                                        text = player.player_name,
                                         style = TextStyle.Default.copy(
-                                            fontSize = 22.sp,
+                                            fontSize = 20.sp,
                                             fontWeight = FontWeight.Bold,
                                             color = Color.White
                                         ),
@@ -162,13 +172,6 @@ fun PlayersListScreen(
                                                 tint = Color.White
                                             )
                                         }
-//                                        IconButton(onClick = { viewModel.deletePlayer(player) }) {
-//                                            Icon(
-//                                                imageVector = Icons.Default.Delete,
-//                                                contentDescription = "Delete",
-//                                                tint = Color.White
-//                                            )
-//                                        }
                                     }
                                 }
                             }

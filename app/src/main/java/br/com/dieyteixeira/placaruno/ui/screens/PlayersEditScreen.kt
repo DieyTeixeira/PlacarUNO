@@ -1,7 +1,11 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -30,6 +35,11 @@ import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.PlayersEditUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
+import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
+import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 
 /***** FUNÇÃO PRINCIPAL *****/
 @Composable
@@ -37,16 +47,13 @@ fun PlayersEditScreen(
     uiState: PlayersEditUiState,
     modifier: Modifier = Modifier,
     onSaveClick: () -> Unit,
-    onDeleteClick: () -> Unit,
     onBackClick: () -> Unit = {},
 ) {
 
     /***** VARIÁVEIS *****/
     var isNameEmpty by remember { mutableStateOf(true) }
     val topAppBarTitle = uiState.topAppBarTitle
-    val deleteEnabled = uiState.isDeleteEnabled
     val title = uiState.title
-    val titleFontStyle = TextStyle.Default.copy(fontSize = 25.sp)
     val focusManager = LocalFocusManager.current
 
     Column(
@@ -56,9 +63,11 @@ fun PlayersEditScreen(
     ) {
 
         /***** CABEÇALHO *****/
-        Column {
-            Header(titleHeader = topAppBarTitle)
-        }
+        Header(
+            titleHeader = topAppBarTitle,
+            backgroundColor = VerdeUno,
+            icon = painterResource(id = R.drawable.ic_g_player)
+        )
 
         /***** BOTÕES *****/
         GenericButtonBar(
@@ -86,36 +95,43 @@ fun PlayersEditScreen(
             ),
             backgroundColor = Color.Gray.copy(alpha = 0.3f)
         )
-        Spacer(modifier = Modifier.height(5.dp))
 
         /***** CORPO DA ESTRUTURA *****/
-        OutlinedTextField(
-            value = title,
-            onValueChange = {
-                uiState.onTitleChange(it)
-                isNameEmpty = it.isEmpty()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            textStyle = titleFontStyle.copy(
-                color = Color.White,
-                fontSize = 22.sp
-            ),
-            label = {
-                if (title.isEmpty()) {
-                    Text(
-                        text = "Nome",
-                        style = titleFontStyle.copy(
-                            color = Color.White.copy(alpha = 0.5f),
-                            fontSize = 22.sp
+        Column(
+            Modifier.padding(5.dp),
+            verticalArrangement = Arrangement.spacedBy(1.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = {
+                        uiState.onTitleChange(it)
+                        isNameEmpty = it.isEmpty()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(57.dp)
+                        .padding(horizontal = 14.dp),
+                    textStyle = TextStyle.Default.copy(
+                        color = Color.White,
+                        fontSize = 19.sp
+                    ),
+                    label = {
+                        Text(
+                            text = "Nome",
+                            style = TextStyle.Default.copy(
+                                color = Color.White.copy(alpha = 0.5f),
+                                fontSize = 15.sp
+                            )
                         )
-                    )
-                }
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(10.dp),
-        )
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(15.dp),
+                )
+            }
+        }
     }
 
     /***** RODAPÉ *****/
@@ -130,10 +146,9 @@ fun PlayersEditScreenPreview() {
     PlacarUNOTheme {
         PlayersEditScreen(
             uiState = PlayersEditUiState(
-                topAppBarTitle = "ADICIONAR JOGADOR"
+                topAppBarTitle = "CADASTRAR"
             ),
-            onSaveClick = {},
-            onDeleteClick = {}
+            onSaveClick = {}
         )
     }
 }
@@ -148,8 +163,7 @@ fun PlayersEditScreenWithEditModePreview() {
                 topAppBarTitle = "EDITAR",
                 isDeleteEnabled = true
             ),
-            onSaveClick = {},
-            onDeleteClick = {}
+            onSaveClick = {}
         )
     }
 }

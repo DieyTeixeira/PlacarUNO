@@ -20,14 +20,13 @@ const val teamIdArgument = "teamId"
 fun NavGraphBuilder.teamEditScreen(
     onPopBackStack: () -> Unit,
 ) {
-    composable("$teamEditRoute?$teamIdArgument={$teamIdArgument}") {
-        val teamId = navArgument(teamIdArgument) {
-            nullable = true
-        }
+    composable("$teamEditRoute?$teamIdArgument={$teamIdArgument}") {backStackEntry ->
+        val teamId = backStackEntry.arguments?.getString(teamIdArgument)
         val scope = rememberCoroutineScope()
         val viewModel = koinViewModel<TeamsEditViewModel>(
             parameters = { parametersOf(teamId) })
         val uiState by viewModel.uiState.collectAsState()
+
         TeamsEditScreen(
             uiState = uiState,
             onSaveTeamClick = {
@@ -46,5 +45,5 @@ fun NavHostController.navigateToNewTeamEdit() {
 }
 
 fun NavHostController.navigateToEditTeamEdit(team: Team) {
-    navigate("$teamEditRoute?$teamIdArgument=${team.idT}")
+    navigate("$teamEditRoute?$teamIdArgument=${team.team_id}")
 }

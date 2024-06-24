@@ -30,7 +30,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -38,6 +41,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
@@ -71,9 +75,6 @@ fun MenuScreen(
     onExitToAppClick: () -> Unit
 ) {
 
-//    var layoutMode by remember { mutableStateOf(false) }
-//    var buttonLayout by remember { mutableStateOf(ButtonLayout.COLUMN) }
-
     val context = LocalContext.current
     var buttonLayout by remember { mutableStateOf(PreferenceManager.getSavedLayout(context)) }
 
@@ -84,7 +85,11 @@ fun MenuScreen(
     ) {
 
         /***** CABEÇALHO *****/
-        Header(titleHeader = "PLACAR UNO")
+        Header(
+            titleHeader = "PLACAR UNO",
+            backgroundColor = Color.Black,
+            icon = null
+        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -223,7 +228,6 @@ fun ColorButton(
     onClick: () -> Unit,
     showText: Boolean = true,
     height: Dp = 110.dp,
-    verticalText: Boolean = false,
 ) {
 
     Box(
@@ -255,28 +259,19 @@ fun ColorButton(
                 },
                 contentDescription = null,
                 tint = Color.White,
-                modifier = if (showText) {
-                    Modifier
-                        .size(60.dp)
-                        .padding(top = 5.dp)
-                } else {
-                    Modifier
-                        .size(80.dp)
-                        .padding(top = 30.dp)
-                }
+                modifier = Modifier
+                    .size(if (showText) 60.dp else 80.dp)
+                    .padding(top = if (showText) 5.dp else 30.dp)
             )
             if (showText) {
                 Text(
                     text = text,
-                    color = Color.White,
-                    fontSize = if (verticalText) 10.sp else 25.sp,
-                    modifier = if (verticalText) {
-                        Modifier
-                            .rotate(90f)
-                            .padding(bottom = 5.dp)
-                    } else {
-                        Modifier.padding(top = 5.dp)
-                    }
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        fontSize = 25.sp,
+                    ),
+                    modifier = Modifier.padding(top = 5.dp)
                 )
             }
         }

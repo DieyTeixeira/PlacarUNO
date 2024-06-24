@@ -1,9 +1,6 @@
 package br.com.dieyteixeira.placaruno.models
 
-import java.util.UUID
-
-data class Team (
-    val idT: String = UUID.randomUUID().toString(),
-    val titleT: String,
-    val isDoneT: Boolean = false
+data class Team(
+    val team_id: String = "",
+    val team_name: String = "",
 )

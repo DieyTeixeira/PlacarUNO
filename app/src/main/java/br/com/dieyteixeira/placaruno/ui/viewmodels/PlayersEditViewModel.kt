@@ -7,6 +7,7 @@ import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.repositories.PlayersRepository
 import br.com.dieyteixeira.placaruno.repositories.toPlayer
 import br.com.dieyteixeira.placaruno.ui.states.PlayersEditUiState
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -26,6 +27,9 @@ class PlayersEditViewModel(
     val uiState = _uiState.asStateFlow()
     private val id: String? = savedStateHandle["playerId"]
 
+    private val userEmail: String?
+        get() = FirebaseAuth.getInstance().currentUser?.email
+
     init {
         _uiState.update { currentState ->
             currentState.copy(
@@ -34,20 +38,25 @@ class PlayersEditViewModel(
                         it.copy(title = title)
                     }
                 },
-                topAppBarTitle = "ADICIONAR JOGADOR"
+                topAppBarTitle = "ADICIONAR"
             )
         }
         id?.let {
+            loadPlayerData(it)
+        }
+    }
+
+    private fun loadPlayerData(id: String) {
+        userEmail?.let { email ->
             viewModelScope.launch {
-                repository.findById(id)
+                repository.findById(email, id)
                     .filterNotNull()
-                    .mapNotNull {
-                        it.toPlayer()
-                    }.collectLatest { player ->
+                    .mapNotNull { it.toPlayer() }
+                    .collectLatest { player ->
                         _uiState.update { currentState ->
                             currentState.copy(
                                 topAppBarTitle = "EDITAR",
-                                title = player.title,
+                                title = player.player_name,
                                 isDeleteEnabled = true
                             )
                         }
@@ -57,19 +66,24 @@ class PlayersEditViewModel(
     }
 
     suspend fun save() {
-        with(_uiState.value) {
-            repository.save(
-                Player(
-                    id = id ?: UUID.randomUUID().toString(),
-                    title = title
+        userEmail?.let { email ->
+            with(_uiState.value) {
+                repository.save(
+                    email,
+                    Player(
+                        player_id = id ?: UUID.randomUUID().toString(),
+                        player_name = title
+                    )
                 )
-            )
+            }
         }
     }
 
     suspend fun delete() {
-        id?.let {
-            repository.delete(id)
+        userEmail?.let { email ->
+            id?.let {
+                repository.delete(email, id)
+            }
         }
     }
 }

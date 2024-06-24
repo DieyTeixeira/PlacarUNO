@@ -20,25 +20,18 @@ const val playerIdArgument = "playerId"
 fun NavGraphBuilder.playerEditScreen(
     onPopBackStack: () -> Unit,
 ) {
-    composable("$playerEditRoute?$playerIdArgument={$playerIdArgument}") {
-        val playerId = navArgument(playerIdArgument) {
-            nullable = true
-        }
+    composable("$playerEditRoute?$playerIdArgument={$playerIdArgument}") { backStackEntry ->
+        val playerId = backStackEntry.arguments?.getString(playerIdArgument)
         val scope = rememberCoroutineScope()
         val viewModel = koinViewModel<PlayersEditViewModel>(
             parameters = { parametersOf(playerId) })
         val uiState by viewModel.uiState.collectAsState()
+
         PlayersEditScreen(
             uiState = uiState,
             onSaveClick = {
                 scope.launch {
                     viewModel.save()
-                    onPopBackStack()
-                }
-            },
-            onDeleteClick = {
-                scope.launch {
-                    viewModel.delete()
                     onPopBackStack()
                 }
             },
@@ -52,5 +45,5 @@ fun NavHostController.navigateToNewPlayerEdit() {
 }
 
 fun NavHostController.navigateToEditPlayerEdit(player: Player) {
-    navigate("$playerEditRoute?$playerIdArgument=${player.id}")
+    navigate("$playerEditRoute?$playerIdArgument=${player.player_id}")
 }

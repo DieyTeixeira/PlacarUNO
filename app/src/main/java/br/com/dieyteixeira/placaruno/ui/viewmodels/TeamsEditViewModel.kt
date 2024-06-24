@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.repositories.TeamsRepository
+import br.com.dieyteixeira.placaruno.repositories.toPlayer
 import br.com.dieyteixeira.placaruno.repositories.toTeam
 import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -24,7 +26,10 @@ class TeamsEditViewModel(
     private val _uiState: MutableStateFlow<TeamsEditUiState> =
         MutableStateFlow(TeamsEditUiState())
     val uiState = _uiState.asStateFlow()
-    private val idT: String? = savedStateHandle["teamId"]
+    private val id: String? = savedStateHandle["teamId"]
+
+    private val userEmail: String?
+        get() = FirebaseAuth.getInstance().currentUser?.email
 
     init {
         _uiState.update { currentState ->
@@ -34,20 +39,25 @@ class TeamsEditViewModel(
                         it.copy(title = title)
                     }
                 },
-                topAppBarTitle = "ADICIONAR EQUIPE"
+                topAppBarTitle = "ADICIONAR"
             )
         }
-        idT?.let {
+        id?.let {
+            loadTeamData(it)
+        }
+    }
+
+    private fun loadTeamData(id: String) {
+        userEmail?.let { email ->
             viewModelScope.launch {
-                repository.findById(idT)
+                repository.findById(email, id)
                     .filterNotNull()
-                    .mapNotNull {
-                        it.toTeam()
-                    }.collectLatest { team ->
+                    .mapNotNull { it.toTeam() }
+                    .collectLatest { team ->
                         _uiState.update { currentState ->
                             currentState.copy(
                                 topAppBarTitle = "EDITAR",
-                                title = team.titleT,
+                                title = team.team_name,
                                 isDeleteEnabled = true
                             )
                         }
@@ -57,19 +67,24 @@ class TeamsEditViewModel(
     }
 
     suspend fun save() {
-        with(_uiState.value) {
-            repository.save(
-                Team(
-                    idT = idT ?: UUID.randomUUID().toString(),
-                    titleT = title
+        userEmail?.let { email ->
+            with(_uiState.value) {
+                repository.save(
+                    email,
+                    Team(
+                        team_id = id ?: UUID.randomUUID().toString(),
+                        team_name = title
+                    )
                 )
-            )
+            }
         }
     }
 
     suspend fun delete() {
-        idT?.let {
-            repository.delete(idT)
+        userEmail?.let { email ->
+            id?.let {
+                repository.delete(email, id)
+            }
         }
     }
 }
