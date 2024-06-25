@@ -29,9 +29,9 @@ fun NavGraphBuilder.teamEditScreen(
 
         TeamsEditScreen(
             uiState = uiState,
-            onSaveTeamClick = {
+            onSaveTeamClick = { selectedPlayers ->
                 scope.launch {
-                    viewModel.save()
+                    viewModel.save(selectedPlayers)
                     onPopBackStack()
                 }
             },

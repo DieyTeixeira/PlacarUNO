@@ -3,9 +3,10 @@ package br.com.dieyteixeira.placaruno.ui.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.models.Team
+import br.com.dieyteixeira.placaruno.repositories.PlayersRepository
 import br.com.dieyteixeira.placaruno.repositories.TeamsRepository
-import br.com.dieyteixeira.placaruno.repositories.toPlayer
 import br.com.dieyteixeira.placaruno.repositories.toTeam
 import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
 import com.google.firebase.auth.FirebaseAuth
@@ -20,7 +21,8 @@ import java.util.UUID
 
 class TeamsEditViewModel(
     savedStateHandle: SavedStateHandle,
-    private val repository: TeamsRepository
+    private val teamsRepository: TeamsRepository,
+    private val playersRepository: PlayersRepository
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<TeamsEditUiState> =
@@ -45,12 +47,15 @@ class TeamsEditViewModel(
         id?.let {
             loadTeamData(it)
         }
+        viewModelScope.launch {
+            loadPlayers()
+        }
     }
 
     private fun loadTeamData(id: String) {
         userEmail?.let { email ->
             viewModelScope.launch {
-                repository.findById(email, id)
+                teamsRepository.findById(email, id)
                     .filterNotNull()
                     .mapNotNull { it.toTeam() }
                     .collectLatest { team ->
@@ -66,14 +71,32 @@ class TeamsEditViewModel(
         }
     }
 
-    suspend fun save() {
+    private suspend fun loadPlayers() {
+        userEmail?.let { email ->
+            try {
+                playersRepository.loadPlayers(email).collect { players ->
+                    _uiState.value = _uiState.value.copy(players = players)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    suspend fun save(selectedPlayers: List<Player>) {
         userEmail?.let { email ->
             with(_uiState.value) {
-                repository.save(
+                teamsRepository.save(
                     email,
                     Team(
                         team_id = id ?: UUID.randomUUID().toString(),
-                        team_name = title
+                        team_name = title,
+                        team_player1 = selectedPlayers.getOrNull(0)?.player_name,
+                        team_player2 = selectedPlayers.getOrNull(1)?.player_name,
+                        team_player3 = selectedPlayers.getOrNull(2)?.player_name,
+                        team_player4 = selectedPlayers.getOrNull(3)?.player_name,
+                        team_player5 = selectedPlayers.getOrNull(4)?.player_name,
+                        team_player6 = selectedPlayers.getOrNull(5)?.player_name
                     )
                 )
             }
@@ -83,7 +106,7 @@ class TeamsEditViewModel(
     suspend fun delete() {
         userEmail?.let { email ->
             id?.let {
-                repository.delete(email, id)
+                teamsRepository.delete(email, id)
             }
         }
     }

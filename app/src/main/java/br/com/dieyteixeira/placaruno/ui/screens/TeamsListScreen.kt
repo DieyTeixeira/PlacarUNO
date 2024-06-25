@@ -78,7 +78,6 @@ fun TeamsListScreen(
     ){
 
         /***** CABEÇALHO *****/
-        /***** CABEÇALHO *****/
         Header(
             titleHeader = "EQUIPES",
             backgroundColor = AzulUno,
