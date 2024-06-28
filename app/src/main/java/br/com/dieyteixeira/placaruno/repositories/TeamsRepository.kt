@@ -70,5 +70,6 @@ class TeamsRepository {
 
 fun Team.toTeam() = Team(
     team_id = this.team_id,
-    team_name = this.team_name
+    team_name = this.team_name,
+    team_players = this.team_players
 )

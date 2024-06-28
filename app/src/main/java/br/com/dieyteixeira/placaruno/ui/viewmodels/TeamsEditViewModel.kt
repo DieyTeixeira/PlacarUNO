@@ -63,6 +63,7 @@ class TeamsEditViewModel(
                             currentState.copy(
                                 topAppBarTitle = "EDITAR",
                                 title = team.team_name,
+                                playerNames = team.team_players,
                                 isDeleteEnabled = true
                             )
                         }
@@ -86,17 +87,13 @@ class TeamsEditViewModel(
     suspend fun save(selectedPlayers: List<Player>) {
         userEmail?.let { email ->
             with(_uiState.value) {
+                val playerNames = selectedPlayers.map { it.player_name }
                 teamsRepository.save(
                     email,
                     Team(
                         team_id = id ?: UUID.randomUUID().toString(),
                         team_name = title,
-                        team_player1 = selectedPlayers.getOrNull(0)?.player_name,
-                        team_player2 = selectedPlayers.getOrNull(1)?.player_name,
-                        team_player3 = selectedPlayers.getOrNull(2)?.player_name,
-                        team_player4 = selectedPlayers.getOrNull(3)?.player_name,
-                        team_player5 = selectedPlayers.getOrNull(4)?.player_name,
-                        team_player6 = selectedPlayers.getOrNull(5)?.player_name
+                        team_players = playerNames
                     )
                 )
             }

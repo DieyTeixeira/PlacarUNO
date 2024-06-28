@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -50,6 +51,7 @@ import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
+import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
@@ -59,27 +61,50 @@ import kotlinx.coroutines.delay
 @Composable
 fun TeamsEditScreen(
     uiState: TeamsEditUiState,
+    uiStateList: TeamsListUiState,
+    currentPlayers: List<Player>,
     modifier: Modifier = Modifier,
     onSaveTeamClick: (List<Player>) -> Unit,
     onBackClick: () -> Unit = {},
 ) {
 
     /***** VARIÁVEIS *****/
-    var isNameEmpty by remember { mutableStateOf(true) }
     val topAppBarTitle = uiState.topAppBarTitle
     val title = uiState.title
     val titleFontStyle = TextStyle.Default.copy(fontSize = 25.sp)
     val focusManager = LocalFocusManager.current
-    val player_team = remember { mutableStateOf<List<Player>>(emptyList()) }
     val maxTeamSize = 5
     val maxPlayersPerColumn = 3
     val context = LocalContext.current
+
+    val initialTeamPlayers = remember(uiState.title) {
+        initialTeamPlayers(uiState, uiStateList)
+    }
+
+    var combinedPlayers by remember { mutableStateOf(initialTeamPlayers) }
+
+    LaunchedEffect(uiState.title, uiStateList) {
+        combinedPlayers = initialTeamPlayers(uiState, uiStateList)
+    }
+
     var snackbarVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(snackbarVisible) {
         if (snackbarVisible) {
             delay(2000)
             snackbarVisible = false
+        }
+    }
+
+    fun updateCombinedPlayers(player: Player) {
+        if (combinedPlayers.contains(player)) {
+            combinedPlayers = combinedPlayers.filter { it != player }
+        } else {
+            if (combinedPlayers.size < maxTeamSize) {
+                combinedPlayers = combinedPlayers + player
+            } else {
+                snackbarVisible = true
+            }
         }
     }
 
@@ -105,18 +130,14 @@ fun TeamsEditScreen(
                     onClick = onBackClick
                 ),  // Posição 1 botão
                 null, // Posição 2 sem botão
-                if (isNameEmpty) {
-                    null // Posição 3 sem botão
-                } else {
-                    ButtonInfo(
-                        icon = painterResource(id = R.drawable.ic_save),
-                        description = "Save",
-                        onClick = {
-                            focusManager.clearFocus()
-                            onSaveTeamClick(player_team.value)
-                        }
-                    ) // Posição 3 botão
-                },
+                ButtonInfo(
+                    icon = painterResource(id = R.drawable.ic_save),
+                    description = "Save",
+                    onClick = {
+                        focusManager.clearFocus()
+                        onSaveTeamClick(combinedPlayers)
+                    }
+                ), // Posição 3 botão
                 null, // Posição 4 sem botão
                 null, // Posição 5 sem botão
             ),
@@ -135,7 +156,6 @@ fun TeamsEditScreen(
                     value = title,
                     onValueChange = {
                         uiState.onTitleChange(it)
-                        isNameEmpty = it.isEmpty()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -160,13 +180,15 @@ fun TeamsEditScreen(
             }
             Spacer(modifier = Modifier.height(30.dp))
 
-            /***** JOGADORES SELECIONADOS *****/
+            /***** LISTAS DE JOGADORES *****/
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(vertical = 8.dp)
+//                    .height(200.dp)
+//                    .padding(vertical = 8.dp)
             ) {
+
+                /* LISTA DE JOGADORE NA EQUIPE */
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -184,109 +206,97 @@ fun TeamsEditScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                Row {
-                    LazyColumn(
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ){
+                    // Coluna esquerda
+                    Column(
                         modifier = Modifier.weight(1f)
                     ) {
-                        player_team.value.take(maxPlayersPerColumn).forEachIndexed { index, player ->
-                            item {
-                                Text(
-                                    text = player.player_name ?: "",
-                                    color = Color.White,
-                                    style = TextStyle.Default.copy(
-                                        fontSize = 18.sp
-                                    ),
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
+                        PlayersList(
+                            players = combinedPlayers.take(3), // Pegando os primeiros 3 jogadores
+                            maxTeamSize = maxTeamSize
+                        ) { player ->
+                            updateCombinedPlayers(player)
                         }
                     }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    LazyColumn(
+                    // Coluna direita
+                    Column(
                         modifier = Modifier.weight(1f)
                     ) {
-                        player_team.value.drop(maxPlayersPerColumn).take(maxPlayersPerColumn).forEachIndexed { index, player ->
-                            item {
-                                Text(
-                                    text = player.player_name ?: "",
-                                    color = Color.White,
-                                    style = TextStyle.Default.copy(
-                                        fontSize = 18.sp
-                                    ),
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
+                        PlayersList(
+                            players = combinedPlayers.drop(3).take(3), // Pegando os jogadores restantes
+                            maxTeamSize = maxTeamSize
+                        ) { player ->
+                            updateCombinedPlayers(player)
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
-                if (snackbarVisible) {
-                    Box(
+                Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp)
+                ){
+                    if (snackbarVisible) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(color = Color.White)
+                        ) {
+                            Text(
+                                text = "Equipe completa!",
+                                color = Color.Red,
+                                style = TextStyle.Default.copy(
+                                    fontSize = 16.sp,
+                                    fontStyle = FontStyle.Italic
+                                ),
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                /* LISTA DE JOGADORES DISPONÍVEIS */
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = AzulUno.copy(alpha = 0.5f))
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "--- Lista de Jogadores ---",
+                        color = Color.White,
+                        style = TextStyle.Default.copy(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Row {
+                    Column (
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp)
-                            .background(color = Color.White)
-                    ){
-                        Text(
-                            text = "Equipe completa!",
-                            color = Color.Red,
-                            style = TextStyle.Default.copy(
-                                fontSize = 16.sp,
-                                fontStyle = FontStyle.Italic
-                            ),
-                        modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(30.dp))
-
-            /***** LISTA DE JOGADORES *****/
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = AzulUno.copy(alpha = 0.5f))
-                    .padding(vertical = 8.dp)
-            ) {
-                Text(
-                    text = "--- Lista de Jogadores ---",
-                    color = Color.White,
-                    style = TextStyle.Default.copy(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-            Spacer(modifier = Modifier.height(5.dp))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                itemsIndexed(uiState.players) { index, player ->
-                    Column(
-                        Modifier.padding(2.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                            .height(200.dp)
+                            .padding(vertical = 8.dp)
                     ) {
-                        PlayerItem(
-                            player = player,
-                            isSelected = player_team.value.contains(player),
-                            isInTeam = player_team.value.contains(player),
-                            onPlayerClick = {
-                                val isPlayerInTeam = player_team.value.contains(player)
-
-                                if (isPlayerInTeam) {
-                                    player_team.value = player_team.value - player
+                        PlayersList(currentPlayers, maxTeamSize) { player ->
+                            if (combinedPlayers.size < maxTeamSize || combinedPlayers.contains(player)) {
+                                combinedPlayers = if (combinedPlayers.contains(player)) {
+                                    combinedPlayers.filter { it != player }
                                 } else {
-                                    if (player_team.value.size < maxTeamSize) {
-                                        player_team.value = player_team.value + player
-                                    } else {
-                                        snackbarVisible = true
-                                    }
+                                    combinedPlayers + player
                                 }
+                            } else {
+                                snackbarVisible = true
                             }
-                        )
+                        }
                     }
                 }
             }
@@ -299,10 +309,32 @@ fun TeamsEditScreen(
 }
 
 @Composable
+private fun PlayersList(
+    players: List<Player>,
+    maxTeamSize: Int,
+    onPlayerClick: (Player) -> Unit
+) {
+    Spacer(modifier = Modifier.height(10.dp))
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        items(players) { player ->
+            PlayerItem(
+                player = player,
+                isSelected = players.contains(player),
+                onPlayerClick = {
+                    onPlayerClick(player)
+                }
+            )
+        }
+    }
+}
+
+@Composable
 fun PlayerItem(
     player: Player,
     isSelected: Boolean,
-    isInTeam: Boolean,
     onPlayerClick: () -> Unit
 ) {
     Row(
@@ -315,14 +347,14 @@ fun PlayerItem(
         Icon(
             imageVector = Icons.Outlined.CheckCircle,
             contentDescription = null,
-            tint = if (isInTeam) Color.White else Color.Transparent,
+            tint = if (isSelected) Color.White else Color.Transparent,
             modifier = Modifier
                 .size(30.dp)
                 .padding(start = 8.dp)
         )
         Spacer(modifier = Modifier.width(5.dp))
         Text(
-            text = player.player_name,
+            text = player.player_name ?: "",
             style = TextStyle.Default.copy(
                 fontSize = 18.sp,
                 color = if (isSelected) Color.Gray else Color.White
@@ -332,32 +364,10 @@ fun PlayerItem(
     }
 }
 
-
-/***** VISUALIZAÇÃO ADICIONAR *****/
-@Preview(showBackground = true)
-@Composable
-fun TeamsEditScreenPreview() {
-    PlacarUNOTheme {
-        TeamsEditScreen(
-            uiState = TeamsEditUiState(
-                topAppBarTitle = "CADASTRAR"
-            ),
-            onSaveTeamClick = {}
-        )
-    }
-}
-
-/***** VISUALIZAÇÃO EDITAR *****/
-@Preview(showBackground = true)
-@Composable
-fun TeamsEditScreenWithEditModePreview() {
-    PlacarUNOTheme {
-        TeamsEditScreen(
-            uiState = TeamsEditUiState(
-                topAppBarTitle = "EDITAR",
-                isDeleteEnabled = true
-            ),
-            onSaveTeamClick = {}
-        )
-    }
+// Função para inicializar os jogadores da equipe
+private fun initialTeamPlayers(uiState: TeamsEditUiState, uiStateList: TeamsListUiState): List<Player> {
+    val initialTeam = uiStateList.teams.firstOrNull { it.team_name == uiState.title }
+    return initialTeam?.team_players?.map { playerName ->
+        Player(player_name = playerName)
+    } ?: emptyList()
 }

@@ -37,12 +37,25 @@ class TeamsListViewModel(
         }
     }
 
+    suspend fun loadPlayersForTeam() {
+        userEmail?.let { email ->
+            try {
+                repository.loadTeams(email).collect { teams ->
+                    _uiState.value = _uiState.value.copy(teams = teams)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+
     fun deleteTeam(team: Team) {
         userEmail?.let { email ->
             viewModelScope.launch {
                 try {
                     repository.deleteP(email, team)
-                    // Atualizar a lista de jogadores no UI State após a exclusão
                     _uiState.value = _uiState.value.copy(
                         teams = _uiState.value.teams.filterNot { it.team_id == team.team_id }
                     )

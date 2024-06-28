@@ -2,6 +2,7 @@ package br.com.dieyteixeira.placaruno.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,13 +13,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -40,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
+import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
@@ -127,7 +135,7 @@ fun TeamsListScreen(
                             )
                     ) {
                         Column(
-                            Modifier.padding(5.dp),
+                            Modifier.padding(top = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             Box(
@@ -175,6 +183,43 @@ fun TeamsListScreen(
                                     }
                                 }
                             }
+                        }
+                    }
+                    if (showActions) {
+                        Column(
+                            modifier = Modifier
+                                .padding(bottom = 2.dp, start = 20.dp, end = 20.dp)
+                                .heightIn(max = 200.dp) // Limitar a altura
+                                .fillMaxWidth()
+                                .background(
+                                    Color(0xFFA7A7A7).copy(alpha = 0.5f),
+                                    RoundedCornerShape(
+                                        topStart = 0.dp,
+                                        bottomStart = 10.dp,
+                                        topEnd = 0.dp,
+                                        bottomEnd = 10.dp
+                                    )
+                                ) // Borda para visualização
+                        ) {
+                            Spacer(modifier = Modifier.height(3.dp))
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 3.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
+                                    .heightIn(max = 200.dp)
+                            ) {
+                                items(team.team_players) { playerName ->
+                                    Text(
+                                        text = playerName,
+                                        style = TextStyle.Default.copy(
+                                            fontSize = 16.sp,
+                                            color = Color.White
+                                        ),
+                                        modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, start = 10.dp, end = 10.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(5.dp))
                         }
                     }
                 }
