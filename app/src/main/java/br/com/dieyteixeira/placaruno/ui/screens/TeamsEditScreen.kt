@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,9 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Snackbar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -32,7 +36,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -55,6 +61,7 @@ import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
+import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 import kotlinx.coroutines.delay
 
 /***** FUNÇÃO PRINCIPAL *****/
@@ -184,19 +191,33 @@ fun TeamsEditScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-//                    .height(200.dp)
-//                    .padding(vertical = 8.dp)
+                    .padding(horizontal = 5.dp)
             ) {
 
                 /* LISTA DE JOGADORE NA EQUIPE */
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = AzulUno.copy(alpha = 0.5f))
-                        .padding(vertical = 8.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    AzulUno.copy(alpha = 0.9f),
+                                    AzulUno.copy(alpha = 0.65f),
+                                    AzulUno.copy(alpha = 0.65f),
+                                    AzulUno.copy(alpha = 0.9f)
+                                )
+                            ),
+                            shape = RoundedCornerShape(
+                                topStart = 15.dp,
+                                bottomStart = 0.dp,
+                                topEnd = 15.dp,
+                                bottomEnd = 0.dp
+                            )
+                        )
+                        .padding(vertical = 6.dp)
                 ) {
                     Text(
-                        text = "--- Jogadores na Equipe ---",
+                        text = "Jogadores na Equipe",
                         color = Color.White,
                         style = TextStyle.Default.copy(
                             fontSize = 20.sp,
@@ -205,10 +226,20 @@ fun TeamsEditScreen(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+//                Spacer(modifier = Modifier.height(5.dp))
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(105.dp)
+                        .background(
+                            color = Color.Gray.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(
+                                topStart = 0.dp,
+                                bottomStart = 15.dp,
+                                topEnd = 0.dp,
+                                bottomEnd = 15.dp
+                            )
+                        )
                 ){
                     // Coluna esquerda
                     Column(
@@ -216,6 +247,8 @@ fun TeamsEditScreen(
                     ) {
                         PlayersList(
                             players = combinedPlayers.take(3), // Pegando os primeiros 3 jogadores
+                            combinedPlayers = combinedPlayers,
+                            checkOculted = true,
                             maxTeamSize = maxTeamSize
                         ) { player ->
                             updateCombinedPlayers(player)
@@ -227,27 +260,33 @@ fun TeamsEditScreen(
                     ) {
                         PlayersList(
                             players = combinedPlayers.drop(3).take(3), // Pegando os jogadores restantes
+                            combinedPlayers = combinedPlayers,
+                            checkOculted = true,
                             maxTeamSize = maxTeamSize
                         ) { player ->
                             updateCombinedPlayers(player)
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(5.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(20.dp)
+                        .height(25.dp)
                 ){
                     if (snackbarVisible) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(color = Color.White)
+                                .fillMaxHeight()
+                                .background(
+                                    color = VermelhoUno,
+                                    shape = RoundedCornerShape(15.dp)
+                                )
                         ) {
                             Text(
                                 text = "Equipe completa!",
-                                color = Color.Red,
+                                color = Color.White,
                                 style = TextStyle.Default.copy(
                                     fontSize = 16.sp,
                                     fontStyle = FontStyle.Italic
@@ -258,18 +297,33 @@ fun TeamsEditScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
                 /* LISTA DE JOGADORES DISPONÍVEIS */
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = AzulUno.copy(alpha = 0.5f))
-                        .padding(vertical = 8.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    AzulUno.copy(alpha = 0.9f),
+                                    AzulUno.copy(alpha = 0.65f),
+                                    AzulUno.copy(alpha = 0.65f),
+                                    AzulUno.copy(alpha = 0.9f)
+                                )
+                            ),
+                            shape = RoundedCornerShape(
+                                topStart = 15.dp,
+                                bottomStart = 0.dp,
+                                topEnd = 15.dp,
+                                bottomEnd = 0.dp
+                            )
+                        )
+                        .padding(vertical = 6.dp)
                 ) {
                     Text(
-                        text = "--- Lista de Jogadores ---",
+                        text = "Lista de Jogadores",
                         color = Color.White,
                         style = TextStyle.Default.copy(
                             fontSize = 20.sp,
@@ -278,15 +332,28 @@ fun TeamsEditScreen(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+//                Spacer(modifier = Modifier.height(5.dp))
                 Row {
                     Column (
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
-                            .padding(vertical = 8.dp)
+                            .height(320.dp)
+                            .background(
+                                color = Color.Gray.copy(alpha = 0.4f),
+                                shape = RoundedCornerShape(
+                                    topStart = 0.dp,
+                                    bottomStart = 15.dp,
+                                    topEnd = 0.dp,
+                                    bottomEnd = 15.dp
+                                )
+                            )
                     ) {
-                        PlayersList(currentPlayers, maxTeamSize) { player ->
+                        PlayersList(
+                            players = currentPlayers,
+                            combinedPlayers = combinedPlayers,
+                            checkOculted = false,
+                            maxTeamSize = maxTeamSize
+                        ) { player ->
                             if (combinedPlayers.size < maxTeamSize || combinedPlayers.contains(player)) {
                                 combinedPlayers = if (combinedPlayers.contains(player)) {
                                     combinedPlayers.filter { it != player }
@@ -311,10 +378,12 @@ fun TeamsEditScreen(
 @Composable
 private fun PlayersList(
     players: List<Player>,
+    combinedPlayers: List<Player>,
+    checkOculted: Boolean,
     maxTeamSize: Int,
     onPlayerClick: (Player) -> Unit
 ) {
-    Spacer(modifier = Modifier.height(10.dp))
+    Spacer(modifier = Modifier.height(5.dp))
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -322,7 +391,8 @@ private fun PlayersList(
         items(players) { player ->
             PlayerItem(
                 player = player,
-                isSelected = players.contains(player),
+                isSelected = combinedPlayers.contains(player),
+                isCheck = checkOculted,
                 onPlayerClick = {
                     onPlayerClick(player)
                 }
@@ -335,19 +405,19 @@ private fun PlayersList(
 fun PlayerItem(
     player: Player,
     isSelected: Boolean,
+    isCheck: Boolean,
     onPlayerClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 2.dp)
             .clickable(onClick = onPlayerClick)
     ) {
         Icon(
-            imageVector = Icons.Outlined.CheckCircle,
+            imageVector = Icons.Outlined.Check,
             contentDescription = null,
-            tint = if (isSelected) Color.White else Color.Transparent,
+            tint = if (isCheck) Color.Transparent else if (isSelected) Color(color = 0xFF7CB839) else Color.Transparent,
             modifier = Modifier
                 .size(30.dp)
                 .padding(start = 8.dp)
@@ -357,7 +427,7 @@ fun PlayerItem(
             text = player.player_name ?: "",
             style = TextStyle.Default.copy(
                 fontSize = 18.sp,
-                color = if (isSelected) Color.Gray else Color.White
+                color = if (isCheck) Color.White else if (isSelected) Color.Gray else Color.White
             ),
             modifier = Modifier.weight(1f)
         )
