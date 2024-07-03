@@ -1,5 +1,15 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -103,15 +113,23 @@ fun TeamsEditScreen(
         }
     }
 
-    fun updateCombinedPlayers(player: Player) {
-        if (combinedPlayers.contains(player)) {
-            combinedPlayers = combinedPlayers.filter { it != player }
-        } else {
+    fun isPlayerInList(player: Player, list: List<Player>): Boolean {
+        return list.any { it.player_name == player.player_name }
+    }
+
+    fun addPlayerToCombinedList(player: Player) {
+        if (!isPlayerInList(player, combinedPlayers)) {
             if (combinedPlayers.size < maxTeamSize) {
                 combinedPlayers = combinedPlayers + player
             } else {
                 snackbarVisible = true
             }
+        }
+    }
+
+    fun removePlayerFromCombinedList(player: Player) {
+        if (isPlayerInList(player, combinedPlayers)) {
+            combinedPlayers = combinedPlayers.filter { it.player_name != player.player_name }
         }
     }
 
@@ -251,7 +269,7 @@ fun TeamsEditScreen(
                             checkOculted = true,
                             maxTeamSize = maxTeamSize
                         ) { player ->
-                            updateCombinedPlayers(player)
+                            removePlayerFromCombinedList(player)
                         }
                     }
                     // Coluna direita
@@ -264,24 +282,42 @@ fun TeamsEditScreen(
                             checkOculted = true,
                             maxTeamSize = maxTeamSize
                         ) { player ->
-                            updateCombinedPlayers(player)
+                            removePlayerFromCombinedList(player)
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(3.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(25.dp)
                 ){
-                    if (snackbarVisible) {
+                    AnimatedVisibility(
+                        visible = snackbarVisible,
+                        enter = slideInHorizontally(
+                            initialOffsetX = { fullWidth -> -fullWidth },
+                            animationSpec = tween(durationMillis = 400)
+                        ) + fadeIn(animationSpec = tween(durationMillis = 400)),
+                        exit = slideOutHorizontally(
+                            targetOffsetX = { fullWidth -> fullWidth },
+                            animationSpec = tween(durationMillis = 400)
+                        ) + fadeOut(animationSpec = tween(durationMillis = 400))
+                    ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .fillMaxHeight()
                                 .background(
-                                    color = VermelhoUno,
-                                    shape = RoundedCornerShape(15.dp)
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(
+                                            VermelhoUno.copy(alpha = 0.0f),
+                                            VermelhoUno.copy(alpha = 0.7f),
+                                            VermelhoUno,
+                                            VermelhoUno,
+                                            VermelhoUno.copy(alpha = 0.7f),
+                                            VermelhoUno.copy(alpha = 0.0f)
+                                        )
+                                    )
                                 )
                         ) {
                             Text(
@@ -296,11 +332,9 @@ fun TeamsEditScreen(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(15.dp))
 
                 /* LISTA DE JOGADORES DISPONÍVEIS */
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -354,15 +388,7 @@ fun TeamsEditScreen(
                             checkOculted = false,
                             maxTeamSize = maxTeamSize
                         ) { player ->
-                            if (combinedPlayers.size < maxTeamSize || combinedPlayers.contains(player)) {
-                                combinedPlayers = if (combinedPlayers.contains(player)) {
-                                    combinedPlayers.filter { it != player }
-                                } else {
-                                    combinedPlayers + player
-                                }
-                            } else {
-                                snackbarVisible = true
-                            }
+                            addPlayerToCombinedList(player)
                         }
                     }
                 }
@@ -391,7 +417,7 @@ private fun PlayersList(
         items(players) { player ->
             PlayerItem(
                 player = player,
-                isSelected = combinedPlayers.contains(player),
+                isSelected = combinedPlayers.any { it.player_name == player.player_name },
                 isCheck = checkOculted,
                 onPlayerClick = {
                     onPlayerClick(player)
