@@ -47,6 +47,8 @@ fun NavGraphBuilder.homeGraph(
             onPopBackStack = onPopBackStack
         )
         teamEditScreen(onPopBackStack = onPopBackStack)
+        newGameScreen(onPopBackStack = onPopBackStack)
+        scoreboardScreen(onPopBackStack = onPopBackStack)
     }
 }
 

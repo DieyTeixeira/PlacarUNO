@@ -34,11 +34,3 @@ fun NavGraphBuilder.menuScreen(
         )
     }
 }
-
-fun NavHostController.navigateToNewGame() {
-    navigate(menuRoute)
-}
-
-fun NavHostController.navigateToScoreboard() {
-    navigate(menuRoute)
-}

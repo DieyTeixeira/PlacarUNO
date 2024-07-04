@@ -37,6 +37,12 @@ import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 fun Baseboard(){
     Column {
         Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color(0xFF000000))
+                .height(5.dp)
+        ) {}
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,7 +64,9 @@ fun Baseboard(){
             }
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color(0xFF000000)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -87,7 +95,6 @@ fun BaseboardPreview(modifier: Modifier = Modifier) {
     Box(
         modifier
             .background(color = Color(0xFF000000))
-            .fillMaxSize()
     ) {
         Baseboard()
     }

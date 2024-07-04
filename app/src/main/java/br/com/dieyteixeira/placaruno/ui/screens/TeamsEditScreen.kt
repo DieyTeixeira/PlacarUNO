@@ -64,8 +64,10 @@ import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
+import br.com.dieyteixeira.placaruno.ui.components.GamePlace
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
+import br.com.dieyteixeira.placaruno.ui.components.PokerTable
 import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
 import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
@@ -90,7 +92,7 @@ fun TeamsEditScreen(
     val title = uiState.title
     val titleFontStyle = TextStyle.Default.copy(fontSize = 25.sp)
     val focusManager = LocalFocusManager.current
-    val maxTeamSize = 5
+    val maxTeamSize = 4
     val maxPlayersPerColumn = 3
     val context = LocalContext.current
 
@@ -244,7 +246,6 @@ fun TeamsEditScreen(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-//                Spacer(modifier = Modifier.height(5.dp))
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
@@ -264,7 +265,7 @@ fun TeamsEditScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         PlayersList(
-                            players = combinedPlayers.take(3), // Pegando os primeiros 3 jogadores
+                            players = combinedPlayers.take(2), // Pegando os primeiros 2 jogadores
                             combinedPlayers = combinedPlayers,
                             checkOculted = true,
                             maxTeamSize = maxTeamSize
@@ -277,7 +278,7 @@ fun TeamsEditScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         PlayersList(
-                            players = combinedPlayers.drop(3).take(3), // Pegando os jogadores restantes
+                            players = combinedPlayers.drop(2).take(2), // Pegando os jogadores restantes
                             combinedPlayers = combinedPlayers,
                             checkOculted = true,
                             maxTeamSize = maxTeamSize
@@ -366,7 +367,6 @@ fun TeamsEditScreen(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-//                Spacer(modifier = Modifier.height(5.dp))
                 Row {
                     Column (
                         modifier = Modifier
@@ -460,7 +460,6 @@ fun PlayerItem(
     }
 }
 
-// Função para inicializar os jogadores da equipe
 private fun initialTeamPlayers(uiState: TeamsEditUiState, uiStateList: TeamsListUiState): List<Player> {
     val initialTeam = uiStateList.teams.firstOrNull { it.team_name == uiState.title }
     return initialTeam?.team_players?.map { playerName ->
