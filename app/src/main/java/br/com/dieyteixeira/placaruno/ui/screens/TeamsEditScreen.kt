@@ -64,7 +64,6 @@ import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
-import br.com.dieyteixeira.placaruno.ui.components.GamePlace
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.components.PokerTable
@@ -93,8 +92,6 @@ fun TeamsEditScreen(
     val titleFontStyle = TextStyle.Default.copy(fontSize = 25.sp)
     val focusManager = LocalFocusManager.current
     val maxTeamSize = 4
-    val maxPlayersPerColumn = 3
-    val context = LocalContext.current
 
     val initialTeamPlayers = remember(uiState.title) {
         initialTeamPlayers(uiState, uiStateList)
@@ -214,7 +211,7 @@ fun TeamsEditScreen(
                     .padding(horizontal = 5.dp)
             ) {
 
-                /* LISTA DE JOGADORE NA EQUIPE */
+                /* LISTA DE JOGADORES NA EQUIPE */
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
