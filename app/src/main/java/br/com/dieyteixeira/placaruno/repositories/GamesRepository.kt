@@ -1,7 +1,6 @@
 package br.com.dieyteixeira.placaruno.repositories
 
 import br.com.dieyteixeira.placaruno.models.Game
-import br.com.dieyteixeira.placaruno.models.Team
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo.TAG
 import com.google.android.exoplayer2.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
@@ -74,5 +73,6 @@ fun Game.toGame() = Game(
     game_name = this.game_name,
     game_teams = this.game_teams,
     game_players = this.game_players,
-    game_scores = this.game_scores
+    game_scores = this.game_scores,
+    game_players_team = this.game_players_team,
 )

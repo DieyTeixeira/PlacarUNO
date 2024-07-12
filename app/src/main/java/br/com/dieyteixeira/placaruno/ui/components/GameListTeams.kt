@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,6 +41,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
@@ -65,6 +65,11 @@ fun GameListTeams(
     val availableTeams = remember(uiStateTList) {
         uiStateTList.teams.map { it.team_name to it.team_players.size }
     }
+
+    val membersTeams = remember(uiStateTList) {
+        uiStateTList.teams.map { it.team_name to it.team_players }
+    }
+
     val selectedTeams by gameViewModel.selectedTeams.collectAsState()
 
     var snackbarVisible by remember { mutableStateOf(false) }
@@ -143,7 +148,7 @@ fun GameListTeams(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(130.dp)
+                .height(180.dp)
                 .background(
                     color = Color.Gray.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(
@@ -153,31 +158,121 @@ fun GameListTeams(
                         bottomEnd = 15.dp
                     )
                 )
-                .padding(top = 6.dp)
+                .padding(start = 5.dp, end = 5.dp, top = 12.dp)
         ) {
             // Coluna esquerda
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column (
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 5.dp)
+            ){
                 selectedTeams.take(firstColumnCount).forEach { teamName ->
-                    GameListItem(
-                        text = teamName,
-                        isSelected = false,
-                        onClick = { removeTeamFromSelectedList(teamName) }
-                    )
+                    Column(
+                        modifier = Modifier
+                            .background(
+                                color = Color.Gray,
+                                shape = RoundedCornerShape(
+                                    topStart = 17.dp,
+                                    bottomStart = 17.dp,
+                                    topEnd = 17.dp,
+                                    bottomEnd = 17.dp
+                                )
+                            )
+                            .padding(start = 2.dp, end = 2.dp, top = 0.dp, bottom = 2.dp)
+                    ) {
+                        GameListItem(
+                            text = teamName,
+                            isSelected = false,
+                            onClick = { removeTeamFromSelectedList(teamName) }
+                        )
+                        if (teamName == teamName) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        color = Color.LightGray,
+                                        shape = RoundedCornerShape(
+                                            topStart = 15.dp,
+                                            bottomStart = 15.dp,
+                                            topEnd = 15.dp,
+                                            bottomEnd = 15.dp
+                                        )
+                                    )
+                                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                            ) {
+                                // Filtra apenas os jogadores da equipe selecionada
+                                items(membersTeams.filter { it.first == teamName }) { (_, players) ->
+                                    Text(
+                                        text = players.joinToString("\n"),
+                                        color = Color.DarkGray,
+                                        style = TextStyle.Default.copy(
+                                            fontSize = 16.sp,
+                                            fontStyle = FontStyle.Italic
+                                        ),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
 
             // Coluna direita
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column (
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 5.dp)
+            ){
                 selectedTeams.drop(firstColumnCount).take(secondColumnCount).forEach { teamName ->
-                    GameListItem(
-                        text = teamName,
-                        isSelected = false,
-                        onClick = { removeTeamFromSelectedList(teamName) }
-                    )
+                    Column(
+                        modifier = Modifier
+                            .background(
+                                color = Color.Gray,
+                                shape = RoundedCornerShape(
+                                    topStart = 17.dp,
+                                    bottomStart = 17.dp,
+                                    topEnd = 17.dp,
+                                    bottomEnd = 17.dp
+                                )
+                            )
+                            .padding(start = 2.dp, end = 2.dp, top = 0.dp, bottom = 2.dp)
+                    ) {
+                        GameListItem(
+                            text = teamName,
+                            isSelected = false,
+                            onClick = { removeTeamFromSelectedList(teamName) }
+                        )
+                        if (teamName == teamName) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        color = Color.LightGray,
+                                        shape = RoundedCornerShape(
+                                            topStart = 15.dp,
+                                            bottomStart = 15.dp,
+                                            topEnd = 15.dp,
+                                            bottomEnd = 15.dp
+                                        )
+                                    )
+                                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                            ) {
+                                // Filtra apenas os jogadores da equipe selecionada
+                                items(membersTeams.filter { it.first == teamName }) { (_, players) ->
+                                    Text(
+                                        text = players.joinToString("\n"),
+                                        color = Color.DarkGray,
+                                        style = TextStyle.Default.copy(
+                                            fontSize = 16.sp,
+                                            fontStyle = FontStyle.Italic
+                                        ),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
@@ -300,8 +395,12 @@ private fun GameListItem(
     text: String,
     playersNumber: Int = 0,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    gameViewModel: GameViewModel = viewModel()
 ) {
+
+    val switchState by gameViewModel.switchState.collectAsState()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -327,13 +426,16 @@ private fun GameListItem(
             modifier = Modifier.weight(1f)
         )
         if (playersNumber > 0) {
-            Text(
-                text = "Jogadores: $playersNumber",
-                style = TextStyle.Default.copy(
-                    fontSize = 14.sp,
-                    color = Color.Gray
+            Box (modifier = Modifier.padding(end = 15.dp)) {
+                Text(
+                    text = "n° jog.: $playersNumber",
+                    style = TextStyle.Default.copy(
+                        fontSize = 14.sp,
+                        fontStyle = FontStyle.Italic,
+                        color = Color.Gray
+                    )
                 )
-            )
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +50,7 @@ import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
 import kotlinx.coroutines.delay
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GameListPlayers(
     uiStatePList: PlayersListUiState,
@@ -54,6 +58,8 @@ fun GameListPlayers(
     playersCount: Int,
     gameViewModel: GameViewModel
 ) {
+    val context = LocalContext.current
+
     // Variáveis
     val maxPlayerSize = playersCount
     val firstColumnCount = (playersCount + 1) / 2
@@ -65,6 +71,7 @@ fun GameListPlayers(
 
     LaunchedEffect(snackbarVisible) {
         if (snackbarVisible) {
+            vibration(context)
             delay(2000)
             snackbarVisible = false
         }

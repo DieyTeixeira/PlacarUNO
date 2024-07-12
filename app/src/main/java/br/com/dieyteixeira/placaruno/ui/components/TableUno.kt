@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -25,14 +27,19 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
+import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
 
 @Composable
-fun PokerTable(playersTotalCount: Int) {
+fun PokerTable(
+    playersTotalCount: Int,
+    selectedPlayers: List<String>
+) {
 
     val playerImage = ImageBitmap.imageResource(id = R.drawable.ic_p_player)
 
@@ -46,7 +53,8 @@ fun PokerTable(playersTotalCount: Int) {
             drawTable()
             drawPlayers(
                 playersTotalCount = playersTotalCount,
-                playerImage = playerImage
+                playerImage = playerImage,
+                selectedPlayers = selectedPlayers
             )
         }
     }
@@ -76,7 +84,12 @@ private fun DrawScope.drawTable() {
     )
 }
 
-private fun DrawScope.drawPlayers(playersTotalCount: Int, playerImage: ImageBitmap) {
+private fun DrawScope.drawPlayers(
+    playersTotalCount: Int,
+    playerImage: ImageBitmap,
+    selectedPlayers: List<String>
+) {
+
     val centerX = size.width / 2f
     val centerY = size.height / 2f - 20
     val radius = size.width * 0.37f
@@ -102,11 +115,20 @@ private fun DrawScope.drawPlayers(playersTotalCount: Int, playerImage: ImageBitm
             colorFilter = ColorFilter.tint(Color.LightGray), // Filtro de cor
         )
 
-        val text = "Player ${i + 1}"
+        val text = selectedPlayers.getOrNull(i) ?: ""
+        val textPaint = Paint().apply {
+            isAntiAlias = true
+            color = Color.LightGray.toArgb()
+            textSize = 35f // Ajuste o tamanho do texto conforme necessário
+        }
+
+        // Medir a largura do texto para centralizá-lo
+        val textWidth = textPaint.measureText(text)
+
         drawIntoCanvas {
             it.nativeCanvas.drawText(
                 text,
-                playerX - distanceX / 2 + 48,
+                playerX - distanceX / 2 + 112 - textWidth / 2,
                 playerY + distanceY / 2 + 5, // Adjust Y position for text below the image
                 Paint().apply {
                     isAntiAlias = true
@@ -122,6 +144,9 @@ private fun DrawScope.drawPlayers(playersTotalCount: Int, playerImage: ImageBitm
 @Composable
 fun PreviewPokerTable() {
     MaterialTheme {
-        PokerTable(playersTotalCount = 8)
+        PokerTable(
+            playersTotalCount = 8,
+            selectedPlayers = listOf("Dieinison", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank")
+        )
     }
 }

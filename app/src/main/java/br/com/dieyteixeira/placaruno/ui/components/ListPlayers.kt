@@ -12,23 +12,29 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.dieyteixeira.placaruno.models.Player
+import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
 
 @Composable
 fun ListPlayersGame (
     playersTotalCount: Int,
-    selectedPlayers: List<Player>
+    gameViewModel: GameViewModel = viewModel()
 ) {
 
     val points = listOf(10, 210, 15, 25, 530, 30, 10, 120)
 
     val firstColumnCount = (playersTotalCount + 1) / 2
     val secondColumnCount = playersTotalCount / 2
+
+    val selectedPlayers by gameViewModel.selectedPlayers.collectAsState()
 
     Row(
         modifier = Modifier
@@ -55,7 +61,7 @@ fun ListPlayersGame (
                         )
                 ) {
                     Text(
-                        text = selectedPlayers.getOrNull(i)?.player_name ?: "",
+                        text = selectedPlayers.getOrNull(i) ?: "",
                         style = TextStyle.Default.copy(
                             color = Color.DarkGray,
                             fontSize = 15.sp
@@ -86,7 +92,7 @@ fun ListPlayersGame (
                         )
                 ) {
                     Text(
-                        text = points.getOrElse(i) { 0 }.toString(),
+                        text = points.getOrNull(i)?.toString() ?: "0",
                         style = TextStyle.Default.copy(
                             color = Color.White,
                             fontSize = 15.sp
@@ -118,7 +124,7 @@ fun ListPlayersGame (
                         )
                 ) {
                     Text(
-                        text = selectedPlayers.getOrNull(firstColumnCount + i)?.player_name ?: "",
+                        text = selectedPlayers.getOrNull(firstColumnCount + i) ?: "",
                         style = TextStyle.Default.copy(
                             color = Color.DarkGray,
                             fontSize = 15.sp
@@ -149,7 +155,7 @@ fun ListPlayersGame (
                         )
                 ) {
                     Text(
-                        text = points.getOrElse(firstColumnCount + i) { 0 }.toString(),
+                        text = points.getOrNull(firstColumnCount + i)?.toString() ?: "0",
                         style = TextStyle.Default.copy(
                             color = Color.White,
                             fontSize = 15.sp

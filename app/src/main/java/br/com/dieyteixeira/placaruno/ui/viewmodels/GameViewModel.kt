@@ -1,34 +1,38 @@
 package br.com.dieyteixeira.placaruno.ui.viewmodels
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.dieyteixeira.placaruno.models.Game
+import br.com.dieyteixeira.placaruno.models.Player
+import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.repositories.GamesRepository
-import br.com.dieyteixeira.placaruno.repositories.toGame
+import br.com.dieyteixeira.placaruno.repositories.TeamsRepository
 import br.com.dieyteixeira.placaruno.ui.states.GameUiState
+import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import com.google.android.exoplayer2.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class GameViewModel(
     savedStateHandle: SavedStateHandle,
-    private val gamesRepository: GamesRepository
+    private val gamesRepository: GamesRepository,
+    private val repository: TeamsRepository
 ) : ViewModel() {
 
     /***** CONFIGURAÇÕES *****/
     private val _switchState = MutableStateFlow(false)
     val switchState: StateFlow<Boolean> = _switchState
     fun setSwitchState(state: Boolean) { _switchState.value = state }
-
 
     private val _playerCount = MutableStateFlow(2)
     val playerCount: StateFlow<Int> = _playerCount
@@ -64,68 +68,65 @@ class GameViewModel(
             Log.d("GameViewModel", "User email: $it")
         }
 
-//    init {
-//        _uiState.update { currentState ->
-//            currentState.copy(
-//                onTitleChange = { title ->
-//                    _uiState.update {
-//                        it.copy(title = title)
-//                    }
-//                },
-//                topAppBarTitle = "ADICIONAR"
-//            )
-//        }
-//        id?.let {
-//            loadGameData(it)
-//        }
-//    }
+    init {
+        viewModelScope.launch {
+            loadTeams()
+        }
+    }
 
-//    private fun loadGameData(id: String) {
-//        userEmail?.let { email ->
-//            viewModelScope.launch {
-//                gamesRepository.findById(email, id)
-//                    .filterNotNull()
-//                    .mapNotNull { it.toGame() }
-//                    .collectLatest { game ->
-//                        _uiState.update { currentState ->
-//                            currentState.copy(
-//                                topAppBarTitle = "EDITAR",
-//                                title = game.game_name,
-//                                teams = game.game_teams,
-//                                players = game.game_players,
-//                                scores = game.game_scores,
-//                                isDeleteEnabled = true
-//                            )
-//                        }
-//                    }
-//            }
-//        }
-//    }
+    suspend fun loadTeams() {
+        userEmail?.let { email ->
+            try {
+                repository.loadTeams(email).collect { teams ->
+                    _uiState.value = _uiState.value.copy(teams = teams)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun save() {
         userEmail?.let { email ->
             with(_uiState.value) {
+                val currentDateTime = LocalDateTime.now()
+                val formattedDate = currentDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                val formattedTime = currentDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+                val gameNameWithDateTime = "Data: $formattedDate - Hora: $formattedTime"
+
+                Log.d("GameViewModel", "Selected teams: $selectedTeams")
+
+                val teamPlayersMap = if (switchState.value) {
+                    Log.d("GameViewModel", "Teams in uiState: ${uiState.value.teams}")
+                    selectedTeams.value.associateWith { teamName ->
+                        val team = uiState.value.teams.find { it.team_name == teamName }
+                        val players = team?.team_players ?: emptyList()
+                        Log.d("GameViewModel", "Players for team $teamName: $players")
+                        players
+                    }
+                } else {
+                    emptyMap()
+                }
+
+                Log.d("GameViewModel", "Team Players Map: $teamPlayersMap")
+
                 val game = Game(
                     game_id = id ?: UUID.randomUUID().toString(),
-                    game_name = title,
-                    game_teams = if (switchState.value) {
-                        selectedTeams.value
-                    } else {
-                        emptyList()
-                    },
-                    game_players = if (switchState.value) {
-                        emptyList()
-                    } else {
-                        selectedPlayers.value
-                    }
+                    game_name = gameNameWithDateTime,
+                    game_teams = if (switchState.value) selectedTeams.value else emptyList(),
+                    game_players = if (switchState.value) emptyList() else selectedPlayers.value,
+                    game_players_team = if (switchState.value) teamPlayersMap else emptyMap()
                 )
+
+                Log.d("GameViewModel", "Game to be saved: $game")
                 gamesRepository.save(email, game)
             }
         } ?: run {
             Log.e("GameViewModel", "User email is null, cannot save game.")
         }
     }
-
 
     suspend fun delete() {
         userEmail?.let { email ->

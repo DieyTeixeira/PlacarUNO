@@ -1,5 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
@@ -9,6 +11,7 @@ import br.com.dieyteixeira.placaruno.models.Team
 
 const val homeGraphRoute = "homeGraph"
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.homeGraph(
 
     onNavigateToPlayers: () -> Unit,
@@ -47,8 +50,11 @@ fun NavGraphBuilder.homeGraph(
             onPopBackStack = onPopBackStack
         )
         teamEditScreen(onPopBackStack = onPopBackStack)
-        newGameScreen(onPopBackStack = onPopBackStack)
-        scoreboardScreen(onPopBackStack = onPopBackStack)
+        newGameScreen(
+            onPopBackStack = onPopBackStack,
+            onNavigateToScoreboard = onNavigateToScoreboard
+        )
+        scoreboardListScreen(onPopBackStack = onPopBackStack)
     }
 }
 
