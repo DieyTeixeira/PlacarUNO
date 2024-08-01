@@ -2,6 +2,6 @@ package br.com.dieyteixeira.placaruno.ui.states
 
 import br.com.dieyteixeira.placaruno.models.Game
 
-data class ScoreboardsListUiState (
+data class ScoreboardListUiState (
     val games: List<Game> = emptyList(),
 )

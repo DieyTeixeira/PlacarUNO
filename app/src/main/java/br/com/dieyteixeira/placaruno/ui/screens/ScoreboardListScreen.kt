@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,33 +36,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.models.Game
-import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
-import br.com.dieyteixeira.placaruno.ui.components.ScoreboardsGameList
-import br.com.dieyteixeira.placaruno.ui.states.ScoreboardsListUiState
+import br.com.dieyteixeira.placaruno.ui.states.ScoreboardListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
-import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
-import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardsListViewModel
+import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
+import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
+import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
+import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardListViewModel
 
 /***** FUNÇÃO PRINCIPAL *****/
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScoreboardListScreen(
-    uiState: ScoreboardsListUiState,
+    uiState: ScoreboardListUiState,
     modifier: Modifier = Modifier,
     onGameClick: (Game) -> Unit = {},
     onBackClick: () -> Unit = {},
-    viewModel: ScoreboardsListViewModel
+    viewModel: ScoreboardListViewModel
 ) {
 
     LaunchedEffect(Unit) {
@@ -189,20 +187,76 @@ fun ScoreboardListScreen(
                                         )
                                         .heightIn(max = 200.dp)
                                 ) {
-                                    itemsIndexed(if(game.game_players.isNullOrEmpty()) game.game_teams else game.game_players) { index, gameName ->
-                                        Text(
-                                            text = gameName,
-                                            style = TextStyle.Default.copy(
-                                                fontSize = 16.sp,
-                                                color = Color.White
-                                            ),
-                                            modifier = Modifier.padding(
-                                                top = 2.dp,
-                                                bottom = 2.dp,
-                                                start = 10.dp,
-                                                end = 10.dp
+                                    // LISTA DE JOGADORES
+                                    if (!game.game_players.isNullOrEmpty()) {
+                                        itemsIndexed(game.game_players) { index, playerName ->
+                                            Text(
+                                                text = "- " + playerName,
+                                                style = TextStyle.Default.copy(
+                                                    fontSize = 16.sp,
+                                                    color = Color.White,
+                                                    fontWeight = FontWeight.Bold
+                                                ),
+                                                modifier = Modifier.padding(
+                                                    top = 2.dp,
+                                                    bottom = 2.dp,
+                                                    start = 10.dp,
+                                                    end = 10.dp
+                                                )
                                             )
-                                        )
+                                        }
+                                    } else {
+                                        // Definindo as cores para cada equipe
+                                        val teamColors = listOf(VerdeUno, AzulUno, VermelhoUno, AmareloUno)
+
+                                        // LISTA DE EQUIPES
+                                        itemsIndexed(game.game_teams) { index, teamName ->
+                                            val teamColor = teamColors[index % teamColors.size]
+                                            Column {
+                                                Text(
+                                                    text = "- " + teamName,
+                                                    style = TextStyle.Default.copy(
+                                                        fontSize = 16.sp,
+                                                        color = Color.White,
+                                                        fontWeight = FontWeight.Bold
+                                                    ),
+                                                    modifier = Modifier.padding(
+                                                        top = 5.dp,
+                                                        bottom = 5.dp,
+                                                        start = 10.dp,
+                                                        end = 10.dp
+                                                    )
+                                                )
+                                                // JOGADORES DE CADA EQUIPE
+                                                Row (
+                                                    modifier = Modifier.padding(
+                                                        top = 2.dp,
+                                                        bottom = 2.dp,
+                                                        start = 15.dp,
+                                                        end = 10.dp
+                                                    )
+                                                ){
+                                                    game.game_players_team[teamName]?.forEach { playerName ->
+                                                        Box (
+                                                            modifier = Modifier
+                                                                .padding(start = 5.dp)
+                                                                .background(color = teamColor, shape = RoundedCornerShape(15.dp))
+                                                        ){
+                                                            Text(
+                                                                text = playerName,
+                                                                style = TextStyle.Default.copy(
+                                                                    fontSize = 14.sp,
+                                                                    color = Color.White,
+                                                                    fontStyle = FontStyle.Italic
+                                                                ),
+                                                                modifier = Modifier
+                                                                    .padding(start = 5.dp, end = 5.dp)
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -293,6 +347,6 @@ fun ScoreboardListScreen(
     }
 
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.Transparent)
 
 }

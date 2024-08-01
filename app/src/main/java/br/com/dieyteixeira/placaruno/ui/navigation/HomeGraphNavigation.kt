@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.navigation
+import br.com.dieyteixeira.placaruno.models.Game
 import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.models.Team
 
@@ -25,6 +26,7 @@ fun NavGraphBuilder.homeGraph(
     onNavigateToNewGame: () -> Unit,
 
     onNavigateToScoreboard: () -> Unit,
+    onNavigateToEditGameEdit: (Game) -> Unit,
 
     onPopBackStack: () -> Unit,
 ) {
@@ -54,7 +56,10 @@ fun NavGraphBuilder.homeGraph(
             onPopBackStack = onPopBackStack,
             onNavigateToScoreboard = onNavigateToScoreboard
         )
-        scoreboardListScreen(onPopBackStack = onPopBackStack)
+        scoreboardListScreen(
+            onNavigateToEditGameEdit = onNavigateToEditGameEdit,
+            onPopBackStack = onPopBackStack)
+        scoreboardEditScreen(onPopBackStack = onPopBackStack)
     }
 }
 

@@ -223,7 +223,7 @@ fun PlayersListScreen(
     }
 
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.Transparent)
 
 }
 

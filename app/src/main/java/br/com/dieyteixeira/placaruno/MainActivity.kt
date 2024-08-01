@@ -17,10 +17,12 @@ import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.ui.navigation.authGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.homeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToAuthGraph
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditGameEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditPlayerEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditTeamEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToHomeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewGame
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewGameEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewPlayerEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewTeamEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToPlayers
@@ -101,6 +103,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onNavigateToTeams = {
                             navController.navigateToTeams()
+                        },
+                        onNavigateToEditGameEdit = { game ->
+                            navController.navigateToEditGameEdit(game)
                         },
                         onNavigateToNewGame = {
                             navController.navigateToNewGame()

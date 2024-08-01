@@ -1,6 +1,5 @@
 package br.com.dieyteixeira.placaruno.ui.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -16,16 +15,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import br.com.dieyteixeira.placaruno.ui.states.ScoreboardsListUiState
-import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
-import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardsListViewModel
+import br.com.dieyteixeira.placaruno.ui.states.ScoreboardListUiState
+import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardListViewModel
 
 @Composable
 fun ScoreboardsGameList (
     playersTotalCount: Int,
-    uiState: ScoreboardsListUiState,
-    viewModel: ScoreboardsListViewModel
+    uiState: ScoreboardListUiState,
+    viewModel: ScoreboardListViewModel
 ) {
 
     LaunchedEffect(Unit) {

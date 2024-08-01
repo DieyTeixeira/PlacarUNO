@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
+import br.com.dieyteixeira.placaruno.firebase.currentVersionName
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.FabWithSubButtons
 import br.com.dieyteixeira.placaruno.ui.components.Header
@@ -212,11 +213,10 @@ fun MenuScreen(
             }
         }
 
-
         Spacer(modifier = Modifier.height(18.dp))
 
         //***** RODAPÉ *****
-        Baseboard()
+        Baseboard(color = Color.LightGray)
     }
 }
 

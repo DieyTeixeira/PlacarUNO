@@ -181,24 +181,8 @@ fun SignInScreen(
         Spacer(modifier = Modifier.size(15.dp))
     }
 
-    Row(
-        Modifier
-            .fillMaxSize()
-            .padding(vertical = 40.dp, horizontal = 10.dp),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.Bottom,
-    ){
-        Text(
-            text ="V.  ${currentVersionName}",
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 10.sp
-            )
-        )
-    }
-
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.White)
 
     /***** MENSAGEM DE ERRO *****/
     Column {

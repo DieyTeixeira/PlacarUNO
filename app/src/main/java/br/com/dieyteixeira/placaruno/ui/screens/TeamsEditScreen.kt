@@ -394,7 +394,7 @@ fun TeamsEditScreen(
     }
 
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.Transparent)
 
 }
 

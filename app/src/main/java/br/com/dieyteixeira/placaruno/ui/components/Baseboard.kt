@@ -22,11 +22,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
+import br.com.dieyteixeira.placaruno.firebase.currentVersionName
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
@@ -34,7 +36,9 @@ import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 
 // Definição de componente - ** RODAPÉ **
 @Composable
-fun Baseboard(){
+fun Baseboard(
+    color: Color
+){
     Column {
         Spacer(modifier = Modifier.weight(1f))
         Row(
@@ -63,27 +67,48 @@ fun Baseboard(){
                 )
             }
         }
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Color(0xFF000000)),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logodt_branco),
-                contentDescription = "Logo",
-                modifier = Modifier.size(25.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Diey Teixeira",
-                style = TextStyle(
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                ),
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logodt_branco),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(25.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Diey Teixeira",
+                    style = TextStyle(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    ),
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text ="V. $currentVersionName",
+                    style = TextStyle(
+                        color = color,
+                        fontSize = 12.sp,
+                        fontStyle = FontStyle.Italic
+                    )
+                )
+                Spacer(modifier = Modifier.width(20.dp))
+            }
         }
     }
 }
@@ -96,6 +121,6 @@ fun BaseboardPreview(modifier: Modifier = Modifier) {
         modifier
             .background(color = Color(0xFF000000))
     ) {
-        Baseboard()
+        Baseboard(color = Color.LightGray)
     }
 }

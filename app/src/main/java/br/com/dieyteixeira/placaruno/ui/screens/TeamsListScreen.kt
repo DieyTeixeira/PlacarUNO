@@ -260,6 +260,6 @@ fun TeamsListScreen(
     }
 
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.Transparent)
 
 }

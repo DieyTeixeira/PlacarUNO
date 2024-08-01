@@ -346,7 +346,7 @@ fun NewGameScreen(
                         )
                         .padding(10.dp)
                 ){
-                    ListPlayersGame(playersTotalCount = playersTotalCount)
+                    ListPlayersGame(playersTotalCount = playersTotalCount, selectedPlayers = selectedPlayers)
                 }
                 Box (modifier = Modifier.fillMaxSize(0.95f)) {
                     PokerTable(playersTotalCount = playersTotalCount, selectedPlayers = selectedPlayers)
@@ -397,7 +397,7 @@ fun NewGameScreen(
     }
 
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.Transparent)
 
 }
 

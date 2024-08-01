@@ -215,7 +215,7 @@ fun SignUpScreen(
     }
 
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.White)
 
     /***** MENSAGEM DE ERRO *****/
     Column {

@@ -11,7 +11,8 @@ import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.MenuViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersEditViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
-import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardsListViewModel
+import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardEditViewModel
+import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardListViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.SignInViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.SignUpViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.TeamsEditViewModel
@@ -30,7 +31,8 @@ val appModule = module {
     viewModelOf(::TeamsEditViewModel)
     viewModelOf(::TeamsListViewModel)
     viewModelOf(::GameViewModel)
-    viewModelOf(::ScoreboardsListViewModel)
+    viewModelOf(::ScoreboardListViewModel)
+    viewModelOf(::ScoreboardEditViewModel)
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
     viewModelOf(::AppViewModel)

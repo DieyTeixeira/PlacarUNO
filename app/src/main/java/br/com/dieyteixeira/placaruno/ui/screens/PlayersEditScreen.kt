@@ -135,7 +135,7 @@ fun PlayersEditScreen(
     }
 
     /***** RODAPÉ *****/
-    Baseboard()
+    Baseboard(color = Color.Transparent)
 
 }
 

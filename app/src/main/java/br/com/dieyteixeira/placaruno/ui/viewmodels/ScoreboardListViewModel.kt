@@ -3,21 +3,18 @@ package br.com.dieyteixeira.placaruno.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.dieyteixeira.placaruno.models.Game
-import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.repositories.GamesRepository
-import br.com.dieyteixeira.placaruno.repositories.TeamsRepository
-import br.com.dieyteixeira.placaruno.ui.states.ScoreboardsListUiState
-import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
+import br.com.dieyteixeira.placaruno.ui.states.ScoreboardListUiState
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class ScoreboardsListViewModel(
+class ScoreboardListViewModel(
     private val repository: GamesRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<ScoreboardsListUiState> =
-        MutableStateFlow(ScoreboardsListUiState())
+    private val _uiState: MutableStateFlow<ScoreboardListUiState> =
+        MutableStateFlow(ScoreboardListUiState())
     val uiState get() = _uiState
     private val userEmail: String?
         get() = FirebaseAuth.getInstance().currentUser?.email

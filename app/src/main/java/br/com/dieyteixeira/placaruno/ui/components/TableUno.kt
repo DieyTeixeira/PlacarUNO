@@ -34,14 +34,21 @@ import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
+import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayerOrTeam
+import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardEditViewModel
 
 @Composable
 fun PokerTable(
     playersTotalCount: Int,
-    selectedPlayers: List<String>
+    selectedPlayers: List<String>,
+    scoreboardEditViewModel: ScoreboardEditViewModel = viewModel()
 ) {
 
     val playerImage = ImageBitmap.imageResource(id = R.drawable.ic_p_player)
+
+    val playerCount by scoreboardEditViewModel.playerCount.collectAsState()
+
+    val verificatePlayers by scoreboardEditViewModel.verificatePlayers.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -54,28 +61,27 @@ fun PokerTable(
             drawPlayers(
                 playersTotalCount = playersTotalCount,
                 playerImage = playerImage,
-                selectedPlayers = selectedPlayers
+                selectedPlayers = selectedPlayers,
+                colorsCount = playerCount,
+                verificatePlayers = verificatePlayers
             )
         }
     }
 }
 
 private fun DrawScope.drawTable() {
-    val colors = listOf(VermelhoUno, AzulUno, AmareloUno, VerdeUno)
-    val segmentAngle = 360f / colors.size
+    val segmentAngle = 360f
     val strokeWidth = 5.dp.toPx()
 
-    for (i in colors.indices) {
-        drawArc(
-            color = colors[i].copy(alpha = 0.9f),
-            startAngle = i * segmentAngle,
-            sweepAngle = segmentAngle,
-            useCenter = false,
-            topLeft = Offset((size.width - 500f) / 2, (size.height - 500f) / 2),
-            size = Size(500f, 500f),
-            style = Stroke(width = strokeWidth)
-        )
-    }
+    drawArc(
+        color = Color.LightGray.copy(alpha = 0.5f),
+        startAngle = segmentAngle,
+        sweepAngle = segmentAngle,
+        useCenter = false,
+        topLeft = Offset((size.width - 500f) / 2, (size.height - 500f) / 2),
+        size = Size(500f, 500f),
+        style = Stroke(width = strokeWidth)
+    )
 
     drawCircle(
         color = Color.DarkGray,
@@ -87,7 +93,9 @@ private fun DrawScope.drawTable() {
 private fun DrawScope.drawPlayers(
     playersTotalCount: Int,
     playerImage: ImageBitmap,
-    selectedPlayers: List<String>
+    selectedPlayers: List<String>,
+    colorsCount: Int,
+    verificatePlayers: PlayerOrTeam
 ) {
 
     val centerX = size.width / 2f
@@ -108,11 +116,23 @@ private fun DrawScope.drawPlayers(
             radius = 100f
         )
 
+        // Lista completa de cores
+        val allColors = listOf(VerdeUno, AzulUno, VermelhoUno, AmareloUno)
+
+        // Filtrar as cores com base no número de equipes
+        val colors = allColors.take(colorsCount)
+
+        // Determine a cor do box com base no índice
+        val boxColor = when (verificatePlayers) {
+            PlayerOrTeam.PLAYERS -> Color.LightGray
+            PlayerOrTeam.TEAMS -> colors[i % colors.size]
+        }
+
         drawImage(
             image = playerImage,
             topLeft = Offset(playerX - distanceX / 2, playerY - distanceY / 2),
             alpha = 1f, // Opacidade da imagem
-            colorFilter = ColorFilter.tint(Color.LightGray), // Filtro de cor
+            colorFilter = ColorFilter.tint(boxColor), // Filtro de cor
         )
 
         val text = selectedPlayers.getOrNull(i) ?: ""
@@ -122,19 +142,30 @@ private fun DrawScope.drawPlayers(
             textSize = 35f // Ajuste o tamanho do texto conforme necessário
         }
 
-        // Medir a largura do texto para centralizá-lo
+        // Medir a largura e altura do texto para centralizá-lo no box
         val textWidth = textPaint.measureText(text)
+        val textHeight = 35f // Altura do texto (ajustar se necessário)
 
         drawIntoCanvas {
-            it.nativeCanvas.drawText(
+            val canvas = it.nativeCanvas
+
+            // Desenhe o box colorido ao redor do texto
+            canvas.drawRect(
+                playerX - distanceX / 2 + 60,
+                playerY + distanceY / 2 - 37,
+                playerX - distanceX / 2 + 160,
+                playerY + distanceY / 2 - 33,
+                Paint().apply {
+                    color = boxColor.toArgb() // Cor do box
+                }
+            )
+
+            // Desenhe o texto sobre o box
+            canvas.drawText(
                 text,
                 playerX - distanceX / 2 + 112 - textWidth / 2,
-                playerY + distanceY / 2 + 5, // Adjust Y position for text below the image
-                Paint().apply {
-                    isAntiAlias = true
-                    color = Color.LightGray.toArgb()
-                    textSize = 35f // Adjust text size as needed
-                }
+                playerY + distanceY / 2 + 5, // Ajuste Y para centralizar o texto no box
+                textPaint
             )
         }
     }
