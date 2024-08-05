@@ -19,9 +19,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PontuationViewModel (
-    private val gamesRepository: GamesRepository
-) : ViewModel() {
+class PontuationViewModel: ViewModel() {
 
     private val _cartasSelecionadas = mutableStateListOf<Carta>()
     val cartasSelecionadas: List<Carta> get() = _cartasSelecionadas
@@ -36,15 +34,4 @@ class PontuationViewModel (
 
     val pontuacaoTotal: Int
         get() = _cartasSelecionadas.sumOf { it.cartasValor }
-
-    fun updateScore(userEmail: String, gameId: String, playerName: String, newTotalScore: Int, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        viewModelScope.launch {
-            try {
-                gamesRepository.updateScore(userEmail, gameId, playerName, newTotalScore)
-                onSuccess()
-            } catch (e: Exception) {
-                onFailure(e)
-            }
-        }
-    }
 }

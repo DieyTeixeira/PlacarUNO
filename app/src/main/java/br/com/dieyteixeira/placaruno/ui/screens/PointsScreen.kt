@@ -2,6 +2,7 @@ package br.com.dieyteixeira.placaruno.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,19 +11,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,9 +55,8 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PointsScreen(
+    onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    userEmail: String,
-    gameId: String,
     name: String,
     score: Int,
     viewModel: PontuationViewModel = viewModel()
@@ -82,9 +88,17 @@ fun PointsScreen(
                     icon = painterResource(id = R.drawable.ic_double_arrow_left),
                     description = "Back",
                     onClick = onBackClick
-                ),  // Posição 1 botão
+                ), // Posição 1 botão
                 null, // Posição 2 sem botão
-                null, // Posição 3 sem botão
+                if (newTotalScore == playerScore) {
+                    null
+                } else {
+                    ButtonInfo(
+                        icon = painterResource(id = R.drawable.ic_save),
+                        description = "Save",
+                        onClick = onSaveClick
+                    )
+                }, // Posição 3 botão
                 null, // Posição 4 sem botão
                 null, // Posição 5 sem botão
             ),
@@ -95,39 +109,139 @@ fun PointsScreen(
 
         Column (
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 10.dp)
+                .align(Alignment.CenterHorizontally)
         ) {
-            Text(text = "Player: " + playerName, fontSize = 20.sp, color = Color.White)
-            Row {
-                Text(text = "Score: " + playerScore, fontSize = 20.sp, color = Color.White)
-                Text(text = "+ " + pontuacaoTotal, fontSize = 24.sp, color = Color(0xFFFFC000))
+            Row (
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .wrapContentWidth(Alignment.CenterHorizontally)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(30.dp)
+                        .background(
+                            color = Color.LightGray,
+                            shape = RoundedCornerShape(
+                                topStart = 10.dp,
+                                bottomStart = 10.dp,
+                                topEnd = 0.dp,
+                                bottomEnd = 0.dp
+                            )
+                        )
+                ) {
+                    Text(
+                        text = playerName,
+                        fontSize = 22.sp,
+                        color = Color.DarkGray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .height(30.dp)
+                        .background(
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(
+                                topStart = 0.dp,
+                                bottomStart = 0.dp,
+                                topEnd = 10.dp,
+                                bottomEnd = 10.dp
+                            )
+                        )
+                ) {
+                    Text(
+                        text = "$playerScore",
+                        fontSize = 22.sp,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                    )
+                }
             }
-            Text(text = "Pontuação Total: " + (playerScore + pontuacaoTotal), fontSize = 24.sp, color = Color.White)
+            Spacer(modifier = Modifier.height(15.dp))
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .height(30.dp)
+                        .background(
+                            color = Color.LightGray,
+                            shape = RoundedCornerShape(
+                                topStart = 10.dp,
+                                bottomStart = 10.dp,
+                                topEnd = 10.dp,
+                                bottomEnd = 10.dp
+                            )
+                        )
+                ) {
+                    Text(
+                        text = "+ " + pontuacaoTotal,
+                        fontSize = 22.sp,
+                        color = Color.DarkGray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .height(30.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth(),
+                        tint = Color.LightGray
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .height(30.dp)
+                        .background(
+                            color = Color.LightGray,
+                            shape = RoundedCornerShape(
+                                topStart = 10.dp,
+                                bottomStart = 10.dp,
+                                topEnd = 10.dp,
+                                bottomEnd = 10.dp
+                            )
+                        )
+                ) {
+                    Text(
+                        text = "" + newTotalScore,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.DarkGray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(30.dp))
             Pontuation()
         }
 
-
         Spacer(modifier = Modifier.height(10.dp))
-
-        Button(
-            onClick = {
-                viewModel.updateScore(userEmail, gameId, playerName, newTotalScore,
-                    onSuccess = {
-                        onBackClick()
-                    },
-                    onFailure = { e ->
-                        Log.e("Firebase", "Failed to update score", e)
-                    }
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(text = "Salvar Pontuação", style = TextStyle(color = Color.White, fontSize = 20.sp))
-        }
-
     }
 
     /***** RODAPÉ *****/

@@ -136,7 +136,7 @@ fun ScoreboardEditScreen(
                 }
             )
         }
-        Box (modifier = Modifier.fillMaxSize(0.95f)) {
+        Box (modifier = Modifier.fillMaxSize()) {
             PokerTable(
                 playersTotalCount = playersTotalCount,
                 selectedPlayers = selectedPlayers

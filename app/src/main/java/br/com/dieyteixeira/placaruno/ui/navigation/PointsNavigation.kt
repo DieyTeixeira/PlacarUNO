@@ -17,14 +17,10 @@ const val pointsEditRoute = "pointsEdit"
 fun NavGraphBuilder.pointsScreen(
     onPopBackStack: () -> Unit,
 ) {
-    composable("pointsEdit/{userEmail}/{gameId}/{name}/{score}") { backStackEntry ->
-        val userEmail = backStackEntry.arguments?.getString("userEmail") ?: ""
-        val gameId = backStackEntry.arguments?.getString("gameId") ?: ""
+    composable("pointsEdit/{name}/{score}") { backStackEntry ->
         val name = backStackEntry.arguments?.getString("name") ?: ""
         val score = backStackEntry.arguments?.getString("score")?.toIntOrNull() ?: 0
         PointsScreen(
-            userEmail = userEmail,
-            gameId = gameId,
             name = name,
             score = score,
             onBackClick = onPopBackStack
@@ -32,7 +28,7 @@ fun NavGraphBuilder.pointsScreen(
     }
 }
 
-fun NavHostController.navigateToEditPointsEdit(userEmail: String, gameId: String, name: String, score: Int) {
+fun NavHostController.navigateToEditPointsEdit(name: String, score: Int) {
     Log.d("Navigation", "Navigating to pointsEdit with name: $name and score: $score")
-    navigate("pointsEdit/$userEmail/$gameId/$name/$score")
+    navigate("pointsEdit/$name/$score")
 }
