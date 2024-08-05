@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -23,47 +26,41 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import br.com.dieyteixeira.placaruno.R
-import br.com.dieyteixeira.placaruno.models.Game
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.components.ListPlayersGame
 import br.com.dieyteixeira.placaruno.ui.components.PokerTable
+import br.com.dieyteixeira.placaruno.ui.components.Pontuation
 import br.com.dieyteixeira.placaruno.ui.components.RotationGame
+import br.com.dieyteixeira.placaruno.ui.states.PointsUiState
 import br.com.dieyteixeira.placaruno.ui.states.ScoreboardEditUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayerOrTeam
+import br.com.dieyteixeira.placaruno.ui.viewmodels.PontuationViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardEditViewModel
+import com.google.android.exoplayer2.util.Log
+import com.google.firebase.auth.FirebaseAuth
 
 /***** FUNÇÃO PRINCIPAL *****/
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ScoreboardEditScreen(
+fun PointsScreen(
     onBackClick: () -> Unit = {},
-    onPlayerClick: (String, Int) -> Unit,
-    uiState: ScoreboardEditUiState,
-    scoreboardEditViewModel: ScoreboardEditViewModel = viewModel()
+    userEmail: String,
+    gameId: String,
+    name: String,
+    score: Int,
+    viewModel: PontuationViewModel = viewModel()
 ) {
+    Log.d("Navigation", "PointsEditScreen composable called")
 
-    val title = uiState.title
-
-    val verificatePlayers by scoreboardEditViewModel.verificatePlayers.collectAsState()
-
-    val selectedPlayersOrTeams by scoreboardEditViewModel.selectedPlayersOrTeams.collectAsState()
-    val selectedPlayers by scoreboardEditViewModel.selectedPlayers.collectAsState()
-
-    val playerCount by scoreboardEditViewModel.playerCount.collectAsState()
-    val teamPlayerCounts by scoreboardEditViewModel.teamPlayerCounts.collectAsState()
-    val playersTotalCount = when (verificatePlayers) {
-        PlayerOrTeam.PLAYERS -> playerCount
-        PlayerOrTeam.TEAMS -> teamPlayerCounts.values.sum()
-    }
-
-    val gamePoints by scoreboardEditViewModel.gamePoints.collectAsState()
-
+    val playerName = name
+    val playerScore = score
+    val pontuacaoTotal by remember { derivedStateOf { viewModel.pontuacaoTotal } }
+    val newTotalScore = playerScore + pontuacaoTotal
 
     Column (
         Modifier
@@ -73,7 +70,7 @@ fun ScoreboardEditScreen(
 
         /***** CABEÇALHO *****/
         Header(
-            titleHeader = "PLACAR",
+            titleHeader = "PONTUAÇÃO",
             backgroundColor = AmareloUno,
             icon = painterResource(id = R.drawable.ic_g_score)
         )
@@ -96,53 +93,41 @@ fun ScoreboardEditScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Row (
+        Column (
             modifier = Modifier
                 .padding(horizontal = 10.dp)
-        ){
-            Text(
-                text = title,
-                style = TextStyle.Default.copy(
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    fontStyle = FontStyle.Italic
-                )
-            )
+        ) {
+            Text(text = "Player: " + playerName, fontSize = 20.sp, color = Color.White)
+            Row {
+                Text(text = "Score: " + playerScore, fontSize = 20.sp, color = Color.White)
+                Text(text = "+ " + pontuacaoTotal, fontSize = 24.sp, color = Color(0xFFFFC000))
+            }
+            Text(text = "Pontuação Total: " + (playerScore + pontuacaoTotal), fontSize = 24.sp, color = Color.White)
+            Pontuation()
         }
+
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Box (
+        Button(
+            onClick = {
+                viewModel.updateScore(userEmail, gameId, playerName, newTotalScore,
+                    onSuccess = {
+                        onBackClick()
+                    },
+                    onFailure = { e ->
+                        Log.e("Firebase", "Failed to update score", e)
+                    }
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
-                .background(
-                    color = Color.DarkGray.copy(alpha = 0.8f),
-                    shape = RoundedCornerShape(
-                        topStart = 15.dp,
-                        bottomStart = 15.dp,
-                        topEnd = 15.dp,
-                        bottomEnd = 15.dp
-                    )
-                )
-                .padding(10.dp)
-        ){
-            ListPlayersGame(
-                playersTotalCount = playerCount,
-                selectedPlayers = selectedPlayersOrTeams,
-                points = gamePoints,
-                onPlayerClick = { playerName, playerScore ->
-                    onPlayerClick(playerName, playerScore)
-                }
-            )
+                .padding(16.dp),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(text = "Salvar Pontuação", style = TextStyle(color = Color.White, fontSize = 20.sp))
         }
-        Box (modifier = Modifier.fillMaxSize(0.95f)) {
-            PokerTable(
-                playersTotalCount = playersTotalCount,
-                selectedPlayers = selectedPlayers
-            )
-            RotationGame()
-        }
+
     }
 
     /***** RODAPÉ *****/

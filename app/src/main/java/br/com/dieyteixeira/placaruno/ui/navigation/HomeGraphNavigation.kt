@@ -28,6 +28,8 @@ fun NavGraphBuilder.homeGraph(
     onNavigateToScoreboard: () -> Unit,
     onNavigateToEditGameEdit: (Game) -> Unit,
 
+    onNavigateToEditPointsEdit: (String, Int) -> Unit,
+
     onPopBackStack: () -> Unit,
 ) {
     navigation(
@@ -59,7 +61,11 @@ fun NavGraphBuilder.homeGraph(
         scoreboardListScreen(
             onNavigateToEditGameEdit = onNavigateToEditGameEdit,
             onPopBackStack = onPopBackStack)
-        scoreboardEditScreen(onPopBackStack = onPopBackStack)
+        scoreboardEditScreen(
+            onNavigateToEditPointsEdit = onNavigateToEditPointsEdit,
+            onPopBackStack = onPopBackStack
+        )
+        pointsScreen(onPopBackStack = onPopBackStack)
     }
 }
 

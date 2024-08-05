@@ -53,12 +53,10 @@ import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
 import com.google.android.exoplayer2.util.Log
-import android.content.Context
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.LocalContext
+import br.com.dieyteixeira.placaruno.ui.components.Pontuation
 import br.com.dieyteixeira.placaruno.ui.components.vibration
 
 /***** FUNÇÃO PRINCIPAL *****/
@@ -333,8 +331,7 @@ fun NewGameScreen(
             2 -> {
                 Box (
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(160.dp)
+                        .fillMaxSize()
                         .background(
                             color = Color.Gray.copy(alpha = 0.4f),
                             shape = RoundedCornerShape(
@@ -346,12 +343,12 @@ fun NewGameScreen(
                         )
                         .padding(10.dp)
                 ){
-                    ListPlayersGame(playersTotalCount = playersTotalCount, selectedPlayers = selectedPlayers)
+                    Pontuation()
                 }
-                Box (modifier = Modifier.fillMaxSize(0.95f)) {
-                    PokerTable(playersTotalCount = playersTotalCount, selectedPlayers = selectedPlayers)
-                    RotationGame()
-                }
+//                Box (modifier = Modifier.fillMaxSize(0.95f)) {
+//                    PokerTable(playersTotalCount = playersTotalCount, selectedPlayers = selectedPlayers)
+//                    RotationGame()
+//                }
                 Log.d("NewGameScreen", "Displaying content for tab 2")
             }
             // Adicione mais casos conforme necessário

@@ -15,6 +15,7 @@ const val gameEditRoute = "gameEdit"
 const val gameIdArgument = "gameId"
 
 fun NavGraphBuilder.scoreboardEditScreen(
+    onNavigateToEditPointsEdit: (String, Int) -> Unit,
     onPopBackStack: () -> Unit,
 ) {
     composable("$gameEditRoute?$gameIdArgument={$gameIdArgument}") {backStackEntry ->
@@ -27,6 +28,9 @@ fun NavGraphBuilder.scoreboardEditScreen(
 
         ScoreboardEditScreen(
             uiState = uiState,
+            onPlayerClick = { name, score ->
+                onNavigateToEditPointsEdit(name, score) // Atualizado para usar a função correta
+            },
             onBackClick = onPopBackStack
         )
     }

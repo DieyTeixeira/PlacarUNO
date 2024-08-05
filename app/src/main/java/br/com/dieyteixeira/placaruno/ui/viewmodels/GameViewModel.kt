@@ -46,6 +46,9 @@ class GameViewModel(
     val playerTeamCount: StateFlow<Int> = _playerTeamCount
     fun setPlayerTeamCount(count: Int) { _playerTeamCount.value = count }
 
+    private val _gameScores = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val gameScores: StateFlow<Map<String, Int>> = _gameScores.asStateFlow()
+
     /***** SELEÇÃO DE JOGADORES *****/
     private val _selectedPlayers = MutableStateFlow<List<String>>(emptyList())
     val selectedPlayers: StateFlow<List<String>> = _selectedPlayers.asStateFlow()
@@ -110,6 +113,12 @@ class GameViewModel(
                     emptyMap()
                 }
 
+                val ScoresMap = if (switchState.value) {
+                    selectedTeams.value.associateWith { 0 }
+                } else {
+                    selectedPlayers.value.associateWith { 0 }
+                }
+
                 Log.d("GameViewModel", "Team Players Map: $teamPlayersMap")
 
                 val game = Game(
@@ -117,7 +126,8 @@ class GameViewModel(
                     game_name = gameNameWithDateTime,
                     game_teams = if (switchState.value) selectedTeams.value else emptyList(),
                     game_players = if (switchState.value) emptyList() else selectedPlayers.value,
-                    game_players_team = if (switchState.value) teamPlayersMap else emptyMap()
+                    game_players_team = if (switchState.value) teamPlayersMap else emptyMap(),
+                    game_scores = ScoresMap,
                 )
 
                 Log.d("GameViewModel", "Game to be saved: $game")

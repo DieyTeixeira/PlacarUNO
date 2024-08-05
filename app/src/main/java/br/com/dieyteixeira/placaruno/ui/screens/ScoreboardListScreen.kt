@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -82,7 +84,7 @@ fun ScoreboardListScreen(
 
         /***** CABEÇALHO *****/
         Header(
-            titleHeader = "PLACAR LIST",
+            titleHeader = "PLACAR",
             backgroundColor = AmareloUno,
             icon = painterResource(id = R.drawable.ic_g_score)
         )
@@ -140,9 +142,9 @@ fun ScoreboardListScreen(
                             ) {
                                 Row(
                                     modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 5.dp)
-                                            .height(30.dp), //altura da linha
+                                        .fillMaxWidth()
+                                        .padding(vertical = 5.dp)
+                                        .height(30.dp), //altura da linha
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
@@ -190,20 +192,57 @@ fun ScoreboardListScreen(
                                     // LISTA DE JOGADORES
                                     if (!game.game_players.isNullOrEmpty()) {
                                         itemsIndexed(game.game_players) { index, playerName ->
-                                            Text(
-                                                text = "- " + playerName,
-                                                style = TextStyle.Default.copy(
-                                                    fontSize = 16.sp,
-                                                    color = Color.White,
-                                                    fontWeight = FontWeight.Bold
-                                                ),
-                                                modifier = Modifier.padding(
-                                                    top = 2.dp,
-                                                    bottom = 2.dp,
-                                                    start = 10.dp,
-                                                    end = 10.dp
-                                                )
-                                            )
+                                            val score = game.game_scores[playerName] ?: 0
+                                            Row {
+                                                Column(
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                ) {
+                                                    Text(
+                                                        text = "- " + playerName,
+                                                        style = TextStyle.Default.copy(
+                                                            fontSize = 16.sp,
+                                                            color = Color.White,
+                                                            fontWeight = FontWeight.Bold
+                                                        ),
+                                                        modifier = Modifier.padding(
+                                                            top = 5.dp,
+                                                            bottom = 5.dp,
+                                                            start = 10.dp,
+                                                            end = 10.dp
+                                                        )
+                                                    )
+                                                }
+                                                Column(
+                                                    modifier = Modifier
+                                                        .padding(start = 5.dp)
+                                                        .width(75.dp)
+                                                        .background(
+                                                            color = Color.Gray,
+                                                            shape = RoundedCornerShape(15.dp)
+                                                        )
+                                                        .fillMaxHeight(),
+                                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = "$score",
+                                                        style = TextStyle.Default.copy(
+                                                            fontSize = 12.sp,
+                                                            color = Color.White,
+                                                            fontWeight = FontWeight.Bold
+                                                        ),
+                                                        modifier = Modifier
+                                                            .padding(
+                                                                top = 5.dp,
+                                                                bottom = 5.dp,
+                                                                start = 10.dp,
+                                                                end = 10.dp
+                                                            )
+                                                            .align(Alignment.CenterHorizontally)
+                                                    )
+                                                }
+                                            }
                                         }
                                     } else {
                                         // Definindo as cores para cada equipe
@@ -211,22 +250,59 @@ fun ScoreboardListScreen(
 
                                         // LISTA DE EQUIPES
                                         itemsIndexed(game.game_teams) { index, teamName ->
+                                            val score = game.game_scores[teamName] ?: 0
                                             val teamColor = teamColors[index % teamColors.size]
                                             Column {
-                                                Text(
-                                                    text = "- " + teamName,
-                                                    style = TextStyle.Default.copy(
-                                                        fontSize = 16.sp,
-                                                        color = Color.White,
-                                                        fontWeight = FontWeight.Bold
-                                                    ),
-                                                    modifier = Modifier.padding(
-                                                        top = 5.dp,
-                                                        bottom = 5.dp,
-                                                        start = 10.dp,
-                                                        end = 10.dp
-                                                    )
-                                                )
+                                                Row {
+                                                    Column(
+                                                        modifier = Modifier
+                                                            .weight(1f)
+                                                    ){
+                                                        Text(
+                                                            text = "- " + teamName,
+                                                            style = TextStyle.Default.copy(
+                                                                fontSize = 16.sp,
+                                                                color = Color.White,
+                                                                fontWeight = FontWeight.Bold
+                                                            ),
+                                                            modifier = Modifier.padding(
+                                                                top = 5.dp,
+                                                                bottom = 5.dp,
+                                                                start = 10.dp,
+                                                                end = 10.dp
+                                                            )
+                                                        )
+                                                    }
+                                                    Column(
+                                                        modifier = Modifier
+                                                            .padding(start = 5.dp)
+                                                            .width(75.dp)
+                                                            .background(
+                                                                color = Color.Gray,
+                                                                shape = RoundedCornerShape(15.dp)
+                                                            )
+                                                            .fillMaxHeight(),
+                                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                                        verticalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Text(
+                                                            text = "$score",
+                                                            style = TextStyle.Default.copy(
+                                                                fontSize = 12.sp,
+                                                                color = Color.White,
+                                                                fontWeight = FontWeight.Bold
+                                                            ),
+                                                            modifier = Modifier
+                                                                .padding(
+                                                                    top = 5.dp,
+                                                                    bottom = 5.dp,
+                                                                    start = 10.dp,
+                                                                    end = 10.dp
+                                                                )
+                                                                .align(Alignment.CenterHorizontally)
+                                                        )
+                                                    }
+                                                }
                                                 // JOGADORES DE CADA EQUIPE
                                                 Row (
                                                     modifier = Modifier.padding(
@@ -240,7 +316,10 @@ fun ScoreboardListScreen(
                                                         Box (
                                                             modifier = Modifier
                                                                 .padding(start = 5.dp)
-                                                                .background(color = teamColor, shape = RoundedCornerShape(15.dp))
+                                                                .background(
+                                                                    color = teamColor,
+                                                                    shape = RoundedCornerShape(15.dp)
+                                                                )
                                                         ){
                                                             Text(
                                                                 text = playerName,

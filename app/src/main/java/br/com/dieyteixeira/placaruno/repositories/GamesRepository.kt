@@ -66,6 +66,27 @@ class GamesRepository {
             emit(null)
         }
     }
+
+    suspend fun updateScore(userEmail: String, gameId: String, playerName: String, newTotalScore: Int) = withContext(Dispatchers.IO) {
+        try {
+            val gameRef = gamesCollection(userEmail).document(gameId)
+
+            val document = gameRef.get().await()
+            if (document != null && document.exists()) {
+                val updatedScores = document.get("game_scores") as? MutableMap<String, Int>
+                if (updatedScores != null) {
+                    updatedScores[playerName] = newTotalScore
+                    gameRef.update("game_scores", updatedScores).await()
+                } else {
+                    throw Exception("game_scores field is missing")
+                }
+            } else {
+                throw Exception("Document not found")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
 }
 
 fun Game.toGame() = Game(

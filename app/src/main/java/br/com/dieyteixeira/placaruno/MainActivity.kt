@@ -1,6 +1,5 @@
 package br.com.dieyteixeira.placaruno
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,20 +8,18 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.core.content.FileProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import br.com.dieyteixeira.placaruno.firebase.currentVersionCode
-import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.ui.navigation.authGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.homeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToAuthGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditGameEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditPlayerEdit
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditPointsEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditTeamEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToHomeGraph
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewGame
-import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewGameEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewPlayerEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewTeamEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToPlayers
@@ -40,7 +37,6 @@ import br.com.dieyteixeira.placaruno.ui.viewmodels.AppViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.koin.androidx.compose.koinViewModel
-import java.io.File
 
 @RequiresApi(Build.VERSION_CODES.P)
 class MainActivity : ComponentActivity() {
@@ -112,6 +108,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onNavigateToScoreboard = {
                             navController.navigateToScoreboard()
+                        },
+                        onNavigateToEditPointsEdit = { userEmail, gameId, name, score ->
+                            navController.navigateToEditPointsEdit(userEmail, gameId, name, score)
                         },
                         onPopBackStack = {
                             navController.popBackStack()

@@ -3,6 +3,7 @@ package br.com.dieyteixeira.placaruno.ui.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.dieyteixeira.placaruno.models.Game
 import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.repositories.GamesRepository
@@ -18,10 +19,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 // Defina uma enumeração para o tipo de dados
@@ -72,6 +76,9 @@ class ScoreboardEditViewModel(
 
     private val _teamPlayerCounts = MutableStateFlow<Map<String, Int>>(emptyMap())
     val teamPlayerCounts: StateFlow<Map<String, Int>> = _teamPlayerCounts.asStateFlow()
+
+    private val _gamePoints = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val gamePoints: StateFlow<Map<String, Int>> = _gamePoints.asStateFlow()
 
     private fun loadGameData(id: String) {
         userEmail?.let { email ->
@@ -148,10 +155,37 @@ class ScoreboardEditViewModel(
                                 game.game_players_team[teamName]?.size ?: 0
                             }
                         }
+
+                        _gamePoints.update {
+                            game.game_scores
+                        }
                     }
             }
         }
     }
+
+//    fun updateData() {
+//        viewModelScope.launch {
+//            userEmail?.let { email ->
+//                id?.let {
+//                    // Coleta os pontos atualizados dos jogadores do estado atual
+//                    val updatedScores = _gamePoints.value
+//
+//                    // Atualiza o jogo existente com os novos pontos
+//                    val updatedGame = Game(
+//                        game_id = it,
+//                        game_name = uiState.value.title, // Use o título atual do jogo
+//                        game_teams = if (_verificatePlayers.value == PlayerOrTeam.TEAMS) _selectedPlayersOrTeams.value else emptyList(),
+//                        game_players = if (_verificatePlayers.value == PlayerOrTeam.PLAYERS) _selectedPlayers.value else emptyList(),
+//                        game_players_team = emptyMap(), // Se necessário, ajuste de acordo com a lógica do jogo
+//                        game_scores = updatedScores
+//                    )
+//
+//                    gamesRepository.update(email, it, updatedGame)
+//                }
+//            }
+//        }
+//    }
 
     suspend fun delete() {
         userEmail?.let { email ->

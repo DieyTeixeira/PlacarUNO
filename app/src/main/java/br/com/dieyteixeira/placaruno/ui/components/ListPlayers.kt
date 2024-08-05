@@ -1,6 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,22 +21,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import br.com.dieyteixeira.placaruno.models.Player
+import br.com.dieyteixeira.placaruno.models.Game
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
-import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayerOrTeam
 import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardEditViewModel
+import com.google.android.exoplayer2.util.Log
 
 @Composable
 fun ListPlayersGame (
     playersTotalCount: Int,
     selectedPlayers: List<String>,
+    points: Map<String, Int>,
+    onPlayerClick: (String, Int) -> Unit,
     scoreboardEditViewModel: ScoreboardEditViewModel = viewModel()
 ) {
-    val points = listOf(10, 210, 15, 25, 530, 30, 10, 120)
 
     val teamColors = listOf(VerdeUno, AzulUno, VermelhoUno, AmareloUno)
 
@@ -53,6 +55,8 @@ fun ListPlayersGame (
             modifier = Modifier.weight(3f)
         ) {
             for (i in 0 until firstColumnCount) {
+                val playerName = selectedPlayers.getOrNull(i) ?: ""
+                val playerScore = points[playerName] ?: 0
                 val teamColor = when (verificatePlayers) {
                     PlayerOrTeam.PLAYERS -> Color.Gray
                     PlayerOrTeam.TEAMS -> teamColors[i % teamColors.size]
@@ -71,6 +75,8 @@ fun ListPlayersGame (
                                 bottomEnd = 0.dp
                             )
                         )
+                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
+                            onPlayerClick(playerName, playerScore) }
                 ) {
                     Row{
                         Box(
@@ -104,6 +110,8 @@ fun ListPlayersGame (
             modifier = Modifier.weight(1f)
         ) {
             for (i in 0 until firstColumnCount) {
+                val playerName = selectedPlayers.getOrNull(i) ?: ""
+                val playerScore = points[playerName] ?: 0
                 Spacer(modifier = Modifier.height(5.dp))
                 Box(
                     modifier = Modifier
@@ -118,9 +126,11 @@ fun ListPlayersGame (
                                 bottomEnd = 8.dp
                             )
                         )
+                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
+                            onPlayerClick(playerName, playerScore) }
                 ) {
                     Text(
-                        text = points.getOrNull(i)?.toString() ?: "0",
+                        text = points[selectedPlayers.getOrNull(i)]?.toString() ?: "0",
                         style = TextStyle.Default.copy(
                             color = Color.White,
                             fontSize = 15.sp
@@ -136,6 +146,8 @@ fun ListPlayersGame (
             modifier = Modifier.weight(3f)
         ) {
             for (i in 0 until secondColumnCount) {
+                val playerName = selectedPlayers.getOrNull(firstColumnCount + i) ?: ""
+                val playerScore = points[playerName] ?: 0
                 val teamColor = when (verificatePlayers) {
                     PlayerOrTeam.PLAYERS -> Color.Gray
                     PlayerOrTeam.TEAMS -> teamColors[firstColumnCount + i % teamColors.size]
@@ -154,6 +166,8 @@ fun ListPlayersGame (
                                 bottomEnd = 0.dp
                             )
                         )
+                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
+                            onPlayerClick(playerName, playerScore) }
                 ) {
                     Row{
                         Box(
@@ -187,6 +201,8 @@ fun ListPlayersGame (
             modifier = Modifier.weight(1f)
         ) {
             for (i in 0 until secondColumnCount) {
+                val playerName = selectedPlayers.getOrNull(firstColumnCount + i) ?: ""
+                val playerScore = points[playerName] ?: 0
                 Spacer(modifier = Modifier.height(5.dp))
                 Box(
                     modifier = Modifier
@@ -201,9 +217,11 @@ fun ListPlayersGame (
                                 bottomEnd = 8.dp
                             )
                         )
+                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
+                            onPlayerClick(playerName, playerScore) }
                 ) {
                     Text(
-                        text = points.getOrNull(firstColumnCount + i)?.toString() ?: "0",
+                        text = points[selectedPlayers.getOrNull(firstColumnCount + i)]?.toString() ?: "0",
                         style = TextStyle.Default.copy(
                             color = Color.White,
                             fontSize = 15.sp
