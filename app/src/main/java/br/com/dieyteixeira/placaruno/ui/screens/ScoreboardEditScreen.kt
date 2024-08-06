@@ -48,7 +48,6 @@ fun ScoreboardEditScreen(
     uiState: ScoreboardEditUiState,
     viewModel: ScoreboardEditViewModel = viewModel()
 ) {
-
     val title = uiState.title
     val gameId = uiState.gameId
 
@@ -65,6 +64,10 @@ fun ScoreboardEditScreen(
     }
 
     val gamePoints by viewModel.gamePoints.collectAsState()
+
+    LaunchedEffect(gameId) {
+        viewModel.updateGameData(gameId)
+    }
 
     Column (
         Modifier

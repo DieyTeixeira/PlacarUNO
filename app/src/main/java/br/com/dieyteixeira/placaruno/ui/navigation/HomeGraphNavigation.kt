@@ -47,25 +47,32 @@ fun NavGraphBuilder.homeGraph(
             onNavigateToEditPlayerEdit = onNavigateToEditPlayerEdit,
             onPopBackStack = onPopBackStack
         )
-        playerEditScreen(onPopBackStack = onPopBackStack)
+        playerEditScreen(
+            onPopBackStack = onPopBackStack
+        )
         teamsListScreen(
             onNavigateToNewTeamEdit = onNavigateToNewTeamEdit,
             onNavigateToEditTeamEdit = onNavigateToEditTeamEdit,
             onPopBackStack = onPopBackStack
         )
-        teamEditScreen(onPopBackStack = onPopBackStack)
+        teamEditScreen(
+            onPopBackStack = onPopBackStack
+        )
         newGameScreen(
             onPopBackStack = onPopBackStack,
             onNavigateToScoreboard = onNavigateToScoreboard
         )
         scoreboardListScreen(
             onNavigateToEditGameEdit = onNavigateToEditGameEdit,
-            onPopBackStack = onPopBackStack)
+            onPopBackStack = onPopBackStack
+        )
         scoreboardEditScreen(
             onNavigateToEditPointsEdit = onNavigateToEditPointsEdit,
             onPopBackStack = onPopBackStack
         )
-        pointsScreen(onPopBackStack = onPopBackStack)
+        pointsScreen(
+            onPopBackStack = onPopBackStack
+        )
     }
 }
 

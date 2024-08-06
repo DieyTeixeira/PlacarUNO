@@ -108,7 +108,11 @@ fun ScoreboardListScreen(
 
         /***** CORPO DA ESTRUTURA *****/
         Box(modifier) {
-            LazyColumn(Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.945f)
+            ) {
                 itemsIndexed(uiState.games) { index, game ->
                     val showActions = index == lastClickedGameIndex
                     Row(
@@ -189,6 +193,7 @@ fun ScoreboardListScreen(
                                         )
                                         .heightIn(max = 200.dp)
                                 ) {
+
                                     // LISTA DE JOGADORES
                                     if (!game.game_players.isNullOrEmpty()) {
                                         itemsIndexed(game.game_players) { index, playerName ->
@@ -213,10 +218,12 @@ fun ScoreboardListScreen(
                                                         )
                                                     )
                                                 }
+                                                // PONTUAÇÃO DOS JOGADORES
                                                 Column(
                                                     modifier = Modifier
                                                         .padding(start = 5.dp)
-                                                        .width(75.dp)
+                                                        .width(60.dp)
+                                                        .height(20.dp)
                                                         .background(
                                                             color = Color.Gray,
                                                             shape = RoundedCornerShape(15.dp)
@@ -228,14 +235,12 @@ fun ScoreboardListScreen(
                                                     Text(
                                                         text = "$score",
                                                         style = TextStyle.Default.copy(
-                                                            fontSize = 12.sp,
+                                                            fontSize = 16.sp,
                                                             color = Color.White,
                                                             fontWeight = FontWeight.Bold
                                                         ),
                                                         modifier = Modifier
                                                             .padding(
-                                                                top = 5.dp,
-                                                                bottom = 5.dp,
                                                                 start = 10.dp,
                                                                 end = 10.dp
                                                             )
@@ -245,6 +250,7 @@ fun ScoreboardListScreen(
                                             }
                                         }
                                     } else {
+
                                         // Definindo as cores para cada equipe
                                         val teamColors = listOf(VerdeUno, AzulUno, VermelhoUno, AmareloUno)
 
@@ -273,10 +279,12 @@ fun ScoreboardListScreen(
                                                             )
                                                         )
                                                     }
+                                                    // PONTUAÇÃO DAS EQUIPES
                                                     Column(
                                                         modifier = Modifier
                                                             .padding(start = 5.dp)
-                                                            .width(75.dp)
+                                                            .width(60.dp)
+                                                            .height(20.dp)
                                                             .background(
                                                                 color = Color.Gray,
                                                                 shape = RoundedCornerShape(15.dp)
@@ -288,14 +296,12 @@ fun ScoreboardListScreen(
                                                         Text(
                                                             text = "$score",
                                                             style = TextStyle.Default.copy(
-                                                                fontSize = 12.sp,
+                                                                fontSize = 16.sp,
                                                                 color = Color.White,
                                                                 fontWeight = FontWeight.Bold
                                                             ),
                                                             modifier = Modifier
                                                                 .padding(
-                                                                    top = 5.dp,
-                                                                    bottom = 5.dp,
                                                                     start = 10.dp,
                                                                     end = 10.dp
                                                                 )
@@ -341,53 +347,6 @@ fun ScoreboardListScreen(
                             }
                         }
                     }
-//                    if (showActions) {
-//                        Column(
-//                            modifier = Modifier
-//                                .padding(bottom = 2.dp, start = 20.dp, end = 20.dp)
-//                                .heightIn(max = 200.dp) // Limitar a altura
-//                                .fillMaxWidth()
-//                                .background(
-//                                    Color(0xFFA7A7A7).copy(alpha = 0.5f),
-//                                    RoundedCornerShape(
-//                                        topStart = 0.dp,
-//                                        bottomStart = 10.dp,
-//                                        topEnd = 0.dp,
-//                                        bottomEnd = 10.dp
-//                                    )
-//                                ) // Borda para visualização
-//                        ) {
-//                            Spacer(modifier = Modifier.height(3.dp))
-//                            LazyColumn(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(
-//                                        top = 3.dp,
-//                                        bottom = 5.dp,
-//                                        start = 5.dp,
-//                                        end = 5.dp
-//                                    )
-//                                    .heightIn(max = 200.dp)
-//                            ) {
-//                                items(if(game.game_players.isNullOrEmpty()) game.game_players_team else game.game_players) { gameName ->
-//                                    Text(
-//                                        text = gameName,
-//                                        style = TextStyle.Default.copy(
-//                                            fontSize = 16.sp,
-//                                            color = Color.White
-//                                        ),
-//                                        modifier = Modifier.padding(
-//                                            top = 2.dp,
-//                                            bottom = 2.dp,
-//                                            start = 10.dp,
-//                                            end = 10.dp
-//                                        )
-//                                    )
-//                                }
-//                            }
-//                            Spacer(modifier = Modifier.height(5.dp))
-//                        }
-//                    }
                 }
             }
         }

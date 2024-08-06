@@ -16,6 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -23,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.dieyteixeira.placaruno.models.Game
+import br.com.dieyteixeira.placaruno.models.Player
+import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
+import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
@@ -41,7 +47,12 @@ fun ListPlayersGame (
     viewModel: ScoreboardEditViewModel = viewModel()
 ) {
 
-    val points by viewModel.gamePoints.collectAsState()
+    LaunchedEffect(gameIdentification) {
+        viewModel.updateGameData(gameIdentification)
+    }
+
+    val points by viewModel.gamePoints.collectAsState(initial = emptyMap())
+
     val teamColors = listOf(VerdeUno, AzulUno, VermelhoUno, AmareloUno)
 
     val verificatePlayers by viewModel.verificatePlayers.collectAsState()
@@ -78,8 +89,7 @@ fun ListPlayersGame (
                                 bottomEnd = 0.dp
                             )
                         )
-                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(gameIdentification, playerName, playerScore) }
+                        .clickable { onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Row{
                         Box(
@@ -97,12 +107,12 @@ fun ListPlayersGame (
                                 )
                         )
                         Text(
-                            text = selectedPlayers.getOrNull(i) ?: "",
+                            text = playerName,
                             style = TextStyle.Default.copy(
                                 color = Color.DarkGray,
-                                fontSize = 15.sp
+                                fontSize = 17.sp
                             ),
-                            modifier = Modifier.padding(start = 10.dp, top = 6.dp, bottom = 6.dp, end = 6.dp)
+                            modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 5.dp)
                         )
                     }
                 }
@@ -129,16 +139,15 @@ fun ListPlayersGame (
                                 bottomEnd = 8.dp
                             )
                         )
-                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(gameIdentification, playerName, playerScore) }
+                        .clickable { onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Text(
-                        text = points[selectedPlayers.getOrNull(i)]?.toString() ?: "0",
+                        text = "$playerScore",
                         style = TextStyle.Default.copy(
                             color = Color.White,
-                            fontSize = 15.sp
+                            fontSize = 17.sp
                         ),
-                        modifier = Modifier.padding(start = 10.dp, top = 6.dp, bottom = 6.dp, end = 6.dp)
+                        modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 5.dp)
                     )
                 }
             }
@@ -169,8 +178,7 @@ fun ListPlayersGame (
                                 bottomEnd = 0.dp
                             )
                         )
-                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(gameIdentification, playerName, playerScore) }
+                        .clickable { onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Row{
                         Box(
@@ -188,12 +196,12 @@ fun ListPlayersGame (
                                 )
                         )
                         Text(
-                            text = selectedPlayers.getOrNull(firstColumnCount + i) ?: "",
+                            text = playerName,
                             style = TextStyle.Default.copy(
                                 color = Color.DarkGray,
-                                fontSize = 15.sp
+                                fontSize = 17.sp
                             ),
-                            modifier = Modifier.padding(start = 10.dp, top = 6.dp, bottom = 6.dp, end = 6.dp)
+                            modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 5.dp)
                         )
                     }
                 }
@@ -220,16 +228,15 @@ fun ListPlayersGame (
                                 bottomEnd = 8.dp
                             )
                         )
-                        .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(gameIdentification, playerName, playerScore) }
+                        .clickable { onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Text(
-                        text = points[selectedPlayers.getOrNull(firstColumnCount + i)]?.toString() ?: "0",
+                        text = "$playerScore",
                         style = TextStyle.Default.copy(
                             color = Color.White,
-                            fontSize = 15.sp
+                            fontSize = 17.sp
                         ),
-                        modifier = Modifier.padding(start = 10.dp, top = 6.dp, bottom = 6.dp, end = 6.dp)
+                        modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 5.dp)
                     )
                 }
             }

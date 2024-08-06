@@ -60,6 +60,7 @@ class ScoreboardEditViewModel(
         }
         id?.let {
             loadGameData(it)
+            updateGameData(it)
         }
     }
 
@@ -158,6 +159,21 @@ class ScoreboardEditViewModel(
                             }
                         }
 
+                        _gamePoints.update {
+                            game.game_scores
+                        }
+                    }
+            }
+        }
+    }
+
+    fun updateGameData(gameIdentification: String) {
+        userEmail?.let { email ->
+            viewModelScope.launch {
+                gamesRepository.findById(email, gameIdentification)
+                    .filterNotNull()
+                    .mapNotNull { it.toGame() }
+                    .collectLatest { game ->
                         _gamePoints.update {
                             game.game_scores
                         }
