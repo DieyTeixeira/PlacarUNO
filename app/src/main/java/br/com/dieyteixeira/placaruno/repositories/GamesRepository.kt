@@ -67,21 +67,28 @@ class GamesRepository {
         }
     }
 
-    suspend fun updateScore(userEmail: String, gameId: String, playerName: String, newTotalScore: Int) = withContext(Dispatchers.IO) {
+    suspend fun updateScore(userEmail: String, gameId: String, playerName: String, newScore: Int) = withContext(Dispatchers.IO) {
         try {
-            val gameRef = gamesCollection(userEmail).document(gameId)
+            // Referência ao documento do jogo
+            val gameRef = db.collection(userEmail)
+                .document("jogos")
+                .collection("lista")
+                .document(gameId)
 
+            // Obter o documento do jogo
             val document = gameRef.get().await()
-            if (document != null && document.exists()) {
-                val updatedScores = document.get("game_scores") as? MutableMap<String, Int>
-                if (updatedScores != null) {
-                    updatedScores[playerName] = newTotalScore
-                    gameRef.update("game_scores", updatedScores).await()
-                } else {
-                    throw Exception("game_scores field is missing")
-                }
+            if (document.exists()) {
+                // Obter o campo game_scores como um Map e convertê-lo em um MutableMap
+                val gameScores = document.get("game_scores") as? MutableMap<String, Long> ?: mutableMapOf()
+
+                // Atualizar a pontuação do jogador
+                val currentScore = gameScores[playerName] ?: 0
+                gameScores[playerName] = currentScore + newScore
+
+                // Atualizar o documento no Firestore
+                gameRef.update("game_scores", gameScores).await()
             } else {
-                throw Exception("Document not found")
+                throw Exception("Documento não encontrado")
             }
         } catch (e: Exception) {
             throw e

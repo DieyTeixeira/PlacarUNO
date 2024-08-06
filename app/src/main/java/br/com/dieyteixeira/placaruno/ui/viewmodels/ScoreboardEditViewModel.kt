@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -96,6 +97,7 @@ class ScoreboardEditViewModel(
                             currentState.copy(
                                 topAppBarTitle = "EDITAR",
                                 title = game.game_name,
+                                gameId = game.game_id,
                                 isDeleteEnabled = true
                             )
                         }
@@ -163,29 +165,6 @@ class ScoreboardEditViewModel(
             }
         }
     }
-
-//    fun updateData() {
-//        viewModelScope.launch {
-//            userEmail?.let { email ->
-//                id?.let {
-//                    // Coleta os pontos atualizados dos jogadores do estado atual
-//                    val updatedScores = _gamePoints.value
-//
-//                    // Atualiza o jogo existente com os novos pontos
-//                    val updatedGame = Game(
-//                        game_id = it,
-//                        game_name = uiState.value.title, // Use o título atual do jogo
-//                        game_teams = if (_verificatePlayers.value == PlayerOrTeam.TEAMS) _selectedPlayersOrTeams.value else emptyList(),
-//                        game_players = if (_verificatePlayers.value == PlayerOrTeam.PLAYERS) _selectedPlayers.value else emptyList(),
-//                        game_players_team = emptyMap(), // Se necessário, ajuste de acordo com a lógica do jogo
-//                        game_scores = updatedScores
-//                    )
-//
-//                    gamesRepository.update(email, it, updatedGame)
-//                }
-//            }
-//        }
-//    }
 
     suspend fun delete() {
         userEmail?.let { email ->

@@ -57,12 +57,14 @@ import com.google.firebase.auth.FirebaseAuth
 fun PointsScreen(
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
+    id: String,
     name: String,
     score: Int,
     viewModel: PontuationViewModel = viewModel()
 ) {
     Log.d("Navigation", "PointsEditScreen composable called")
 
+    val gameID = id
     val playerName = name
     val playerScore = score
     val pontuacaoTotal by remember { derivedStateOf { viewModel.pontuacaoTotal } }
@@ -96,7 +98,10 @@ fun PointsScreen(
                     ButtonInfo(
                         icon = painterResource(id = R.drawable.ic_save),
                         description = "Save",
-                        onClick = onSaveClick
+                        onClick = {
+                            viewModel.updatePlayerScore(gameID, playerName, newTotalScore)
+                            onSaveClick()
+                        }
                     )
                 }, // Posição 3 botão
                 null, // Posição 4 sem botão

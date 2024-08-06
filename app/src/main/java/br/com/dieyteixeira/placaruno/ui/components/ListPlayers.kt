@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,16 +33,18 @@ import com.google.android.exoplayer2.util.Log
 
 @Composable
 fun ListPlayersGame (
+    gameIdentification: String,
     playersTotalCount: Int,
     selectedPlayers: List<String>,
-    points: Map<String, Int>,
-    onPlayerClick: (String, Int) -> Unit,
-    scoreboardEditViewModel: ScoreboardEditViewModel = viewModel()
+//    points: Map<String, Int>,
+    onPlayerClick: (String, String, Int) -> Unit,
+    viewModel: ScoreboardEditViewModel = viewModel()
 ) {
 
+    val points by viewModel.gamePoints.collectAsState()
     val teamColors = listOf(VerdeUno, AzulUno, VermelhoUno, AmareloUno)
 
-    val verificatePlayers by scoreboardEditViewModel.verificatePlayers.collectAsState()
+    val verificatePlayers by viewModel.verificatePlayers.collectAsState()
 
     val firstColumnCount = (playersTotalCount + 1) / 2
     val secondColumnCount = playersTotalCount / 2
@@ -76,7 +79,7 @@ fun ListPlayersGame (
                             )
                         )
                         .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(playerName, playerScore) }
+                            onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Row{
                         Box(
@@ -127,7 +130,7 @@ fun ListPlayersGame (
                             )
                         )
                         .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(playerName, playerScore) }
+                            onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Text(
                         text = points[selectedPlayers.getOrNull(i)]?.toString() ?: "0",
@@ -167,7 +170,7 @@ fun ListPlayersGame (
                             )
                         )
                         .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(playerName, playerScore) }
+                            onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Row{
                         Box(
@@ -218,7 +221,7 @@ fun ListPlayersGame (
                             )
                         )
                         .clickable { Log.d("Navigation", "Navigating to NextScreen")
-                            onPlayerClick(playerName, playerScore) }
+                            onPlayerClick(gameIdentification, playerName, playerScore) }
                 ) {
                     Text(
                         text = points[selectedPlayers.getOrNull(firstColumnCount + i)]?.toString() ?: "0",

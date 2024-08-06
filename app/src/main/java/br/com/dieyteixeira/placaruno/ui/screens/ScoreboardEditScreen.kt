@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -43,27 +44,27 @@ import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardEditViewModel
 @Composable
 fun ScoreboardEditScreen(
     onBackClick: () -> Unit = {},
-    onPlayerClick: (String, Int) -> Unit,
+    onPlayerClick: (String, String, Int) -> Unit,
     uiState: ScoreboardEditUiState,
-    scoreboardEditViewModel: ScoreboardEditViewModel = viewModel()
+    viewModel: ScoreboardEditViewModel = viewModel()
 ) {
 
     val title = uiState.title
+    val gameId = uiState.gameId
 
-    val verificatePlayers by scoreboardEditViewModel.verificatePlayers.collectAsState()
+    val verificatePlayers by viewModel.verificatePlayers.collectAsState()
 
-    val selectedPlayersOrTeams by scoreboardEditViewModel.selectedPlayersOrTeams.collectAsState()
-    val selectedPlayers by scoreboardEditViewModel.selectedPlayers.collectAsState()
+    val selectedPlayersOrTeams by viewModel.selectedPlayersOrTeams.collectAsState()
+    val selectedPlayers by viewModel.selectedPlayers.collectAsState()
 
-    val playerCount by scoreboardEditViewModel.playerCount.collectAsState()
-    val teamPlayerCounts by scoreboardEditViewModel.teamPlayerCounts.collectAsState()
+    val playerCount by viewModel.playerCount.collectAsState()
+    val teamPlayerCounts by viewModel.teamPlayerCounts.collectAsState()
     val playersTotalCount = when (verificatePlayers) {
         PlayerOrTeam.PLAYERS -> playerCount
         PlayerOrTeam.TEAMS -> teamPlayerCounts.values.sum()
     }
 
-    val gamePoints by scoreboardEditViewModel.gamePoints.collectAsState()
-
+    val gamePoints by viewModel.gamePoints.collectAsState()
 
     Column (
         Modifier
@@ -128,11 +129,12 @@ fun ScoreboardEditScreen(
                 .padding(10.dp)
         ){
             ListPlayersGame(
+                gameIdentification = gameId,
                 playersTotalCount = playerCount,
                 selectedPlayers = selectedPlayersOrTeams,
-                points = gamePoints,
-                onPlayerClick = { playerName, playerScore ->
-                    onPlayerClick(playerName, playerScore)
+//                points = gamePoints,
+                onPlayerClick = { gameIdentification, playerName, playerScore ->
+                    onPlayerClick(gameIdentification, playerName, playerScore)
                 }
             )
         }

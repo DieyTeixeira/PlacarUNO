@@ -109,8 +109,8 @@ class MainActivity : ComponentActivity() {
                         onNavigateToScoreboard = {
                             navController.navigateToScoreboard()
                         },
-                        onNavigateToEditPointsEdit = { name, score ->
-                            navController.navigateToEditPointsEdit(name, score)
+                        onNavigateToEditPointsEdit = { id, name, score ->
+                            navController.navigateToEditPointsEdit(id, name, score)
                         },
                         onPopBackStack = {
                             navController.popBackStack()

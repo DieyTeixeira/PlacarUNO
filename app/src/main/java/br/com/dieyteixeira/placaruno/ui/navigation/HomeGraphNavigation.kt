@@ -28,7 +28,7 @@ fun NavGraphBuilder.homeGraph(
     onNavigateToScoreboard: () -> Unit,
     onNavigateToEditGameEdit: (Game) -> Unit,
 
-    onNavigateToEditPointsEdit: (String, Int) -> Unit,
+    onNavigateToEditPointsEdit: (String, String, Int) -> Unit,
 
     onPopBackStack: () -> Unit,
 ) {
