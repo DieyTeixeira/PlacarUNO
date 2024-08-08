@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,6 +30,7 @@ import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.models.Game
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
+import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.components.ListPlayersGame
@@ -48,6 +50,8 @@ fun ScoreboardEditScreen(
     uiState: ScoreboardEditUiState,
     viewModel: ScoreboardEditViewModel = viewModel()
 ) {
+    val clickHandler = remember { ClickHandler() }
+
     val title = uiState.title
     val gameId = uiState.gameId
 
@@ -137,7 +141,9 @@ fun ScoreboardEditScreen(
                 selectedPlayers = selectedPlayersOrTeams,
 //                points = gamePoints,
                 onPlayerClick = { gameIdentification, playerName, playerScore ->
-                    onPlayerClick(gameIdentification, playerName, playerScore)
+                    if (clickHandler.canClick()) {
+                        onPlayerClick(gameIdentification, playerName, playerScore)
+                    }
                 }
             )
         }

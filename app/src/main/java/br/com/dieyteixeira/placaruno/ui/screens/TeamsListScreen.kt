@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,6 +52,7 @@ import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.models.Team
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
+import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
@@ -69,6 +71,7 @@ fun TeamsListScreen(
     onBackClick: () -> Unit = {},
     viewModel: TeamsListViewModel
 ) {
+    val clickHandler = remember { ClickHandler() }
 
     var lastClickedTeamIndex by remember { mutableStateOf(-1) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -111,11 +114,14 @@ fun TeamsListScreen(
             ),
             backgroundColor = Color.Gray.copy(alpha = 0.3f)
         )
-        Spacer(modifier = Modifier.height(5.dp))
 
         /***** CORPO DA ESTRUTURA *****/
         Box(modifier) {
-            LazyColumn(Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.945f)
+            ) {
                 itemsIndexed(uiState.teams) { index, team ->
                     val showActions = index == lastClickedTeamIndex
                     Row(
@@ -135,12 +141,12 @@ fun TeamsListScreen(
                             )
                     ) {
                         Column(
-                            Modifier.padding(top = 10.dp),
-                            verticalArrangement = Arrangement.spacedBy(5.dp)
+                            Modifier.padding(top = 10.dp, start = 5.dp, end = 5.dp),
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .height(45.dp)
                                     .background(
                                         color = Color(0xFF393F42),
                                         shape = RoundedCornerShape(15.dp)
@@ -153,8 +159,7 @@ fun TeamsListScreen(
                                     Text(
                                         text = team.team_name,
                                         style = TextStyle.Default.copy(
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 18.sp,
                                             color = Color.White
                                         ),
                                         overflow = TextOverflow.Ellipsis,
@@ -163,7 +168,13 @@ fun TeamsListScreen(
                                             .padding(vertical = 14.dp)
                                     )
                                     if (showActions) {
-                                        IconButton(onClick = { onTeamClick(team) }) {
+                                        IconButton(
+                                            onClick = {
+                                                if (clickHandler.canClick()) {
+                                                    onTeamClick(team)
+                                                }
+                                            }
+                                        ) {
                                             Icon(
                                                 imageVector = Icons.Default.Edit,
                                                 contentDescription = "Edit",

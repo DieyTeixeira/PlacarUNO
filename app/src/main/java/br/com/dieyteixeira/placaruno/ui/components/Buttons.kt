@@ -40,6 +40,8 @@ fun GenericButtonBar(
     buttons: List<ButtonInfo?>,
     backgroundColor: Color = Color.Gray.copy(alpha = 0.3f)
 ) {
+    val clickHandler = remember { ClickHandler() }
+
     require(buttons.size == 5) { "The buttons list must have exactly 5 elements" }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,7 +64,6 @@ fun GenericButtonBar(
                             icon = buttonInfo.icon,
                             description = buttonInfo.description,
                             onClick = buttonInfo.onClick,
-                            debounce = buttonInfo.debounce,
                             rotate = buttonInfo.rotate
                         )
                     } else {
@@ -78,7 +79,6 @@ data class ButtonInfo(
     val icon: Painter,
     val description: String,
     val onClick: () -> Unit,
-    val debounce: Boolean = true,
     val rotate: Boolean = false
 )
 
@@ -87,14 +87,12 @@ fun GenericButton(
     icon: Painter,
     description: String,
     onClick: () -> Unit,
-    debounce: Boolean = true,
     rotate: Boolean = false,
-    enabled: Boolean = true,
     size: Int = 40,
     backgroundColor: Color = Color.Gray.copy(alpha = 0f),
     iconTint: Color = Color.LightGray
 ) {
-    var isEnabled by remember { mutableStateOf(enabled) }
+    val clickHandler = remember { ClickHandler() }
     val rotation by animateFloatAsState(
         targetValue = if (rotate) 45f else 0f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
@@ -107,16 +105,8 @@ fun GenericButton(
             .background(backgroundColor, CircleShape)
             .clip(CircleShape)
             .clickable {
-                if (!debounce || isEnabled) {
-                    if (debounce) {
-                        isEnabled = false
-                    }
+                if (clickHandler.canClick()) {
                     onClick()
-                    if (debounce) {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            isEnabled = true
-                        }, 1500)
-                    }
                 }
             }
             .rotate(rotation)
@@ -125,60 +115,60 @@ fun GenericButton(
     )
 }
 
-@Preview
-@Composable
-fun PreviewGenericButtonBar() {
-    GenericButtonBar(
-        buttons = listOf(
-            null, // Posição 1 sem botão
-            null, // Posição 2 sem botão
-            ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_add),
-                description = "Add",
-                onClick = { println("Add clicked") }
-            ), // Posição 3 botão Add
-            null, // Posição 4 sem botão
-            ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_double_arrow_left),
-                description = "Back",
-                onClick = { println("Back clicked") }
-            )  // Posição 5 botão DoubleArrow
-        ),
-        backgroundColor = Color.Black.copy(alpha = 0.5f)
-    )
-}
-
-@Preview
-@Composable
-fun PreviewGenericButtonBarAllButtons() {
-    GenericButtonBar(
-        buttons = listOf(
-            ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_add),
-                description = "Add",
-                onClick = { println("Add clicked") }
-            ),
-            ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_add),
-                description = "Check",
-                onClick = { println("Check clicked") }
-            ),
-            ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_out),
-                description = "Close",
-                onClick = { println("Close clicked") }
-            ),
-            ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_double_arrow_left),
-                description = "Back",
-                onClick = { println("Back clicked") }
-            ),
-            ButtonInfo(
-                icon = painterResource(id = R.drawable.ic_delete),
-                description = "Delete",
-                onClick = { println("Delete clicked") }
-            )
-        ),
-        backgroundColor = Color.Black.copy(alpha = 0.5f)
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewGenericButtonBar() {
+//    GenericButtonBar(
+//        buttons = listOf(
+//            null, // Posição 1 sem botão
+//            null, // Posição 2 sem botão
+//            ButtonInfo(
+//                icon = painterResource(id = R.drawable.ic_add),
+//                description = "Add",
+//                onClick = { println("Add clicked") }
+//            ), // Posição 3 botão Add
+//            null, // Posição 4 sem botão
+//            ButtonInfo(
+//                icon = painterResource(id = R.drawable.ic_double_arrow_left),
+//                description = "Back",
+//                onClick = { println("Back clicked") }
+//            )  // Posição 5 botão DoubleArrow
+//        ),
+//        backgroundColor = Color.Black.copy(alpha = 0.5f)
+//    )
+//}
+//
+//@Preview
+//@Composable
+//fun PreviewGenericButtonBarAllButtons() {
+//    GenericButtonBar(
+//        buttons = listOf(
+//            ButtonInfo(
+//                icon = painterResource(id = R.drawable.ic_add),
+//                description = "Add",
+//                onClick = { println("Add clicked") }
+//            ),
+//            ButtonInfo(
+//                icon = painterResource(id = R.drawable.ic_add),
+//                description = "Check",
+//                onClick = { println("Check clicked") }
+//            ),
+//            ButtonInfo(
+//                icon = painterResource(id = R.drawable.ic_out),
+//                description = "Close",
+//                onClick = { println("Close clicked") }
+//            ),
+//            ButtonInfo(
+//                icon = painterResource(id = R.drawable.ic_double_arrow_left),
+//                description = "Back",
+//                onClick = { println("Back clicked") }
+//            ),
+//            ButtonInfo(
+//                icon = painterResource(id = R.drawable.ic_delete),
+//                description = "Delete",
+//                onClick = { println("Delete clicked") }
+//            )
+//        ),
+//        backgroundColor = Color.Black.copy(alpha = 0.5f)
+//    )
+//}

@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
+import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
 import br.com.dieyteixeira.placaruno.ui.states.SignUpUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 
@@ -48,6 +50,8 @@ fun SignUpScreen(
 ) {
 
     /***** VARIÁVEIS *****/
+    val clickHandler = remember { ClickHandler() }
+
     val focusManager = LocalFocusManager.current
     val textFieldModifier = Modifier
         .fillMaxWidth(0.8f)
@@ -204,8 +208,10 @@ fun SignUpScreen(
         /***** BOTÃO *****/
         Button(
             onClick = {
-                focusManager.clearFocus()
-                onSignUpClick()
+                if (clickHandler.canClick()) {
+                    focusManager.clearFocus()
+                    onSignUpClick()
+                }
             },
             textFieldModifier,
         ) {

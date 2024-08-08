@@ -71,22 +71,25 @@ fun PokerTable(
 
 private fun DrawScope.drawTable() {
     val segmentAngle = 360f
-    val strokeWidth = 5.dp.toPx()
+    val strokeWidth = size.width * 0.01f
+    val mult = 0.95f
 
+    // BORDA MESA (ARCO CONTORNO)
     drawArc(
         color = Color.LightGray.copy(alpha = 0.5f),
         startAngle = segmentAngle,
         sweepAngle = segmentAngle,
         useCenter = false,
-        topLeft = Offset((size.width - 500f) / 2, (size.height - 500f) / 2),
-        size = Size(500f, 500f),
+        topLeft = Offset((size.width - (size.width * mult) * 0.480f) / 2, (size.height - (size.height * mult) * 0.375f) / 2), // 0.5f
+        size = Size((size.width * mult) * 0.48f, (size.width * mult) * 0.48f),
         style = Stroke(width = strokeWidth)
     )
 
+    // MESA (CÍRCULO CENTRAL)
     drawCircle(
-        color = Color.DarkGray,
+        color = Color.Gray,
         center = Offset(size.width / 2f, size.height / 2f),
-        radius = 245f
+        radius = (size.width * mult) * 0.235f
     )
 }
 
@@ -102,8 +105,8 @@ private fun DrawScope.drawPlayers(
     val centerY = size.height / 2f - 20
     val radius = size.width * 0.37f
     val startAngle = -Math.PI / 2
-    val distanceX = 82.dp.toPx()
-    val distanceY = 70.dp.toPx()
+    val distanceX = size.width * 0.207f
+    val distanceY = size.height * 0.127f // 0.12f > 0.125f
 
     for (i in 0 until playersTotalCount) {
         val angle = startAngle + (-2 * Math.PI * i / playersTotalCount)
@@ -151,10 +154,10 @@ private fun DrawScope.drawPlayers(
 
             // Desenhe o box colorido ao redor do texto
             canvas.drawRect(
-                playerX - distanceX / 2 + 60,
-                playerY + distanceY / 2 - 37,
-                playerX - distanceX / 2 + 160,
-                playerY + distanceY / 2 - 33,
+                playerX - distanceX / 2 + size.width * 0.055f,
+                playerY + distanceY / 2 - size.width * 0.019f, // 0.005f > 0.015f
+                playerX - distanceX / 2 + size.width * 0.152f,
+                playerY + distanceY / 2 - size.width * 0.015f, // 0.001f > 0.011f
                 Paint().apply {
                     color = boxColor.toArgb() // Cor do box
                 }
@@ -163,8 +166,8 @@ private fun DrawScope.drawPlayers(
             // Desenhe o texto sobre o box
             canvas.drawText(
                 text,
-                playerX - distanceX / 2 + 112 - textWidth / 2,
-                playerY + distanceY / 2 + 5, // Ajuste Y para centralizar o texto no box
+                playerX - distanceX / 2 + size.width * 0.103f - textWidth / 2,
+                playerY + distanceY / 2 + size.width * 0.021f, // 0.035f > 0.025f
                 textPaint
             )
         }

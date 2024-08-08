@@ -56,6 +56,7 @@ import com.google.android.exoplayer2.util.Log
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.LocalContext
+import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
 import br.com.dieyteixeira.placaruno.ui.components.Pontuation
 import br.com.dieyteixeira.placaruno.ui.components.vibration
 
@@ -83,6 +84,7 @@ fun NewGameScreen(
     val playerTeamCount by gameViewModel.playerTeamCount.collectAsState()
 
     var verification by remember { mutableStateOf(0) }
+    var habilitar_save by remember { mutableStateOf(0) }
 
     var showAjustar by remember { mutableStateOf(false) }
 
@@ -108,23 +110,19 @@ fun NewGameScreen(
         } else {
             0
         }
-    }
 
-    Log.d("NewGameScreen", "Switch state: $switchState")
-    Log.d("NewGameScreen", "Player count: $playerCount")
-    Log.d("NewGameScreen", "Team count: $teamCount")
-    Log.d("NewGameScreen", "Player team count: $playerTeamCount")
-    Log.d("NewGameScreen", "Selected players: ${selectedPlayers.size}")
-    Log.d("NewGameScreen", "Selected teams: ${selectedTeams.size}")
-    Log.d("NewGameScreen", "*****Verification*****: $verification")
+        habilitar_save = if (selectedTeams.size != 0 || selectedPlayers.size != 0) {
+            1
+        } else {
+            0
+        }
+    }
 
     Column (
         Modifier
             .background(color = Color(0xFF000000))
             .fillMaxSize()
     ) {
-
-        Log.d("NewGameScreen", "Setting up UI components")
 
         /***** CABEÇALHO *****/
         Header(
@@ -142,18 +140,22 @@ fun NewGameScreen(
                     onClick = onBackClick
                 ),  // Posição 1 botão
                 null, // Posição 2 sem botão
-                ButtonInfo(
-                    icon = painterResource(id = R.drawable.ic_save),
-                    description = "Save",
-                    onClick = {
-                        if (verification == 1) {
-                            onSaveClick()
-                        } else {
-                            vibration(context)
-                            showAjustar = true
+                if (habilitar_save == 1) {
+                    ButtonInfo(
+                        icon = painterResource(id = R.drawable.ic_save),
+                        description = "Save",
+                        onClick = {
+                            if (verification == 1) {
+                                onSaveClick()
+                            } else {
+                                vibration(context)
+                                showAjustar = true
+                            }
                         }
-                    }
-                ), // Posição 3 botão
+                    )
+                } else {
+                    null
+                }, // Posição 3 botão
                 null, // Posição 4 sem botão
                 null, // Posição 5 sem botão
             ),
@@ -210,19 +212,6 @@ fun NewGameScreen(
                         .padding(1.dp)
                 )
             }
-            Tab(
-                selected = selectedTabIndex == 2,
-                onClick = { selectedTabIndex = 2 }
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_g_score),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(1.dp)
-                )
-            }
-            // Adicione mais abas conforme necessário
         }
 
         // CONTEÚDO DAS ABAS (EXEMPLO)
@@ -328,30 +317,6 @@ fun NewGameScreen(
                 }
                 Log.d("NewGameScreen", "Displaying content for tab 1")
             }
-            2 -> {
-                Box (
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = Color.Gray.copy(alpha = 0.4f),
-                            shape = RoundedCornerShape(
-                                topStart = 0.dp,
-                                bottomStart = 15.dp,
-                                topEnd = 0.dp,
-                                bottomEnd = 15.dp
-                            )
-                        )
-                        .padding(10.dp)
-                ){
-                    Pontuation()
-                }
-//                Box (modifier = Modifier.fillMaxSize(0.95f)) {
-//                    PokerTable(playersTotalCount = playersTotalCount, selectedPlayers = selectedPlayers)
-//                    RotationGame()
-//                }
-                Log.d("NewGameScreen", "Displaying content for tab 2")
-            }
-            // Adicione mais casos conforme necessário
         }
     }
 

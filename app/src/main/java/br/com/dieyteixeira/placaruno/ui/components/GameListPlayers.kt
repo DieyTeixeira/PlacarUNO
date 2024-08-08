@@ -179,43 +179,49 @@ fun GameListPlayers(
         Spacer(modifier = Modifier.height(3.dp))
 
         // Snackbar de equipe completa
-        AnimatedVisibility(
-            visible = snackbarVisible,
-            enter = slideInHorizontally(
-                initialOffsetX = { fullWidth -> -fullWidth },
-                animationSpec = tween(durationMillis = 400)
-            ) + fadeIn(animationSpec = tween(durationMillis = 400)),
-            exit = slideOutHorizontally(
-                targetOffsetX = { fullWidth -> fullWidth },
-                animationSpec = tween(durationMillis = 400)
-            ) + fadeOut(animationSpec = tween(durationMillis = 400))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(25.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(25.dp)
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                VermelhoUno.copy(alpha = 0.0f),
-                                VermelhoUno.copy(alpha = 0.7f),
-                                VermelhoUno,
-                                VermelhoUno,
-                                VermelhoUno.copy(alpha = 0.7f),
-                                VermelhoUno.copy(alpha = 0.0f)
+            AnimatedVisibility(
+                visible = snackbarVisible,
+                enter = slideInHorizontally(
+                    initialOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(durationMillis = 400)
+                ) + fadeIn(animationSpec = tween(durationMillis = 400)),
+                exit = slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(durationMillis = 400)
+                ) + fadeOut(animationSpec = tween(durationMillis = 400))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(25.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    VermelhoUno.copy(alpha = 0.0f),
+                                    VermelhoUno.copy(alpha = 0.7f),
+                                    VermelhoUno,
+                                    VermelhoUno,
+                                    VermelhoUno.copy(alpha = 0.7f),
+                                    VermelhoUno.copy(alpha = 0.0f)
+                                )
                             )
                         )
+                ) {
+                    Text(
+                        text = "Número de jogadores atingido!",
+                        color = Color.White,
+                        style = TextStyle.Default.copy(
+                            fontSize = 16.sp,
+                            fontStyle = FontStyle.Italic
+                        ),
+                        modifier = Modifier.align(Alignment.Center)
                     )
-            ) {
-                Text(
-                    text = "Número de jogadores atingido!",
-                    color = Color.White,
-                    style = TextStyle.Default.copy(
-                        fontSize = 16.sp,
-                        fontStyle = FontStyle.Italic
-                    ),
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                }
             }
         }
 

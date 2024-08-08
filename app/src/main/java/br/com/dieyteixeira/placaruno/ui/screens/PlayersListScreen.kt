@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,6 +48,7 @@ import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.models.Player
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
+import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
@@ -64,6 +66,7 @@ fun PlayersListScreen(
     onBackClick: () -> Unit = {},
     viewModel: PlayersListViewModel
 ) {
+    val clickHandler = remember { ClickHandler() }
 
     LaunchedEffect(Unit) {
         viewModel.loadPlayers()
@@ -110,7 +113,11 @@ fun PlayersListScreen(
 
         /***** CORPO DA ESTRUTURA *****/
         Box(modifier) {
-            LazyColumn(Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.945f)
+            ) {
                 itemsIndexed(uiState.players) { index, player ->
                     val showActions = index == lastClickedPlayerIndex
                     Row(
@@ -131,11 +138,11 @@ fun PlayersListScreen(
                     ) {
                         Column(
                             Modifier.padding(5.dp),
-                            verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .height(45.dp)
                                     .background(
                                         color = Color(0xFF393F42),
                                         shape = RoundedCornerShape(15.dp)
@@ -148,8 +155,7 @@ fun PlayersListScreen(
                                     Text(
                                         text = player.player_name,
                                         style = TextStyle.Default.copy(
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 18.sp,
                                             color = Color.White
                                         ),
                                         overflow = TextOverflow.Ellipsis,
@@ -158,7 +164,13 @@ fun PlayersListScreen(
                                             .padding(vertical = 14.dp)
                                     )
                                     if (showActions) {
-                                        IconButton(onClick = { onPlayerClick(player) }) {
+                                        IconButton(
+                                            onClick = {
+                                                if (clickHandler.canClick()) {
+                                                    onPlayerClick(player)
+                                                }
+                                            }
+                                        ) {
                                             Icon(
                                                 imageVector = Icons.Default.Edit,
                                                 contentDescription = "Edit",

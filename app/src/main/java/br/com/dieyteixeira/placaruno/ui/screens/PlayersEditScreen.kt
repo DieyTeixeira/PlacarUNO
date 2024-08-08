@@ -112,18 +112,18 @@ fun PlayersEditScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(57.dp)
+                        .height(60.dp)
                         .padding(horizontal = 14.dp),
                     textStyle = TextStyle.Default.copy(
                         color = Color.White,
-                        fontSize = 19.sp
+                        fontSize = 18.sp
                     ),
                     label = {
                         Text(
-                            text = "Nome",
+                            text = "Nome do Jogador",
                             style = TextStyle.Default.copy(
                                 color = Color.White.copy(alpha = 0.5f),
-                                fontSize = 15.sp
+                                fontSize = 12.sp
                             )
                         )
                     },

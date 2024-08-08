@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.firebase.currentVersionName
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
+import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
 import br.com.dieyteixeira.placaruno.ui.components.FabWithSubButtons
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.components.PreferenceManager
@@ -229,6 +230,7 @@ fun ColorButton(
     showText: Boolean = true,
     height: Dp = 110.dp,
 ) {
+    val clickHandler = remember { ClickHandler() }
 
     Box(
         modifier = Modifier
@@ -243,7 +245,7 @@ fun ColorButton(
                     bottomEnd = 30.dp
                 )
             )
-            .clickable(onClick = onClick),
+            .clickable(onClick = { if (clickHandler.canClick()) { onClick() } } ),
         contentAlignment = if (showText) Alignment.Center else Alignment.TopCenter
     ) {
         Column(
