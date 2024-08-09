@@ -1,5 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -67,6 +69,7 @@ import br.com.dieyteixeira.placaruno.ui.components.ButtonInfo
 import br.com.dieyteixeira.placaruno.ui.components.GenericButtonBar
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.components.PokerTable
+import br.com.dieyteixeira.placaruno.ui.components.vibration
 import br.com.dieyteixeira.placaruno.ui.states.TeamsEditUiState
 import br.com.dieyteixeira.placaruno.ui.states.TeamsListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
@@ -76,6 +79,7 @@ import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 import kotlinx.coroutines.delay
 
 /***** FUNÇÃO PRINCIPAL *****/
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TeamsEditScreen(
     uiState: TeamsEditUiState,
@@ -87,6 +91,8 @@ fun TeamsEditScreen(
 ) {
 
     /***** VARIÁVEIS *****/
+    val context = LocalContext.current
+
     val topAppBarTitle = uiState.topAppBarTitle
     val title = uiState.title
     val titleFontStyle = TextStyle.Default.copy(fontSize = 25.sp)
@@ -107,6 +113,7 @@ fun TeamsEditScreen(
 
     LaunchedEffect(snackbarVisible) {
         if (snackbarVisible) {
+            vibration(context)
             delay(2000)
             snackbarVisible = false
         }

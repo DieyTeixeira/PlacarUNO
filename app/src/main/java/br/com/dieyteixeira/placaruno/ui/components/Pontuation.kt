@@ -55,14 +55,21 @@ fun Pontuation(
     val colorOptions = listOf(VerdeUno, AzulUno, VermelhoUno, AmareloUno)
 
     val cartas = listOf(
-        Carta("carta_11", 1, R.drawable.carta_11),
+        Carta("carta_0", 0, R.drawable.carta_0, colorOptions.random()),
+        Carta("carta_1", 1, R.drawable.carta_1, colorOptions.random()),
         Carta("carta_2", 2, R.drawable.carta_2, colorOptions.random()),
         Carta("carta_3", 3, R.drawable.carta_3, colorOptions.random()),
+        Carta("carta_4", 4, R.drawable.carta_4, colorOptions.random()),
+        Carta("carta_5", 5, R.drawable.carta_5, colorOptions.random()),
+        Carta("carta_6", 6, R.drawable.carta_6, colorOptions.random()),
+        Carta("carta_7", 7, R.drawable.carta_7, colorOptions.random()),
+        Carta("carta_8", 8, R.drawable.carta_8, colorOptions.random()),
+        Carta("carta_9", 9, R.drawable.carta_9, colorOptions.random()),
         Carta("carta_mais_2", 20, R.drawable.carta_mais_2, colorOptions.random()),
         Carta("carta_inverter", 20, R.drawable.carta_inverter, colorOptions.random()),
+        Carta("carta_bloqueio", 20, R.drawable.carta_bloqueio, colorOptions.random()),
+        Carta("carta_trocar_cor", 50, R.drawable.carta_trocar_cor),
         Carta("carta_mais_4", 50, R.drawable.carta_mais_4),
-        Carta("carta_muda_cor", 50, R.drawable.carta_muda_cor, colorOptions.random()),
-        Carta("carta_bloqueio", 1, R.drawable.carta_bloqueio, colorOptions.random())
     )
 
     val cartasSelecionadas by remember { mutableStateOf(viewModel.cartasSelecionadas) }
@@ -118,12 +125,12 @@ fun Pontuation(
                         bottomEnd = 15.dp
                     )
                 )
-                .padding(10.dp),
+                .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            val rows = cartas.chunked(7)
+            val rows = cartas.chunked(8)
             items(rows) { row ->
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(2.5.dp))
                 LazyRow (
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
@@ -135,18 +142,18 @@ fun Pontuation(
                             contentScale = ContentScale.Crop,
                             colorFilter = carta.cartaCor?.let { tint(it) },
                             modifier = Modifier
-                                .size(height = 60.dp, width = 41.dp)
+                                .size(height = 60.dp, width = 38.3.dp)
                                 .background(
                                     color = Color.White,
                                     shape = RoundedCornerShape(5.dp))
                                 .clickable {
-                                    viewModel.adicionarCarta(carta)
+                                    viewModel.adicionarCarta(carta.copy(cartaCor = if (carta.cartaCor != null) colorOptions.random() else null))
                                 }
                         )
                         Spacer(modifier = Modifier.width(2.5.dp))
                     }
                 }
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(2.5.dp))
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -194,12 +201,12 @@ fun Pontuation(
                         bottomEnd = 15.dp
                     )
                 )
-                .padding(10.dp),
+                .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            val rows = cartasSelecionadas.chunked(7)
+            val rows = cartasSelecionadas.chunked(8)
             items(rows) { row ->
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(2.5.dp))
                 LazyRow (
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
@@ -211,7 +218,7 @@ fun Pontuation(
                             contentScale = ContentScale.Crop,
                             colorFilter = carta.cartaCor?.let { tint(it) },
                             modifier = Modifier
-                                .size(height = 60.dp, width = 41.dp)
+                                .size(height = 60.dp, width = 38.3.dp)
                                 .background(
                                     color = Color.White,
                                     shape = RoundedCornerShape(5.dp))
@@ -222,7 +229,7 @@ fun Pontuation(
                         Spacer(modifier = Modifier.width(2.5.dp))
                     }
                 }
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(2.5.dp))
             }
         }
     }
