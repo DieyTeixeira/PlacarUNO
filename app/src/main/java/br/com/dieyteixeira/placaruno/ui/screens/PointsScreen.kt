@@ -30,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -125,8 +126,8 @@ fun PointsScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .width(200.dp)
-                        .height(30.dp)
+                        .width(250.dp)
+                        .height(40.dp)
                         .background(
                             color = Color.LightGray,
                             shape = RoundedCornerShape(
@@ -142,6 +143,8 @@ fun PointsScreen(
                         fontSize = 22.sp,
                         color = Color.DarkGray,
                         textAlign = TextAlign.Center,
+                        maxLines = 1, // Limitar a uma linha
+                        overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
                         modifier = Modifier
                             .align(Alignment.Center)
                             .fillMaxWidth()
@@ -150,7 +153,7 @@ fun PointsScreen(
                 Box(
                     modifier = Modifier
                         .width(70.dp)
-                        .height(30.dp)
+                        .height(40.dp)
                         .background(
                             color = Color.Gray,
                             shape = RoundedCornerShape(

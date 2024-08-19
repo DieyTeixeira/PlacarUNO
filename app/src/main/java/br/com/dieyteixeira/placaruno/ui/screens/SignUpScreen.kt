@@ -1,14 +1,23 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -24,24 +33,32 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
+import br.com.dieyteixeira.placaruno.ui.components.vibration
 import br.com.dieyteixeira.placaruno.ui.states.SignUpUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
+import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 
 /***** FUNÇÃO PRINCIPAL *****/
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SignUpScreen(
     uiState: SignUpUiState,
@@ -50,6 +67,8 @@ fun SignUpScreen(
 ) {
 
     /***** VARIÁVEIS *****/
+    val context = LocalContext.current
+
     val clickHandler = remember { ClickHandler() }
 
     val focusManager = LocalFocusManager.current
@@ -60,6 +79,14 @@ fun SignUpScreen(
         Color.LightGray
     } else {
         Color.LightGray
+    }
+
+    val isError = uiState.error != null
+
+    LaunchedEffect(isError) {
+        if (isError) {
+            vibration(context)
+        }
     }
 
     Column(
@@ -224,49 +251,51 @@ fun SignUpScreen(
     Baseboard(color = Color.White)
 
     /***** MENSAGEM DE ERRO *****/
-    Column {
-        val isError = uiState.error != null
-        AnimatedVisibility(visible = isError) {
-            Box(modifier = Modifier
-                .background(Color.Red)
-            ){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(30.dp)
+    ) {
+        AnimatedVisibility(
+            visible = isError,
+            enter = slideInVertically(
+                initialOffsetY = { fullWidth -> -fullWidth },
+                animationSpec = tween(durationMillis = 400)
+            ) + fadeIn(animationSpec = tween(durationMillis = 400)),
+            exit = slideOutVertically(
+                targetOffsetY = { fullWidth -> -fullWidth },
+                animationSpec = tween(durationMillis = 400)
+            ) + fadeOut(animationSpec = tween(durationMillis = 400))
+
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                VermelhoUno.copy(alpha = 0.0f),
+                                VermelhoUno.copy(alpha = 0.7f),
+                                VermelhoUno,
+                                VermelhoUno,
+                                VermelhoUno.copy(alpha = 0.7f),
+                                VermelhoUno.copy(alpha = 0.0f)
+                            )
+                        )
+                    )
+            ) {
                 val error = uiState.error ?: ""
                 Text(
                     text = error,
-                    Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(),
                     color = Color.White,
-                    fontStyle = FontStyle.Italic
+                    style = TextStyle.Default.copy(
+                        fontSize = 16.sp,
+                        fontStyle = FontStyle.Italic
+                    ),
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-
         }
-    }
-
-}
-
-/***** VISUALIZAÇÃO CADASTRO *****/
-@Preview(showBackground = true, name = "Padrão")
-@Composable
-fun SignUpScreenPreview1() {
-    PlacarUNOTheme {
-        SignUpScreen(
-            uiState = SignUpUiState(),
-            onSignUpClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "Erro")
-@Composable
-fun SignUpScreenPreview2() {
-    PlacarUNOTheme {
-        SignUpScreen(
-            uiState = SignUpUiState(
-                error = "Erro"
-            ),
-            onSignUpClick = {}
-        )
     }
 }

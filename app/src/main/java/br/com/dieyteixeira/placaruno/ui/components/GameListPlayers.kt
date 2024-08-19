@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.ui.states.PlayersListUiState
@@ -259,7 +261,7 @@ fun GameListPlayers(
                 modifier = Modifier.align(Alignment.Center)
             )
         }
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(320.dp)
@@ -272,22 +274,28 @@ fun GameListPlayers(
                         bottomEnd = 15.dp
                     )
                 )
-                .padding(top = 6.dp)
-        ) {
-            items(uiStatePList.players) { player ->
-                val playerName = player.player_name
-                val isSelected = isPlayerInSelected(playerName)
-                GameListItem(
-                    text = playerName,
-                    isSelected = isSelected,
-                    onClick = {
-                        if (isSelected) {
-                            removePlayerFromSelectedList(playerName)
-                        } else {
-                            addPlayerToSelectedList(playerName)
+                .padding(top = 10.dp)
+        ){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.95f)
+            ) {
+                items(uiStatePList.players) { player ->
+                    val playerName = player.player_name
+                    val isSelected = isPlayerInSelected(playerName)
+                    GameListItem(
+                        text = playerName,
+                        isSelected = isSelected,
+                        onClick = {
+                            if (isSelected) {
+                                removePlayerFromSelectedList(playerName)
+                            } else {
+                                addPlayerToSelectedList(playerName)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
@@ -321,6 +329,8 @@ private fun GameListItem(
                 fontSize = 17.sp,
                 color = Color.White
             ),
+            maxLines = 1, // Limitar a uma linha
+            overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
             modifier = Modifier.weight(1f)
         )
     }

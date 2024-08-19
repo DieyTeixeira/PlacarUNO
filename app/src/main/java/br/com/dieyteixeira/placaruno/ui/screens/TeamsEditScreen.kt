@@ -186,7 +186,8 @@ fun TeamsEditScreen(
                 OutlinedTextField(
                     value = title,
                     onValueChange = {
-                        uiState.onTitleChange(it)
+                        val newText = it.take(13)
+                        uiState.onTitleChange(newText)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -263,7 +264,7 @@ fun TeamsEditScreen(
                                 bottomEnd = 15.dp
                             )
                         )
-                ){
+                ) {
                     // Coluna esquerda
                     Column(
                         modifier = Modifier.weight(1f)
@@ -296,7 +297,7 @@ fun TeamsEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(25.dp)
-                ){
+                ) {
                     AnimatedVisibility(
                         visible = snackbarVisible,
                         enter = slideInHorizontally(
@@ -417,6 +418,7 @@ private fun PlayersList(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight(0.95f)
     ) {
         items(players) { player ->
             PlayerItem(
@@ -459,6 +461,8 @@ fun PlayerItem(
                 fontSize = 18.sp,
                 color = if (isCheck) Color.White else if (isSelected) Color.Gray else Color.White
             ),
+            maxLines = 1, // Limitar a uma linha
+            overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
             modifier = Modifier.weight(1f)
         )
     }

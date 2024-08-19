@@ -1,9 +1,9 @@
 package br.com.dieyteixeira.placaruno.firebase
 
 /*
-versionCode = 6
-versionName = "1.7.0"
+versionCode = 8
+versionName = "1.8.5"
 */
 
-val currentVersionCode = 6
-val currentVersionName = "1.7.0"
+val currentVersionCode = 8
+val currentVersionName = "1.8.5"

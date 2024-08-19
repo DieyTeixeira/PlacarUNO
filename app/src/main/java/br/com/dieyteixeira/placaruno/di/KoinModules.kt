@@ -6,8 +6,10 @@ import br.com.dieyteixeira.placaruno.database.PlacarUNODatabase
 import br.com.dieyteixeira.placaruno.repositories.GamesRepository
 import br.com.dieyteixeira.placaruno.repositories.PlayersRepository
 import br.com.dieyteixeira.placaruno.repositories.TeamsRepository
+import br.com.dieyteixeira.placaruno.repositories.UsersRepository
 import br.com.dieyteixeira.placaruno.ui.viewmodels.AppViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
+import br.com.dieyteixeira.placaruno.ui.viewmodels.UsersListViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.MenuViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersEditViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
@@ -35,6 +37,7 @@ val appModule = module {
     viewModelOf(::ScoreboardListViewModel)
     viewModelOf(::ScoreboardEditViewModel)
     viewModelOf(::PontuationViewModel)
+    viewModelOf(::UsersListViewModel)
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
     viewModelOf(::AppViewModel)
@@ -44,14 +47,13 @@ val storageModule = module {
     singleOf(::PlayersRepository)
     singleOf(::TeamsRepository)
     singleOf(::GamesRepository)
+    singleOf(::UsersRepository)
     singleOf(::FirebaseAuthRepository)
     single {
         Room.databaseBuilder(
             androidContext(),
             PlacarUNODatabase::class.java, "placar-uno.db"
         ).fallbackToDestructiveMigration().build()
-//            .addMigrations(MIGRATION_1_2).build() para migrar tabelas
-
     }
 }
 
@@ -60,12 +62,3 @@ val firebaseModule = module {
         Firebase.auth
     }
 }
-
-// MIGRAÇÃO DE TABELAS
-//val MIGRATION_1_2 = object : Migration(1, 2) {
-//    override fun migrate(database: SupportSQLiteDatabase) {
-//        // Implement your database migration logic here.
-//        // For example, to add a new column:
-//        database.execSQL("ALTER TABLE users ADD COLUMN last_name TEXT")
-//    }
-//}

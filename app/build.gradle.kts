@@ -14,8 +14,8 @@ android {
         applicationId = "br.com.dieyteixeira.placaruno"
         minSdk = 24
         targetSdk = 34
-        versionCode = 6
-        versionName = "1.7.0"
+        versionCode = 8
+        versionName = "1.8.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

@@ -19,6 +19,7 @@ constraintlayout = "2.1.4"
 constraintlayoutCompose = "1.0.1"
 navigationFragmentKtx = "2.7.7"
 runtimeLivedata = "1.6.8"
+securityCryptoKtx = "1.0.0"
 
 [libraries]
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
@@ -49,6 +50,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

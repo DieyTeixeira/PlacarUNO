@@ -1,6 +1,17 @@
 package br.com.dieyteixeira.placaruno.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,8 +20,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -21,16 +34,23 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,19 +64,27 @@ import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.firebase.currentVersionName
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
+import br.com.dieyteixeira.placaruno.ui.components.vibration
 import br.com.dieyteixeira.placaruno.ui.states.SignInUiState
+import br.com.dieyteixeira.placaruno.ui.states.UsersListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
+import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
+import kotlinx.coroutines.delay
 
 /***** FUNÇÃO PRINCIPAL *****/
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SignInScreen(
     uiState: SignInUiState,
     modifier: Modifier = Modifier,
     onSignInClick: () -> Unit,
     onSignUpClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
 
     /***** VARIÁVEL *****/
+    val context = LocalContext.current
+
     val clickHandler = remember { ClickHandler() }
 
     val focusManager = LocalFocusManager.current
@@ -67,6 +95,14 @@ fun SignInScreen(
         Color.LightGray
     } else {
         Color.LightGray
+    }
+
+    val isError = uiState.error != null
+
+    LaunchedEffect(isError) {
+        if (isError) {
+            vibration(context)
+        }
     }
 
     Column(
@@ -185,8 +221,21 @@ fun SignInScreen(
                 .fillMaxWidth(0.8f)
                 .padding(8.dp)
         ) {
-            Text(text = "Cadastrar")
+            Text(text = "Cadastrar Usuário")
         }
+        TextButton(
+            onClick = {
+                if (clickHandler.canClick()) {
+                    onForgotPasswordClick()
+                }
+            },
+            Modifier
+                .fillMaxWidth(0.8f)
+                .padding(8.dp)
+        ) {
+            Text(text = "Redefinir Senha")
+        }
+
 
         Spacer(modifier = Modifier.size(15.dp))
     }
@@ -195,51 +244,50 @@ fun SignInScreen(
     Baseboard(color = Color.White)
 
     /***** MENSAGEM DE ERRO *****/
-    Column {
-        val isError = uiState.error != null
-        AnimatedVisibility(visible = isError) {
-            Box(modifier = Modifier
-                .background(Color.Red)
-            ){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(30.dp)
+    ) {
+        AnimatedVisibility(
+            visible = isError,
+            enter = slideInVertically(
+                initialOffsetY = { fullWidth -> -fullWidth },
+                animationSpec = tween(durationMillis = 400)
+            ) + fadeIn(animationSpec = tween(durationMillis = 400)),
+            exit = slideOutVertically(
+                targetOffsetY = { fullWidth -> -fullWidth },
+                animationSpec = tween(durationMillis = 400)
+            ) + fadeOut(animationSpec = tween(durationMillis = 400))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                VermelhoUno.copy(alpha = 0.0f),
+                                VermelhoUno.copy(alpha = 0.7f),
+                                VermelhoUno,
+                                VermelhoUno,
+                                VermelhoUno.copy(alpha = 0.7f),
+                                VermelhoUno.copy(alpha = 0.0f)
+                            )
+                        )
+                    )
+            ) {
                 val error = uiState.error ?: ""
                 Text(
                     text = error,
-                    Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(),
                     color = Color.White,
-                    fontStyle = FontStyle.Italic
+                    style = TextStyle.Default.copy(
+                        fontSize = 16.sp,
+                        fontStyle = FontStyle.Italic
+                    ),
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-
         }
-    }
-
-}
-
-/***** VISUALIZAÇÃO LOGIN *****/
-@Preview(showBackground = true, name = "Padrão")
-@Composable
-fun SignInScreenPreview1() {
-    PlacarUNOTheme {
-        SignInScreen(
-            uiState = SignInUiState(),
-            onSignInClick = {},
-            onSignUpClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "Erro")
-@Composable
-fun SignInScreenPreview2() {
-    PlacarUNOTheme {
-        SignInScreen(
-            uiState = SignInUiState(
-                error = "Erro ao fazer login"
-            ),
-            onSignInClick = {},
-            onSignUpClick = {}
-        )
     }
 }

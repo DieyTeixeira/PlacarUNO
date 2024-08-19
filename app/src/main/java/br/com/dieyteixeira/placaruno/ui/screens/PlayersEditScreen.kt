@@ -107,7 +107,8 @@ fun PlayersEditScreen(
                 OutlinedTextField(
                     value = title,
                     onValueChange = {
-                        uiState.onTitleChange(it)
+                        val newText = it.take(13)
+                        uiState.onTitleChange(newText)
                         isNameEmpty = it.isEmpty()
                     },
                     modifier = Modifier

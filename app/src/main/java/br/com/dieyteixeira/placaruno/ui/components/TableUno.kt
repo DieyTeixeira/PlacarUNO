@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.imageResource
@@ -36,6 +37,7 @@ import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
 import br.com.dieyteixeira.placaruno.ui.viewmodels.GameViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayerOrTeam
 import br.com.dieyteixeira.placaruno.ui.viewmodels.ScoreboardEditViewModel
+import com.google.android.exoplayer2.util.Log
 
 @Composable
 fun PokerTable(
@@ -75,20 +77,32 @@ private fun DrawScope.drawTable() {
     val mult = 0.95f
 
     // BORDA MESA (ARCO CONTORNO)
-    drawArc(
-        color = Color.LightGray.copy(alpha = 0.5f),
-        startAngle = segmentAngle,
-        sweepAngle = segmentAngle,
-        useCenter = false,
-        topLeft = Offset((size.width - (size.width * mult) * 0.480f) / 2, (size.height - (size.height * mult) * 0.375f) / 2), // 0.5f
-        size = Size((size.width * mult) * 0.48f, (size.width * mult) * 0.48f),
-        style = Stroke(width = strokeWidth)
-    )
+//    drawArc(
+//        color = Color.LightGray.copy(alpha = 0.5f),
+//        startAngle = segmentAngle,
+//        sweepAngle = segmentAngle,
+//        useCenter = false,
+//        topLeft = Offset(
+//            (size.width - (size.width * mult) * 0.480f) / 2,
+//            (size.height - (size.height * mult) * 0.375f) / 2
+//        ),
+//        size = Size(
+//            (size.width * mult) * 0.48f,
+//            (size.width * mult) * 0.48f
+//        ),
+//        style = Stroke(width = strokeWidth)
+//    )
+
+    Log.d("PokerTable", "size.width: ${size.width}")
+    Log.d("PokerTable", "size.height: ${size.height}")
 
     // MESA (CÍRCULO CENTRAL)
     drawCircle(
         color = Color.Gray,
-        center = Offset(size.width / 2f, size.height / 2f),
+        center = Offset(
+            size.width / 2f,
+            size.height / 2f
+        ),
         radius = (size.width * mult) * 0.235f
     )
 }
@@ -100,13 +114,23 @@ private fun DrawScope.drawPlayers(
     colorsCount: Int,
     verificatePlayers: PlayerOrTeam
 ) {
-
+    val maxTextWidth = size.width * 0.205f
     val centerX = size.width / 2f
-    val centerY = size.height / 2f - 20
+    val centerY = size.height / 2f
     val radius = size.width * 0.37f
     val startAngle = -Math.PI / 2
     val distanceX = size.width * 0.207f
     val distanceY = size.height * 0.127f // 0.12f > 0.125f
+
+    val scale = size.width * 0.22f / playerImage.width // 0.20f
+    Log.d("PokerTable", "playerImage.widht: ${playerImage.width}")
+
+    val textPaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.LightGray.toArgb()
+        textSize = 35f // Ajuste o tamanho do texto conforme necessário
+        textAlign = Paint.Align.CENTER
+    }
 
     for (i in 0 until playersTotalCount) {
         val angle = startAngle + (-2 * Math.PI * i / playersTotalCount)
@@ -131,43 +155,49 @@ private fun DrawScope.drawPlayers(
             PlayerOrTeam.TEAMS -> colors[i % colors.size]
         }
 
-        drawImage(
-            image = playerImage,
-            topLeft = Offset(playerX - distanceX / 2, playerY - distanceY / 2),
-            alpha = 1f, // Opacidade da imagem
-            colorFilter = ColorFilter.tint(boxColor), // Filtro de cor
-        )
+        withTransform({
+            translate(
+                playerX - (playerImage.width * scale) / 2 + size.width * 0.03f,
+                playerY - (playerImage.height * scale) / 2 + size.height * 0.010f
+            )
 
-        val text = selectedPlayers.getOrNull(i) ?: ""
-        val textPaint = Paint().apply {
-            isAntiAlias = true
-            color = Color.LightGray.toArgb()
-            textSize = 35f // Ajuste o tamanho do texto conforme necessário
+            scale(scale, scale)
+        }) {
+            drawImage(
+                image = playerImage,
+                topLeft = Offset.Zero,
+                alpha = 1f,
+                colorFilter = ColorFilter.tint(boxColor)
+            )
         }
 
-        // Medir a largura e altura do texto para centralizá-lo no box
-        val textWidth = textPaint.measureText(text)
-        val textHeight = 35f // Altura do texto (ajustar se necessário)
+        var text = selectedPlayers.getOrNull(i) ?: ""
+        if (textPaint.measureText(text) > maxTextWidth) {
+            while (textPaint.measureText("$text...") > maxTextWidth && text.isNotEmpty()) {
+                text = text.dropLast(1)
+            }
+            text = "$text..."
+        }
 
         drawIntoCanvas {
             val canvas = it.nativeCanvas
 
             // Desenhe o box colorido ao redor do texto
             canvas.drawRect(
-                playerX - distanceX / 2 + size.width * 0.055f,
-                playerY + distanceY / 2 - size.width * 0.019f, // 0.005f > 0.015f
-                playerX - distanceX / 2 + size.width * 0.152f,
-                playerY + distanceY / 2 - size.width * 0.015f, // 0.001f > 0.011f
+                playerX - distanceX / 2 + size.width * 0.053f,
+                playerY + distanceY / 2 - size.height * 0.028f,
+                playerX - distanceX / 2 + size.width * 0.154f,
+                playerY + distanceY / 2 - size.height * 0.024f,
                 Paint().apply {
-                    color = boxColor.toArgb() // Cor do box
+                    color = boxColor.toArgb()
                 }
             )
 
             // Desenhe o texto sobre o box
             canvas.drawText(
                 text,
-                playerX - distanceX / 2 + size.width * 0.103f - textWidth / 2,
-                playerY + distanceY / 2 + size.width * 0.021f, // 0.035f > 0.025f
+                playerX - distanceX / 2 + size.width * 0.203f - maxTextWidth / 2,
+                playerY + distanceY / 2 + size.height * 0.007f, // 0.035f > 0.025f
                 textPaint
             )
         }

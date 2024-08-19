@@ -4,6 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import br.com.dieyteixeira.placaruno.firebase.FirebaseAuthRepository
 import br.com.dieyteixeira.placaruno.ui.states.SignUpUiState
+import com.google.firebase.auth.FirebaseAuthEmailException
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,12 +71,59 @@ class SignUpViewModel(
 
     suspend fun signUp() {
         try {
+            if (_uiState.value.password.length < 6) {
+                _uiState.update {
+                    it.copy(
+                        error = "A senha deve ter no mínimo 6 caracteres"
+                    )
+                }
+                delay(3000)
+                _uiState.update {
+                    it.copy(
+                        error = null
+                    )
+                }
+                return
+            }
+
             firebaseAuthRepository
                 .signUp(
                     _uiState.value.email,
                     _uiState.value.password
                 )
+            firebaseAuthRepository.sendEmailVerification()
             _signUpIsSucessful.emit(true)
+            _uiState.update {
+                it.copy(
+                    error = "Cadastro realizado com sucesso!\nVerifique seu e-mail para confirmar a conta."
+                )
+            }
+            delay(3000)
+            _uiState.update {
+                it.copy(
+                    error = null
+                )
+            }
+        } catch (e: FirebaseAuthException) {
+            val errorMessage = when (e) {
+                is FirebaseAuthEmailException -> "Email inválido"
+                else -> "Erro ao cadastrar usuário!"
+            }
+
+            Log.e("signInViewModel", "signIn: ", e)
+            _uiState.update {
+                it.copy(
+                    error = errorMessage
+                )
+            }
+
+            delay(3000)
+
+            _uiState.update {
+                it.copy(
+                    error = null
+                )
+            }
         } catch (e: Exception) {
             Log.e("SignUpViewModel", "signUp: ",e )
             _uiState.update {

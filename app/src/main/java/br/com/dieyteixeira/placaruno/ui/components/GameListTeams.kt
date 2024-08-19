@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -216,6 +218,8 @@ fun GameListTeams(
                                             fontSize = 16.sp,
                                             fontStyle = FontStyle.Italic
                                         ),
+                                        maxLines = 1, // Limitar a uma linha
+                                        overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
                                     )
                                 }
                             }
@@ -274,6 +278,8 @@ fun GameListTeams(
                                             fontSize = 16.sp,
                                             fontStyle = FontStyle.Italic
                                         ),
+                                        maxLines = 1, // Limitar a uma linha
+                                        overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
                                     )
                                 }
                             }
@@ -363,7 +369,7 @@ fun GameListTeams(
         }
 
         // Lista de equipes disponíveis
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(320.dp)
@@ -376,22 +382,28 @@ fun GameListTeams(
                         bottomEnd = 15.dp
                     )
                 )
-                .padding(top = 6.dp)
-        ) {
-            items(availableTeams) { (teamName, playersNumber) ->
-                val isSelected = isTeamInSelected(teamName)
-                GameListItem(
-                    text = teamName,
-                    playersNumber = playersNumber,
-                    isSelected = isSelected,
-                    onClick = {
-                        if (isSelected) {
-                            removeTeamFromSelectedList(teamName)
-                        } else {
-                            addTeamToSelectedList(teamName)
+                .padding(top = 10.dp)
+        ){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.95f)
+            ) {
+                items(availableTeams) { (teamName, playersNumber) ->
+                    val isSelected = isTeamInSelected(teamName)
+                    GameListItem(
+                        text = teamName,
+                        playersNumber = playersNumber,
+                        isSelected = isSelected,
+                        onClick = {
+                            if (isSelected) {
+                                removeTeamFromSelectedList(teamName)
+                            } else {
+                                addTeamToSelectedList(teamName)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
@@ -430,6 +442,8 @@ private fun GameListItem(
                 fontSize = 17.sp,
                 color = Color.White
             ),
+            maxLines = 1, // Limitar a uma linha
+            overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
             modifier = Modifier.weight(1f)
         )
         if (playersNumber > 0) {

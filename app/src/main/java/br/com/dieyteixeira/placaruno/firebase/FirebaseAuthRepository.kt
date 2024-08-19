@@ -44,4 +44,22 @@ class FirebaseAuthRepository(
         firebaseAuth.signOut()
     }
 
+    fun sendPasswordResetEmail(email: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        firebaseAuth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError(task.exception?.message ?: "Erro ao enviar email de redefinição de senha")
+                }
+            }
+    }
+
+    fun sendEmailVerification() {
+        firebaseAuth.currentUser?.sendEmailVerification()
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return firebaseAuth.currentUser
+    }
 }

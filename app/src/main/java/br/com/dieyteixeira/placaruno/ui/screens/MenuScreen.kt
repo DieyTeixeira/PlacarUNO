@@ -20,9 +20,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,11 +56,13 @@ import br.com.dieyteixeira.placaruno.ui.components.FabWithSubButtons
 import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.components.PreferenceManager
 import br.com.dieyteixeira.placaruno.ui.states.MenuUiState
+import br.com.dieyteixeira.placaruno.ui.states.SignInUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
+import br.com.dieyteixeira.placaruno.ui.viewmodels.SignInViewModel
 
 enum class ButtonLayout {
     COLUMN,
@@ -74,7 +80,8 @@ fun MenuScreen(
     onTeamsClick: () -> Unit,
     onNewGameClick: () -> Unit,
     onScoreboardClick: () -> Unit,
-    onExitToAppClick: () -> Unit
+    onExitToAppClick: () -> Unit,
+    onListUsersClick: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -158,7 +165,11 @@ fun MenuScreen(
                     fontStyle = FontStyle.Italic,
                     fontSize = 16.sp
                 ),
-                modifier = Modifier.padding(horizontal = 15.dp)
+                modifier = Modifier
+                    .padding(horizontal = 15.dp)
+                    .clickable {
+                        if (uiState.user == "dieinison.teixeira@gmail.com") onListUsersClick()
+                    }
             )
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -280,18 +291,19 @@ fun ColorButton(
     }
 }
 
-/***** VISUALIZAÇÃO *****/
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    PlacarUNOTheme {
-        MenuScreen (
-            uiState = MenuUiState(),
-            onPlayersClick = {},
-            onTeamsClick = {},
-            onNewGameClick = {},
-            onScoreboardClick = {},
-            onExitToAppClick = {}
-        )
-    }
-}
+///***** VISUALIZAÇÃO *****/
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    PlacarUNOTheme {
+//        MenuScreen (
+//            uiState = MenuUiState(),
+//            onPlayersClick = {},
+//            onTeamsClick = {},
+//            onNewGameClick = {},
+//            onScoreboardClick = {},
+//            onExitToAppClick = {},
+//            onListUsersClick = {}
+//        )
+//    }
+//}

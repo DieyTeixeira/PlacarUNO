@@ -1,5 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +16,7 @@ import org.koin.androidx.compose.koinViewModel
 
 const val signUpRoute = "signUp"
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.signUpScreen(
     onNavigationToSignIn: () -> Unit
 ){

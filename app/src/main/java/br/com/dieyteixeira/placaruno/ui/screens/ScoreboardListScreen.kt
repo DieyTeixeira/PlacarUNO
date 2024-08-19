@@ -134,7 +134,7 @@ fun ScoreboardListScreen(
                             )
                     ) {
                         Column(
-                            Modifier.padding(top = 10.dp),
+                            Modifier.padding(top = 10.dp, start = 5.dp, end = 5.dp),
                         ) {
                             Box(
                                 modifier = Modifier
@@ -174,10 +174,12 @@ fun ScoreboardListScreen(
                                                 tint = Color.White
                                             )
                                         }
-                                        IconButton(onClick = {
-                                            gameToDelete = game
-                                            showDeleteConfirmation = true
-                                        }) {
+                                        IconButton(
+                                            onClick = {
+                                                gameToDelete = game
+                                                showDeleteConfirmation = true
+                                            }
+                                        ) {
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
                                                 contentDescription = "Delete",
@@ -228,7 +230,7 @@ fun ScoreboardListScreen(
                                                     .weight(1f)
                                             ) {
                                                 Text(
-                                                    text = "- " + playerName,
+                                                    text = "- $playerName",
                                                     style = TextStyle.Default.copy(
                                                         fontSize = 16.sp,
                                                         color = Color.White,
@@ -293,7 +295,7 @@ fun ScoreboardListScreen(
                                                         .weight(1f)
                                                 ) {
                                                     Text(
-                                                        text = "- " + teamName,
+                                                        text = "- $teamName",
                                                         style = TextStyle.Default.copy(
                                                             fontSize = 16.sp,
                                                             color = Color.White,

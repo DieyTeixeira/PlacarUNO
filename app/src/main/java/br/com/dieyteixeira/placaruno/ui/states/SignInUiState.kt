@@ -10,4 +10,5 @@ data class SignInUiState(
     val onEmailChange: (String) -> Unit = {},
     val onPasswordChange: (String) -> Unit = {},
     val onTogglePasswordVisibility: () -> Unit = {},
+    val successMessage: String? = null
 )

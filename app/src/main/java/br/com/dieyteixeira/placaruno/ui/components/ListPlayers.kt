@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -112,7 +113,9 @@ fun ListPlayersGame (
                                 color = Color.DarkGray,
                                 fontSize = 17.sp
                             ),
-                            modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 5.dp)
+                            maxLines = 1, // Limitar a uma linha
+                            overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
+                            modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 3.dp)
                         )
                     }
                 }
@@ -201,7 +204,9 @@ fun ListPlayersGame (
                                 color = Color.DarkGray,
                                 fontSize = 17.sp
                             ),
-                            modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 5.dp)
+                            maxLines = 1, // Limitar a uma linha
+                            overflow = TextOverflow.Ellipsis, // Adicionar "..." se o texto for cortado
+                            modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp, end = 3.dp)
                         )
                     }
                 }

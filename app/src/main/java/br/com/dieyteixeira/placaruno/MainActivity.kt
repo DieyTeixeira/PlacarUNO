@@ -19,6 +19,7 @@ import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditPlayerEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditPointsEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToEditTeamEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToHomeGraph
+import br.com.dieyteixeira.placaruno.ui.navigation.navigateToUsersList
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewGame
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewPlayerEdit
 import br.com.dieyteixeira.placaruno.ui.navigation.navigateToNewTeamEdit
@@ -112,6 +113,9 @@ class MainActivity : ComponentActivity() {
                         onNavigateToEditPointsEdit = { id, name, score ->
                             navController.navigateToEditPointsEdit(id, name, score)
                         },
+                        onNavigateToListUsers = {
+                            navController.navigateToUsersList()
+                        },
                         onPopBackStack = {
                             navController.popBackStack()
                         }
@@ -122,7 +126,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkForUpdate(onComplete: (Boolean) -> Unit) {
-
         db.collection("appConfig").document("version")
             .get()
             .addOnSuccessListener { document ->
