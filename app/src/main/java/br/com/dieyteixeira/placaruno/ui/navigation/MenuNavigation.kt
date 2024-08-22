@@ -9,6 +9,7 @@ import br.com.dieyteixeira.placaruno.ui.screens.MenuScreen
 import br.com.dieyteixeira.placaruno.ui.states.MenuUiState
 import br.com.dieyteixeira.placaruno.ui.viewmodels.MenuViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.SignInViewModel
+import br.com.dieyteixeira.placaruno.ui.viewmodels.UsersListViewModel
 import org.koin.androidx.compose.koinViewModel
 
 const val menuRoute = "menu"
@@ -22,9 +23,11 @@ fun NavGraphBuilder.menuScreen(
 ) {
     composable(menuRoute) {
         val viewModel = koinViewModel<MenuViewModel>()
+        val usersListViewModel = koinViewModel<UsersListViewModel>()
         val uiState by viewModel.uiState.collectAsState(MenuUiState())
         MenuScreen(
             uiState = uiState,
+            usersListViewModel = usersListViewModel,
             onPlayersClick = onNavigateToPlayers,
             onTeamsClick = onNavigateToTeams,
             onNewGameClick = onNavigateToNewGame,

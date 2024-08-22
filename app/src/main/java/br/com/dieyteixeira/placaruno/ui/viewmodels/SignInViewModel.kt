@@ -115,6 +115,7 @@ class SignInViewModel(
         try {
 
             firebaseAuthRepository.signIn(email, password)
+
             val currentUser = firebaseAuthRepository.getCurrentUser()
 
             if (currentUser != null && !currentUser.isEmailVerified) {

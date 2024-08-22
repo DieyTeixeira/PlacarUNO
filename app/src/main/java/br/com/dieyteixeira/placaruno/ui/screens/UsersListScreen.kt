@@ -66,7 +66,7 @@ fun UsersListScreen(
         Header(
             titleHeader = "LISTA DE USUÁRIOS",
             backgroundColor = Color.Gray,
-            icon = painterResource(id = R.drawable.ic_list)
+            icon = painterResource(id = R.drawable.ic_g_player)
         )
 
         /***** BOTÕES *****/

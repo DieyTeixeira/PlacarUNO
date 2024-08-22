@@ -1,8 +1,10 @@
 package br.com.dieyteixeira.placaruno.ui.viewmodels
 
 import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import br.com.dieyteixeira.placaruno.firebase.FirebaseAuthRepository
+import br.com.dieyteixeira.placaruno.ui.states.SignInUiState
 import br.com.dieyteixeira.placaruno.ui.states.SignUpUiState
 import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthException
@@ -15,13 +17,17 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 class SignUpViewModel(
-        private val firebaseAuthRepository: FirebaseAuthRepository
+    private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val usersListViewModel: UsersListViewModel
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState = _uiState.asStateFlow()
+    private val _uiStateMessage = MutableStateFlow(SignInUiState())
+    val uiStateMessage = _uiStateMessage.asStateFlow()
     private val _signUpIsSucessful = MutableSharedFlow<Boolean>()
     val signUpIsSucessful = _signUpIsSucessful.asSharedFlow()
 
@@ -71,19 +77,28 @@ class SignUpViewModel(
 
     suspend fun signUp() {
         try {
+            if (!Patterns.EMAIL_ADDRESS.matcher(_uiState.value.email).matches()) {
+                _uiState.update {
+                    it.copy(
+                        error = "Formato de email inválido."
+                    )
+                }
+                return
+            }
+
             if (_uiState.value.password.length < 6) {
                 _uiState.update {
                     it.copy(
                         error = "A senha deve ter no mínimo 6 caracteres"
                     )
                 }
-                delay(3000)
-                _uiState.update {
-                    it.copy(
-                        error = null
-                    )
-                }
                 return
+            }
+
+            _uiState.update {
+                it.copy(
+                    error = null
+                )
             }
 
             firebaseAuthRepository
@@ -91,19 +106,21 @@ class SignUpViewModel(
                     _uiState.value.email,
                     _uiState.value.password
                 )
+
+            firebaseAuthRepository.signOut()
+
+            usersListViewModel.saveSignUp(_uiState.value.email)
+
             firebaseAuthRepository.sendEmailVerification()
+
+//            _uiStateMessage.update {
+//                it.copy(
+//                    success = "Cadastro realizado com sucesso!"
+//                )
+//            }
+
             _signUpIsSucessful.emit(true)
-            _uiState.update {
-                it.copy(
-                    error = "Cadastro realizado com sucesso!\nVerifique seu e-mail para confirmar a conta."
-                )
-            }
-            delay(3000)
-            _uiState.update {
-                it.copy(
-                    error = null
-                )
-            }
+
         } catch (e: FirebaseAuthException) {
             val errorMessage = when (e) {
                 is FirebaseAuthEmailException -> "Email inválido"
@@ -138,5 +155,13 @@ class SignUpViewModel(
                 )
             }
         }
+    }
+
+    fun signOut() {
+        firebaseAuthRepository.signOut()
+    }
+
+    suspend fun confirmSignUpSuccess() {
+        _signUpIsSucessful.emit(false) // Reseta o estado após a confirmação
     }
 }

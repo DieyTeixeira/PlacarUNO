@@ -11,6 +11,7 @@ import br.com.dieyteixeira.placaruno.ui.states.UsersListUiState
 import com.google.android.exoplayer2.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -22,12 +23,26 @@ class UsersListViewModel(
         MutableStateFlow(UsersListUiState())
     val uiState get() = _uiState
 
+    private val _shouldShowUserNameDialog = MutableStateFlow(false)
+    val shouldShowUserNameDialog: StateFlow<Boolean> get() = _shouldShowUserNameDialog
+
+    private val _userName = MutableStateFlow("")
+    val userName: StateFlow<String> get() = _userName
+
     private val userEmail: String?
         get() = FirebaseAuth.getInstance().currentUser?.email
 
     init {
         viewModelScope.launch {
             loadAllUsers()
+            checkAndShowUserNameDialog()
+            loadUserName()
+        }
+    }
+
+    suspend fun loadUserName() {
+        userEmail?.let {
+            _userName.value = findUserName(it)
         }
     }
 
@@ -45,13 +60,12 @@ class UsersListViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun save(email: String) {
+    suspend fun saveSignIn(email: String) {
         if (email.isNotBlank()) {
             try {
-                val userDocumentExists  = repository.userDocumentExists(email)
 
-                if (userDocumentExists ) {
-                    Log.d("UsersListViewModel", "Coleção para o email '$email' já existe.")
+                val userExists = repository.userDocumentExists(email)
+                if (userExists) {
                     return
                 }
 
@@ -71,4 +85,56 @@ class UsersListViewModel(
 
         }
     }
+
+    suspend fun saveSignUp(email: String) {
+        if (email.isNotBlank()) {
+            try {
+
+                val user = DataUser(
+                    user_id = UUID.randomUUID().toString(),
+                    user_email = email,
+                    user_emailverified = false,
+                    user_name = ""
+                )
+
+                repository.save(email, user)
+
+            } catch (e: Exception) {
+
+            }
+        } else {
+
+        }
+    }
+
+    suspend fun saveUserName(userName: String) {
+        userEmail?.let { email ->
+            if (email.isNotBlank() && userName.isNotBlank()) {
+                try {
+                    val user = DataUser(
+                        user_id = UUID.randomUUID().toString(),
+                        user_email = email,
+                        user_emailverified = true,
+                        user_name = userName
+                    )
+                    repository.save(email, user)
+                    _shouldShowUserNameDialog.value = false
+                } catch (e: Exception) {
+                    Log.e("UsersListViewModel", "Erro ao salvar o nome de usuário: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private suspend fun checkAndShowUserNameDialog() {
+        userEmail?.let { email ->
+            val (isUserNameValid, _) = repository.verifyUserName(email)
+            _shouldShowUserNameDialog.value = !isUserNameValid
+        }
+    }
+
+    private suspend fun findUserName(email: String): String {
+        return repository.findUserName(email)
+    }
+
 }

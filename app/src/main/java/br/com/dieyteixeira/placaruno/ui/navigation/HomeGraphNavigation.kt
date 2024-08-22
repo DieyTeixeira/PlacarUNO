@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import br.com.dieyteixeira.placaruno.models.Game
 import br.com.dieyteixeira.placaruno.models.Player
@@ -14,24 +15,17 @@ const val homeGraphRoute = "homeGraph"
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.homeGraph(
-
     onNavigateToPlayers: () -> Unit,
     onNavigateToNewPlayerEdit: () -> Unit,
     onNavigateToEditPlayerEdit: (Player) -> Unit,
-
     onNavigateToTeams: () -> Unit,
     onNavigateToNewTeamEdit: () -> Unit,
     onNavigateToEditTeamEdit: (Team) -> Unit,
-
     onNavigateToNewGame: () -> Unit,
-
     onNavigateToScoreboard: () -> Unit,
     onNavigateToEditGameEdit: (Game) -> Unit,
-
     onNavigateToListUsers: () -> Unit,
-
     onNavigateToEditPointsEdit: (String, String, Int) -> Unit,
-
     onPopBackStack: () -> Unit,
 ) {
     navigation(
@@ -83,7 +77,7 @@ fun NavGraphBuilder.homeGraph(
 }
 
 fun NavHostController.navigateToHomeGraph(
-    navOptions: NavOptions? = androidx.navigation.navOptions {
+    navOptions: NavOptions? = navOptions {
         popUpTo(graph.id) {
             inclusive = true
         }

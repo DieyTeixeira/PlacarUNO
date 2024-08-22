@@ -30,7 +30,7 @@ fun NavGraphBuilder.signInScreen(
             uiState = uiState,
             onSignInClick = {
                 scope.launch {
-                    userViewModel.save(uiState.email)
+                    userViewModel.saveSignIn(uiState.email)
                     viewModel.signIn()
                 }
             },

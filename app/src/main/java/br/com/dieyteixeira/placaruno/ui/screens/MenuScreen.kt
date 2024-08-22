@@ -20,17 +20,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -48,6 +56,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import br.com.dieyteixeira.placaruno.R
 import br.com.dieyteixeira.placaruno.firebase.currentVersionName
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
@@ -57,12 +66,16 @@ import br.com.dieyteixeira.placaruno.ui.components.Header
 import br.com.dieyteixeira.placaruno.ui.components.PreferenceManager
 import br.com.dieyteixeira.placaruno.ui.states.MenuUiState
 import br.com.dieyteixeira.placaruno.ui.states.SignInUiState
+import br.com.dieyteixeira.placaruno.ui.states.UsersListUiState
 import br.com.dieyteixeira.placaruno.ui.theme.AmareloUno
 import br.com.dieyteixeira.placaruno.ui.theme.AzulUno
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 import br.com.dieyteixeira.placaruno.ui.theme.VerdeUno
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
+import br.com.dieyteixeira.placaruno.ui.viewmodels.PlayersListViewModel
 import br.com.dieyteixeira.placaruno.ui.viewmodels.SignInViewModel
+import br.com.dieyteixeira.placaruno.ui.viewmodels.UsersListViewModel
+import kotlinx.coroutines.launch
 
 enum class ButtonLayout {
     COLUMN,
@@ -81,8 +94,28 @@ fun MenuScreen(
     onNewGameClick: () -> Unit,
     onScoreboardClick: () -> Unit,
     onExitToAppClick: () -> Unit,
-    onListUsersClick: () -> Unit
+    onListUsersClick: () -> Unit,
+    usersListViewModel: UsersListViewModel
 ) {
+
+    val userNameText by usersListViewModel.userName.collectAsState()
+    val shouldShowUserNameDialog by usersListViewModel.shouldShowUserNameDialog.collectAsState()
+
+    LaunchedEffect(shouldShowUserNameDialog) {
+//        usersListViewModel.loadUserName()
+        snapshotFlow { shouldShowUserNameDialog }
+            .collect { if (!it) usersListViewModel.loadUserName() }
+    }
+
+    if (shouldShowUserNameDialog) {
+        UserNameDialog(
+            onSave = { userName ->
+                usersListViewModel.viewModelScope.launch {
+                    usersListViewModel.saveUserName(userName)
+                }
+            }
+        )
+    }
 
     val context = LocalContext.current
     var buttonLayout by remember { mutableStateOf(PreferenceManager.getSavedLayout(context)) }
@@ -154,19 +187,16 @@ fun MenuScreen(
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 ),
-                modifier = Modifier.padding(horizontal = 15.dp)
+                modifier = Modifier.padding(start = 15.dp, end = 5.dp)
             )
-        }
-        Row {
             Text(
-                text = "${uiState.user}",
+                text = if (userNameText.isNullOrEmpty()) "Carregando..." else userNameText,
                 style = TextStyle(
                     color = Color.LightGray,
                     fontStyle = FontStyle.Italic,
-                    fontSize = 16.sp
+                    fontSize = 18.sp
                 ),
                 modifier = Modifier
-                    .padding(horizontal = 15.dp)
                     .clickable {
                         if (uiState.user == "dieinison.teixeira@gmail.com") onListUsersClick()
                     }
@@ -256,7 +286,11 @@ fun ColorButton(
                     bottomEnd = 30.dp
                 )
             )
-            .clickable(onClick = { if (clickHandler.canClick()) { onClick() } } ),
+            .clickable(onClick = {
+                if (clickHandler.canClick()) {
+                    onClick()
+                }
+            }),
         contentAlignment = if (showText) Alignment.Center else Alignment.TopCenter
     ) {
         Column(
@@ -289,6 +323,41 @@ fun ColorButton(
             }
         }
     }
+}
+
+@Composable
+fun UserNameDialog(onSave: (String) -> Unit) {
+    var userName by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text(text = "Insira seu nome ou apelido") },
+        text = {
+            OutlinedTextField(
+                value = userName,
+                onValueChange = { userName = it },
+                shape = RoundedCornerShape(25),
+                label = {
+                    Text(
+                        "Nome",
+                        color = Color.LightGray
+                    )
+                }
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (userName.isNotBlank()) {
+                     onSave(userName)
+                    }
+                }
+            ){
+                Text("Salvar")
+            }
+        },
+        containerColor = Color.DarkGray
+    )
 }
 
 ///***** VISUALIZAÇÃO *****/

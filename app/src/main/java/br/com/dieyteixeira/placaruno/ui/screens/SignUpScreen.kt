@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -35,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -46,16 +48,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.dieyteixeira.placaruno.R
+import br.com.dieyteixeira.placaruno.firebase.FirebaseAuthRepository
 import br.com.dieyteixeira.placaruno.ui.components.Baseboard
 import br.com.dieyteixeira.placaruno.ui.components.ClickHandler
 import br.com.dieyteixeira.placaruno.ui.components.vibration
 import br.com.dieyteixeira.placaruno.ui.states.SignUpUiState
 import br.com.dieyteixeira.placaruno.ui.theme.PlacarUNOTheme
 import br.com.dieyteixeira.placaruno.ui.theme.VermelhoUno
+import br.com.dieyteixeira.placaruno.ui.viewmodels.SignUpViewModel
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /***** FUNÇÃO PRINCIPAL *****/
 @RequiresApi(Build.VERSION_CODES.O)
@@ -68,9 +75,7 @@ fun SignUpScreen(
 
     /***** VARIÁVEIS *****/
     val context = LocalContext.current
-
     val clickHandler = remember { ClickHandler() }
-
     val focusManager = LocalFocusManager.current
     val textFieldModifier = Modifier
         .fillMaxWidth(0.8f)

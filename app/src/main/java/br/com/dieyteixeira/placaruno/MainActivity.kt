@@ -80,7 +80,8 @@ class MainActivity : ComponentActivity() {
                         },
                         onNavigateToSignUp = {
                             navController.navigateToSignUp()
-                        }
+                        },
+                        onPopBackStack = { navController.popBackStack() }
                     )
                     homeGraph(
                         onNavigateToNewPlayerEdit = {

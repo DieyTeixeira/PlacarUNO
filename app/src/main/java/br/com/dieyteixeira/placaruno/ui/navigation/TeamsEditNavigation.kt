@@ -1,5 +1,7 @@
 package br.com.dieyteixeira.placaruno.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -18,6 +20,7 @@ import org.koin.core.parameter.parametersOf
 const val teamEditRoute = "teamEdit"
 const val teamIdArgument = "teamId"
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.teamEditScreen(
     onPopBackStack: () -> Unit,
 ) {

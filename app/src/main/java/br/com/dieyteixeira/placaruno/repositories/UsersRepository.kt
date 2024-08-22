@@ -56,11 +56,38 @@ class UsersRepository {
 
     suspend fun userDocumentExists(email: String): Boolean = withContext(Dispatchers.IO) {
         try {
-            val userDoc = db.collection(email).document("usuário").get().await()
+            val userDoc = usersInitCollection(email).document("usuário").get().await()
+            Log.d("UsersRepository", "Coleção para o email '$email' existe: ${userDoc.exists()}")
             return@withContext userDoc.exists()
         } catch (e: Exception) {
             Log.e("UsersRepository", "Erro ao verificar se o documento usuário existe: ${e.message}")
             return@withContext false
+        }
+    }
+
+    suspend fun verifyUserName(email: String): Pair<Boolean, String?> = withContext(Dispatchers.IO) {
+        try {
+            val userDoc = usersInitCollection(email).document("usuário").get().await()
+            if (userDoc.exists()) {
+                val userName = userDoc.getString("user_name")
+                return@withContext Pair(!userName.isNullOrEmpty(), userName)
+            }
+            return@withContext Pair(false, null)
+        } catch (e: Exception) {
+            return@withContext Pair(false, null)
+        }
+    }
+
+    suspend fun findUserName(email: String): String = withContext(Dispatchers.IO) {
+        try {
+            val userDoc = usersInitCollection(email).document("usuário").get().await()
+            if (userDoc.exists()) {
+                val userName = userDoc.getString("user_name")
+                return@withContext userName ?: "Nome de usuário não encontrado"
+            }
+            "Nome de usuário não encontrado"
+        } catch (e: Exception) {
+            "Nome de usuário não encontrado"
         }
     }
 }
