@@ -98,13 +98,19 @@ fun MenuScreen(
     usersListViewModel: UsersListViewModel
 ) {
 
+    val context = LocalContext.current
+    var buttonLayout by remember { mutableStateOf(PreferenceManager.getSavedLayout(context)) }
     val userNameText by usersListViewModel.userName.collectAsState()
     val shouldShowUserNameDialog by usersListViewModel.shouldShowUserNameDialog.collectAsState()
 
     LaunchedEffect(shouldShowUserNameDialog) {
-//        usersListViewModel.loadUserName()
         snapshotFlow { shouldShowUserNameDialog }
             .collect { if (!it) usersListViewModel.loadUserName() }
+
+//        Usar este!!
+//        if (!shouldShowUserNameDialog) {
+//            usersListViewModel.loadUserName()
+//        }
     }
 
     if (shouldShowUserNameDialog) {
@@ -116,9 +122,6 @@ fun MenuScreen(
             }
         )
     }
-
-    val context = LocalContext.current
-    var buttonLayout by remember { mutableStateOf(PreferenceManager.getSavedLayout(context)) }
 
     Column(
         modifier
@@ -213,8 +216,6 @@ fun MenuScreen(
                 .verticalScroll(rememberScrollState())
                 .animateContentSize(),
         ) {
-//            when (buttonLayout) {
-//                ButtonLayout.COLUMN ->
             AnimatedVisibility(visible = buttonLayout == ButtonLayout.COLUMN, enter = fadeIn()) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -225,7 +226,6 @@ fun MenuScreen(
                     ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick)
                 }
             }
-//                ButtonLayout.ROW ->
             AnimatedVisibility(visible = buttonLayout == ButtonLayout.ROW, enter = fadeIn()) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
@@ -236,7 +236,6 @@ fun MenuScreen(
                     Box(modifier = Modifier.weight(1f)) { ColorButton(color = AmareloUno, text = "PLACAR", onClick = onScoreboardClick, height = 180.dp, showText = false) }
                 }
             }
-//                ButtonLayout.GRID_2x2 ->
             AnimatedVisibility(visible = buttonLayout == ButtonLayout.GRID_2x2, enter = fadeIn()) {
                 Column(
                         verticalArrangement = Arrangement.spacedBy(15.dp)
