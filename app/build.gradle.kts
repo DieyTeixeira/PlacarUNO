@@ -55,8 +55,8 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.animation:animation:1.3.1")
-    implementation("androidx.compose.animation:animation-core:1.3.1")
+    implementation(libs.animation)
+    implementation(libs.androidx.animation.core)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.constraintlayout.compose)
@@ -75,53 +75,46 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.activity.compose)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.material)
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.appcompat.v170)
+    implementation(libs.material)
+    implementation(libs.animation)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.tooling)
+
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
     // Dependências do Firebase
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-
-    // Dependências do Compose
-    implementation(libs.androidx.material)
-    implementation("androidx.compose.ui:ui:1.2.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha12")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
-    implementation("androidx.activity:activity-compose:1.3.1")
-
-    // Dependência para o MotionLayout
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0")
-
-    // Dependências do Material Components
-    implementation("com.google.android.material:material:1.6.0")
-
-    // Outras dependências do projeto
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
-
-    implementation("androidx.compose.animation:animation:1.0.0")
-    implementation("androidx.compose.ui:ui:1.0.0")
-    implementation("androidx.compose.ui:ui-tooling:1.0.0")
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore.ktx)
 
     // Dependência para link de gif
-    implementation("io.coil-kt:coil-compose:2.1.0")
+    implementation(libs.coil.compose)
 
     // Dependência para video
-    implementation("com.google.android.exoplayer:exoplayer:2.17.1")
-    implementation("com.google.android.exoplayer:exoplayer-core:2.17.1")
-    implementation("com.google.android.exoplayer:exoplayer-ui:2.17.1")
-    implementation("com.google.android.exoplayer:exoplayer-hls:2.17.1")
-    implementation("com.google.android.exoplayer:exoplayer-dash:2.17.1")
-    implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:2.17.1")
-    implementation("com.google.android.exoplayer:extension-mediasession:2.17.1")
-
+    implementation(libs.exoplayer)
+    implementation(libs.exoplayer.core)
+    implementation(libs.exoplayer.ui)
+    implementation(libs.exoplayer.hls)
+    implementation(libs.exoplayer.dash)
+    implementation(libs.exoplayer.smoothstreaming)
+    implementation(libs.extension.mediasession)
 }
